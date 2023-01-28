@@ -1,27 +1,22 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-
 import { api } from "../utils/api";
-
 import "../styles/globals.css";
 import Head from "next/head";
-import Header from "../app/(Components)/Header";
+import Header from "../app/Components/Header";
 import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";
-import Footer from "../app/(Components)/Footer";
+import Footer from "../app/Components/Footer";
+import Loading from "../app/Components/Loading";
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
+	/* Translations */
 	const { locale } = useRouter();
-	const text = translations[locale == null ? "en" : locale]?.meta;
+	const text = translations[locale || 'en']?.meta;
 
-	if (text == null) {
-		return (
-			<div>
-				<h1>Did not find translation</h1>
-			</div>
-		);
-	}
+	/* Views */
+	if (text == null) return <Loading />;
 
 	return (
 		<SessionProvider session={session}>

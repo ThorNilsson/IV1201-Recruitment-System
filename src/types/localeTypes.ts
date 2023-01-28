@@ -13,6 +13,11 @@ export interface localeType {
 
 	homePage: homePageType;
 	loginPage: loginPageType;
+	alreadySignedInPage: alreadySignedInPageType;
+	registerPage: registerPageType;
+
+	myApplicationPage: myApplicationPageType;
+
 	applicationsPage: applicationsPageType;
 	applicationpage: applicationpageType;
 }
@@ -43,8 +48,40 @@ export interface homePageType {
 }
 
 export interface loginPageType {
-	loginHere: string;
+	title: string;
+	description: string;
+	username: string;
+	password: string;
+	login: string;
+	error: string;
+	emptyFields: string;
 }
+
+export interface alreadySignedInPageType {
+	alreadySignedIn: string;
+	signOut: string;
+	adminPage: string;
+	myApplicationPage: string;
+}
+
+export interface registerPageType {
+	title: string;
+	description: string;
+	username: string;
+	password: string;
+	register: string;
+	error: string;
+	emptyFields: string;
+}
+
+export interface myApplicationPageType {
+	title: string;
+	description: string;
+	noApplication: string;
+	createApplication: string;
+
+}
+
 
 export interface applicationsPageType {
 	title: string;

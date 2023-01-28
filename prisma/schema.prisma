@@ -12,7 +12,6 @@ datasource db {
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
-    
 }
 
 model Example {
@@ -49,9 +48,15 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
+    id             String @id @default(cuid())
+    username       String @unique
+    hashedPassword String
+    salt           String
+    userRole       String
+
+    name  String?
+    email String? @unique
+
     emailVerified DateTime?
     image         String?
     accounts      Account[]

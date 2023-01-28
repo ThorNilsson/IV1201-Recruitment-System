@@ -1,14 +1,14 @@
-"use client";
-import Link from "next/link";
-import router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import React from "react";
 import { translations } from "../../../languages/translations";
 import Loading from "./Loading";
 
 function Footer() {
+	/* Translations */
 	const { locale } = useRouter();
-	const text = translations[locale == null ? "en" : locale]?.footer;
+	const text = translations[locale || 'en']?.footer;
 
+	/* Views */
 	if (text == null) return <Loading />;
 
 	return (

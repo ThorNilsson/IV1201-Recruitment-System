@@ -2,24 +2,21 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { translations } from "../../../../languages/translations";
-import Loading from "../../../app/(Components)/Loading";
+import Loading from "../../../app/Components/Loading";
 
 export default function Applications() {
+	/* Translations */
 	const { locale } = useRouter();
-	const text = translations[locale == null ? "en" : locale]?.applicationsPage;
+	const text = translations[locale || 'en']?.applicationsPage;
 
+	/* Dummy Data */
 	const applications = [
 		{ firstName: "Ola", lastName: "Salo", status: "Pending", date: "2021-05-01", id: 1 },
 		{ firstName: "Olle", lastName: "Bolle", status: "Accepted", date: "2021-05-01", id: 2 },
 	];
+	const skills = ["Accounting", "Administration", "Advertising", "Agriculture"];
 
-	const skills = [
-		"Accounting",
-		"Administration",
-		"Advertising",
-		"Agriculture",
-	];
-
+	/* Views */
 	if (text == null) return <Loading />;
 
 	return (
@@ -34,9 +31,7 @@ export default function Applications() {
 					{skills.map((skill) => (
 						<label key={skill} className="relative inline-flex items-center cursor-pointer">
 							<input type="checkbox" value="on" className="sr-only peer" />
-							<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                
-                            </div>
+							<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
 							<span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">{skill}</span>
 						</label>
 					))}
@@ -46,9 +41,9 @@ export default function Applications() {
 				<div className="flex flex-col space-y-1">
 					{applications.map((application) => (
 						<Link
-                            key={application.id}
-                            href={`/admin/applications/${application.id}`}
-                            locale={locale}
+							key={application.id}
+							href={`/admin/applications/${application.id}`}
+							locale={locale}
 							className="flex space-x-10 content-center px-10 max-w-lg bg-white border border-gray-200 rounded-sm shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
 						>
 							<h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
