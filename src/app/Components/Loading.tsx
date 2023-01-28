@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Loading() {
 	return (
-		<div role="status">
+		<div className="flex min-h-screen flex-col space-y-5 items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">
 			<svg
 				aria-hidden="true"
 				className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"

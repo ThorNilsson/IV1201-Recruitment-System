@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";
 import Loading from "../app/Components/Loading";
 import { api } from "../utils/api";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import AlreadySignedIn from "../app/Components/AlreadySignedIn";
 
 function Register() {
@@ -17,8 +17,8 @@ function Register() {
 	const { locale } = useRouter();
 	const text = translations[locale || 'en']?.registerPage;
 
-	/* Querys */
-	const user = api.auth.getUser.useQuery();
+	/* Session */
+	const {data: session} = useSession();
 
 	/* Mutations */
 	const addUser = api.auth.signup.useMutation();
@@ -46,7 +46,7 @@ function Register() {
 	/* Views */
 	if (text == null) return <Loading />;
 
-	if (user.data?.id) return <AlreadySignedIn />;
+	if (session?.user) return <AlreadySignedIn />;
 
 	return (
 		<div className="flex min-h-screen flex-col space-y-5 items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">

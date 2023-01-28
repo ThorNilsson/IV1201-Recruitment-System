@@ -1,4 +1,4 @@
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import router, { useRouter } from "next/router";
 import React from "react";
@@ -13,7 +13,8 @@ function Header() {
 	const alreadySignedInPage = translations[locale || "en"]?.alreadySignedInPage;
   
   /* Querires */
-	const user = api.auth.getUser.useQuery();
+  const {data: session} = useSession();
+	const {data: user} = api.auth.getUser.useQuery(undefined, {enabled: session?.user != null});
   
   /* Handelers */
 	const handleLocaleChange = (locale: string) => {
@@ -40,7 +41,7 @@ function Header() {
 				<div className="hidden w-full md:block md:w-auto" id="navbar-default">
 					<ul className="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
 						{/* Admin and user role logic */}
-						{user.data?.userRole === "ADMIN" ? (
+						{user?.userRole === "ADMIN" ? (
 							<Link
 								href='/admin/applications'
 								className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
@@ -48,7 +49,7 @@ function Header() {
 								{alreadySignedInPage?.adminPage}
 							</Link>
 						) : null}
-						{user.data?.userRole === "USER" ? (
+						{user?.userRole === "USER" ? (
 							<Link
 								href='/my-application'
 								className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
@@ -58,7 +59,7 @@ function Header() {
 						) : null}
 
 						{/* Sign in and sign out lodgic*/}
-						{user.data?.id ? (
+						{user?.id ? (
 							<button
 								className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
 								onClick={handleSignout}

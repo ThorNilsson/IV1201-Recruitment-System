@@ -1,22 +1,22 @@
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { translations } from "../../languages/translations";
 import Loading from "../app/Components/Loading";
-import { api } from "../utils/api";
 import Login from "./login";
 
 export default function MyApplication() {
 	/* Translations */
 	const { locale } = useRouter();
-	const text = translations[locale || 'en']?.myApplicationPage;
+	const text = translations[locale || "en"]?.myApplicationPage;
 
-	/* Queries */
-	const user = api.auth.getUser.useQuery();
+	/* Session */
+	const { data: session } = useSession();
 
 	/* Views */
 	if (!text) return <Loading />;
 
-	if (!user.data?.id) <Login />;
+	if (!session?.user) <Login />;
 
 	return (
 		<div className="flex min-h-screen flex-col space-y-5 items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">

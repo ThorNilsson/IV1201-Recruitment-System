@@ -8,7 +8,6 @@ import Header from "../app/Components/Header";
 import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";
 import Footer from "../app/Components/Footer";
-import Loading from "../app/Components/Loading";
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
 	/* Translations */
@@ -16,13 +15,12 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
 	const text = translations[locale || 'en']?.meta;
 
 	/* Views */
-	if (text == null) return <Loading />;
 
 	return (
 		<SessionProvider session={session}>
 			<Head>
-				<title>{text.title}</title>
-				<meta name={text.description} content={text.content} />
+				<title>{text?.title}</title>
+				<meta name={text?.description} content={text?.content} />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
