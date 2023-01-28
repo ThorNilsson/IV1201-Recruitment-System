@@ -1,16 +1,20 @@
 import { useRouter } from "next/router";
 import React from "react";
 import { translations } from "../../../../languages/translations";
-import Loading from "../../../app/(Components)/Loading";
+import Loading from "../../../app/Components/Loading";
 
 function Application() {
-	const { locale } = useRouter();
-	const text = translations[locale == null ? "en" : locale]?.applicationpage;
-
+	/* Router */
 	const { applicationId } = useRouter().query;
-
+	
+	/* Translations */
+	const { locale } = useRouter();
+	const text = translations[locale || 'en']?.applicationpage;
+	
+	/* Dummy Data */
 	const application = { firstName: "Ola", lastName: "Salo", status: "Pending", date: "2021-05-01", id: 1 };
-
+	
+	/* Views */
 	if (text == null) return <Loading />;
 
 	return (
