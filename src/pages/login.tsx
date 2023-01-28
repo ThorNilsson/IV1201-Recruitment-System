@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";
 import Loading from "../app/Components/Loading";
 import { signIn, useSession } from "next-auth/react";
-import { api } from "../utils/api";
 import AlreadySignedIn from "../app/Components/AlreadySignedIn";
 
 function Login() {
@@ -17,8 +16,8 @@ function Login() {
 	const { locale } = useRouter();
 	const text = translations[locale || 'en']?.loginPage;
 
-	/* Queries */
-	const user = api.auth.getUser.useQuery();
+	/* Session */
+	const { data: session } = useSession();
 
 	/* Handelers */
 	const handleSignin = async () => {
@@ -32,13 +31,11 @@ function Login() {
 	/* Views */
 	if (!text) return <Loading />;
 
-	if (user.data?.id) return <AlreadySignedIn />;
+	if (session?.user?.id) return <AlreadySignedIn />;
 
 	return (
 		<div className="flex min-h-screen flex-col space-y-5 items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">
 			<h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">{text.title}</h1>
-			<div>{user.data?.username}</div>
-
 			<h1 className="mb-4 text-lg font-extrabold leading-none tracking-tight text-gray-900 dark:text-white">
 				{text.description}
 			</h1>
