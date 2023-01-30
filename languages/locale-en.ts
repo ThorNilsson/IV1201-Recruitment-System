@@ -1,6 +1,4 @@
-import { localeType } from "../src/types/localeTypes";
-
-const locale: localeType = {
+const locale = {
   locale: "en",
   name: "English",
   nativeName: "English",
@@ -71,6 +69,14 @@ const locale: localeType = {
     title: "Application",
     description: "Here you can edit the application",
   },
+
+  competences: {
+    "ticket sales": "Ticket sales",
+    lotteries: "Lotteries",
+    "roller coaster operation": "Roller Coaster operation",
+  },
 };
+
+export type localeType = typeof locale;
 
 export default locale;

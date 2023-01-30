@@ -1,4 +1,4 @@
-import { localeType } from "../src/types/localeTypes";
+import { localeType } from "./locale-en";
 
 const locale: localeType = {
   locale: "en",
@@ -70,6 +70,12 @@ const locale: localeType = {
   applicationpage: {
     title: "Ansökan",
     description: "Här kan du redigera ansökan",
+  },
+
+  competences: {
+    "ticket sales": "Biljettförsäljning",
+    lotteries: "Lotteri",
+    "roller coaster operation": "Berg- och dalbaneoperatör",
   },
 };
 
