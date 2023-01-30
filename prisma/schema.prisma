@@ -1,72 +1,51 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model availability {
+  availability_id Int       @id @default(autoincrement())
+  person_id       Int?
+  from_date       DateTime? @db.Date
+  to_date         DateTime? @db.Date
+  person          person?   @relation(fields: [person_id], references: [person_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-// Necessary for Next auth
-model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    //refresh_token     String? // @db.Text
-    //access_token      String? // @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    //id_token          String? // @db.Text
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    @@unique([provider, providerAccountId])
+model competence {
+  competence_id      Int                  @id @default(autoincrement())
+  name               String?              @db.VarChar(255)
+  competence_profile competence_profile[]
 }
 
-model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model competence_profile {
+  competence_profile_id Int         @id @default(autoincrement())
+  person_id             Int?
+  competence_id         Int?
+  years_of_experience   Decimal?    @db.Decimal(4, 2)
+  competence            competence? @relation(fields: [competence_id], references: [competence_id], onDelete: NoAction, onUpdate: NoAction)
+  person                person?     @relation(fields: [person_id], references: [person_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model User {
-    id             String @id @default(cuid())
-    username       String @unique
-    hashedPassword String
-    salt           String
-    userRole       String
-
-    name  String?
-    email String? @unique
-
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
+model person {
+  person_id          Int                  @id @default(autoincrement())
+  name               String?              @db.VarChar(255)
+  surname            String?              @db.VarChar(255)
+  pnr                String?              @db.VarChar(255)
+  email              String?              @db.VarChar(255)
+  password           String?              @db.VarChar(255)
+  role_id            Int?
+  username           String?              @db.VarChar(255)
+  availability       availability[]
+  competence_profile competence_profile[]
+  role               role?                @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
-
-    @@unique([identifier, token])
+model role {
+  role_id Int      @id @default(autoincrement())
+  name    String?  @db.VarChar(255)
+  person  person[]
 }
