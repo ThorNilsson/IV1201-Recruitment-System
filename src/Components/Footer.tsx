@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import React from "react";
-import { translations } from "../../../languages/translations";
+import { translations } from "../../languages/translations";
 import Loading from "./Loading";
 
 function Footer() {

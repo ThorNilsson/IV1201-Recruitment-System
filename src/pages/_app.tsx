@@ -4,10 +4,10 @@ import { SessionProvider } from "next-auth/react";
 import { api } from "../utils/api";
 import "../styles/globals.css";
 import Head from "next/head";
-import Header from "../app/Components/Header";
+import Header from "../Components/Header";
 import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";
-import Footer from "../app/Components/Footer";
+import Footer from "../Components/Footer";
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
   /* Translations */

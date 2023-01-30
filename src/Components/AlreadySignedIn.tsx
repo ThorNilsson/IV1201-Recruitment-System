@@ -2,9 +2,9 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { translations } from "../../../languages/translations";
+import { translations } from "../../languages/translations";
 import Loading from "./Loading";
-import { api } from "../../utils/api";
+import { api } from "../utils/api";
 
 function AlreadySignedIn() {
   /* Translations */

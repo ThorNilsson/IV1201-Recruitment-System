@@ -2,8 +2,8 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import router, { useRouter } from "next/router";
 import React from "react";
-import { translations } from "../../../languages/translations";
-import { api } from "../../utils/api";
+import { translations } from "../../languages/translations";
+import { api } from "../utils/api";
 import Loading from "./Loading";
 
 function Header() {
