@@ -5,57 +5,57 @@ import { translations } from "../../../../languages/translations";
 import Loading from "../../../app/Components/Loading";
 
 export default function Applications() {
-	/* Translations */
-	const { locale } = useRouter();
-	const text = translations[locale || 'en']?.applicationsPage;
+  /* Translations */
+  const { locale } = useRouter();
+  const text = translations[locale || "en"]?.applicationsPage;
 
-	/* Dummy Data */
-	const applications = [
-		{ firstName: "Ola", lastName: "Salo", status: "Pending", date: "2021-05-01", id: 1 },
-		{ firstName: "Olle", lastName: "Bolle", status: "Accepted", date: "2021-05-01", id: 2 },
-	];
-	const skills = ["Accounting", "Administration", "Advertising", "Agriculture"];
+  /* Dummy Data */
+  const applications = [
+    { firstName: "Ola", lastName: "Salo", status: "Pending", date: "2021-05-01", id: 1 },
+    { firstName: "Olle", lastName: "Bolle", status: "Accepted", date: "2021-05-01", id: 2 },
+  ];
+  const skills = ["Accounting", "Administration", "Advertising", "Agriculture"];
 
-	/* Views */
-	if (text == null) return <Loading />;
+  /* Views */
+  if (text == null) return <Loading />;
 
-	return (
-		<div className="flex flex-col items-center space-y-5 h-screen white dark:bg-gray-900">
-			{/* Title */}
-			<h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{text.title}</h1>
+  return (
+    <div className="flex flex-col items-center space-y-5 h-screen white dark:bg-gray-900">
+      {/* Title */}
+      <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{text.title}</h1>
 
-			<div className="flex flex-row items-center space-x-5">
-				{/* Filter manu */}
-				<div className="flex flex-col space-y-5">
-					<h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{text.filters}</h1>
-					{skills.map((skill) => (
-						<label key={skill} className="relative inline-flex items-center cursor-pointer">
-							<input type="checkbox" value="on" className="sr-only peer" />
-							<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
-							<span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">{skill}</span>
-						</label>
-					))}
-				</div>
+      <div className="flex flex-row items-center space-x-5">
+        {/* Filter manu */}
+        <div className="flex flex-col space-y-5">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{text.filters}</h1>
+          {skills.map((skill) => (
+            <label key={skill} className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" value="on" className="sr-only peer" />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
+              <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">{skill}</span>
+            </label>
+          ))}
+        </div>
 
-				{/* List of aplicants */}
-				<div className="flex flex-col space-y-1">
-					{applications.map((application) => (
-						<Link
-							key={application.id}
-							href={`/admin/applications/${application.id}`}
-							locale={locale}
-							className="flex space-x-10 content-center px-10 max-w-lg bg-white border border-gray-200 rounded-sm shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
-						>
-							<h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-								{application.firstName} {application.lastName}
-							</h5>
-							<p className="font-normal text-gray-700 dark:text-gray-400">
-								{application.status} - {application.date}
-							</p>
-						</Link>
-					))}
-				</div>
-			</div>
-		</div>
-	);
+        {/* List of aplicants */}
+        <div className="flex flex-col space-y-1">
+          {applications.map((application) => (
+            <Link
+              key={application.id}
+              href={`/admin/applications/${application.id}`}
+              locale={locale}
+              className="flex space-x-10 content-center px-10 max-w-lg bg-white border border-gray-200 rounded-sm shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+            >
+              <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                {application.firstName} {application.lastName}
+              </h5>
+              <p className="font-normal text-gray-700 dark:text-gray-400">
+                {application.status} - {application.date}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -10,29 +10,29 @@ import { translations } from "../../languages/translations";
 import Footer from "../app/Components/Footer";
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
-	/* Translations */
-	const { locale } = useRouter();
-	const text = translations[locale || 'en']?.meta;
+  /* Translations */
+  const { locale } = useRouter();
+  const text = translations[locale || "en"]?.meta;
 
-	/* Views */
+  /* Views */
 
-	return (
-		<SessionProvider session={session}>
-			<Head>
-				<title>{text?.title}</title>
-				<meta name={text?.description} content={text?.content} />
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
+  return (
+    <SessionProvider session={session}>
+      <Head>
+        <title>{text?.title}</title>
+        <meta name={text?.description} content={text?.content} />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-			<Header />
+      <Header />
 
-			<main>
-				<Component {...pageProps} />
-			</main>
+      <main>
+        <Component {...pageProps} />
+      </main>
 
-			<Footer />
-		</SessionProvider>
-	);
+      <Footer />
+    </SessionProvider>
+  );
 };
 
 export default api.withTRPC(MyApp);
