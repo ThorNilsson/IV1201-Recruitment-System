@@ -1,9 +1,9 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";
-import Loading from "../app/Components/Loading";
+import Loading from "../Components/Loading";
 import { signIn, useSession } from "next-auth/react";
-import AlreadySignedIn from "../app/Components/AlreadySignedIn";
+import AlreadySignedIn from "../Components/AlreadySignedIn";
 
 function Login() {
   /* React State */

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { translations } from "../../languages/translations";
-import Loading from "../app/Components/Loading";
+import Loading from "../Components/Loading";
 
 function Home() {
   /* Translations */
