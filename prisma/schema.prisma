@@ -17,7 +17,7 @@ model availability {
 }
 
 model competence {
-  competence_id      Int                  @id @default(autoincrement())
+  id      Int                  @id @default(autoincrement())
   name               String?              @db.VarChar(255)
   competence_profile competence_profile[]
 }
@@ -27,7 +27,7 @@ model competence_profile {
   person_id             Int?
   competence_id         Int?
   years_of_experience   Decimal?    @db.Decimal(4, 2)
-  competence            competence? @relation(fields: [competence_id], references: [competence_id], onDelete: NoAction, onUpdate: NoAction)
+  competence            competence? @relation(fields: [competence_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   person                person?     @relation(fields: [person_id], references: [person_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
