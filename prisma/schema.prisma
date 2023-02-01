@@ -9,44 +9,54 @@ datasource db {
 }
 
 model availability {
-  availability_id Int       @id @default(autoincrement())
-  person_id       Int?
-  from_date       DateTime? @db.Date
-  to_date         DateTime? @db.Date
-  person          person?   @relation(fields: [person_id], references: [person_id], onDelete: NoAction, onUpdate: NoAction)
+  id Int                    @id @default(autoincrement())
+  from_date       DateTime @db.Date
+  to_date         DateTime @db.Date
+  person_id       Int
+  person          person   @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model competence {
-  id      Int                  @id @default(autoincrement())
-  name               String?              @db.VarChar(255)
+  id                 Int                  @id @default(autoincrement())
+  name               String              @db.VarChar(255)
   competence_profile competence_profile[]
 }
 
 model competence_profile {
-  competence_profile_id Int         @id @default(autoincrement())
-  person_id             Int?
-  competence_id         Int?
-  years_of_experience   Decimal?    @db.Decimal(4, 2)
-  competence            competence? @relation(fields: [competence_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  person                person?     @relation(fields: [person_id], references: [person_id], onDelete: NoAction, onUpdate: NoAction)
+  id                    Int         @id @default(autoincrement())
+  years_of_experience   Decimal    @db.Decimal(4, 2)
+  // accepted/rejected/unhandled. numeric (enum?) or like `role`
+  // last_updated to prevent double writes
+  person_id             Int
+  person                person     @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  competence_id         Int
+  competence            competence @relation(fields: [competence_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model person {
-  person_id          Int                  @id @default(autoincrement())
+  id                 Int                  @id @default(autoincrement())
   name               String?              @db.VarChar(255)
   surname            String?              @db.VarChar(255)
   pnr                String?              @db.VarChar(255)
-  email              String?              @db.VarChar(255)
-  password           String?              @db.VarChar(255)
-  role_id            Int?
-  username           String?              @db.VarChar(255)
+  email              String?              @unique @db.VarChar(255)
+  user               user?
   availability       availability[]
   competence_profile competence_profile[]
-  role               role?                @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model role {
-  role_id Int      @id @default(autoincrement())
-  name    String?  @db.VarChar(255)
-  person  person[]
+  id      Int      @id @default(autoincrement())
+  name    String   @db.VarChar(255)
+  user  user[]
+}
+
+model user {
+  id                 Int                 @id @default(autoincrement())
+  username           String              @db.VarChar(255)
+  password           String              @db.VarChar(255)
+  role_id            Int
+  role               role                @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  // If the user is an applicant (role_id = 2 at the time of writing), a person entry should be present.
+  person_id          Int?                 @unique
+  person             person?              @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
