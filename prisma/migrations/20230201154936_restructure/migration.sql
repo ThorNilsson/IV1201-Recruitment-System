@@ -75,8 +75,8 @@ ALTER TABLE "user" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
 -- CreateIndex
 CREATE UNIQUE INDEX "user_person_id_key" ON "user"("person_id");
 
-INSERT INTO "user"("username", "password", "role_id", "person_id")
-SELECT "username", "password", "role_id", "person_id" FROM "person"
+INSERT INTO "user"("username", "password", "role_id")
+SELECT "username", "password", "role_id" FROM "person"
 WHERE "username" IS NOT NULL
 ;
 DELETE FROM "person"
@@ -89,10 +89,6 @@ ALTER TABLE "person" DROP CONSTRAINT "person_pkey",
 DROP COLUMN "password",
 DROP COLUMN "role_id",
 DROP COLUMN "username",
--- ALTER COLUMN "name" SET NOT NULL,
--- ALTER COLUMN "surname" SET NOT NULL,
--- ALTER COLUMN "pnr" SET NOT NULL,
--- ALTER COLUMN "email" SET NOT NULL,
 ADD CONSTRAINT "person_pkey" PRIMARY KEY ("id");
 
 -- AlterTable
