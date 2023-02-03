@@ -16,26 +16,28 @@ export const authOptions: NextAuthOptions = {
 			name: "Credentials",
 			credentials: {
 				username: { label: "Username", type: "text", placeholder: "jsmith" },
-				password: { label: "Password", type: "password" },
+				password: { label: "Password", type: "password",  },
 			},
 			async authorize(credentials, req) {
 				if (credentials?.username == null && credentials?.password == null) return null;
 
-				const user = await prisma.user.findFirst({
+				const user = await prisma.person.findFirst({
 					where: { username: credentials.username },
 				});
 
 				if (!user) return null;
 
-				const validPassword = await bcrypt.compare(credentials.password, user.hashedPassword);
+				//const validPassword = await bcrypt.compare(credentials.password, user.password);
 
-				if (!validPassword) return null;
+				//if (!validPassword) return null;
+
+				if(credentials.password !== user.password) return null;
 
 				return {
-					id: user.id,
-					email: user.id,
+					id: user.person_id.toString(),
+					email: user.person_id.toString(),
 					name: user.username,
-					image: user.userRole,
+					image: user.role_id?.toString(),
 				};
 			},
 		}),

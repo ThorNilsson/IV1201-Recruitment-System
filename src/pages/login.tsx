@@ -31,7 +31,7 @@ function Login() {
   /* Views */
   if (!text) return <Loading />;
 
-  if (session?.user?.id) return <AlreadySignedIn />;
+  if (session?.user) return <AlreadySignedIn />;
 
   return (
     <div className="flex min-h-screen flex-col space-y-5 items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">
