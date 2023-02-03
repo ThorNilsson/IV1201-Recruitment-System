@@ -10,7 +10,7 @@ function Header() {
   /* Translations */
   const { locale, locales } = useRouter();
   const text = translations[locale || "en"]?.header;
-  const alreadySignedInPage = translations[locale || "en"]?.alreadySignedInPage;
+  const textSignout = translations[locale || "en"]?.alreadySignedInPage;
 
   /* Querires */
   const { data: session } = useSession();
@@ -37,34 +37,38 @@ function Header() {
           </span>
         </a>
 
+        <div className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+          Welcome back {session?.user?.name}!
+        </div>
+
         {/* Links */}
         <div className="hidden w-full md:block md:w-auto" id="navbar-default">
           <ul className="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             {/* Admin and user role logic */}
-            {user?.userRole === "ADMIN" ? (
+            {user?.role?.name === "recruiter" ? (
               <Link
                 href='/admin/applications'
                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
-                {alreadySignedInPage?.adminPage}
+                {textSignout?.adminPage}
               </Link>
             ) : null}
-            {user?.userRole === "USER" ? (
+            {user?.role?.name === "applicant" ? (
               <Link
                 href='/my-application'
                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
-                {alreadySignedInPage?.myApplicationPage}
+                {textSignout?.myApplicationPage}
               </Link>
             ) : null}
 
             {/* Sign in and sign out lodgic*/}
-            {user?.id ? (
+            {session?.user ? (
               <button
                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                 onClick={handleSignout}
               >
-                {alreadySignedInPage?.signOut}
+                {textSignout?.signOut}
               </button>
             ) : (
               <>

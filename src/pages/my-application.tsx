@@ -16,13 +16,13 @@ export default function MyApplication() {
   /* Views */
   if (!text) return <Loading />;
 
-  if (!session?.user) <Login />;
+  if (!session?.user) return <Login />;
 
   return (
     <div className="flex min-h-screen flex-col space-y-5 items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">
       <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">{text.title}</h1>
       <h1 className="mb-4 text-lg font-extrabold leading-none tracking-tight text-gray-900 dark:text-white">
-        {text.description}
+        {text.description} {session?.user?.name} {session?.user?.email}
       </h1>
     </div>
   );
