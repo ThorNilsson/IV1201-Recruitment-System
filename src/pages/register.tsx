@@ -8,7 +8,7 @@ import AlreadySignedIn from "../Components/AlreadySignedIn";
 
 function Register() {
   /* React State */
-  const [newUser, setNewUser] = React.useState({ username: "", password: "" });
+  const [newUser, setNewUser] = React.useState({ username: "", password: "", email: "", pnr: "", surname: "" });
   const handleUpdateNewUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewUser({ ...newUser, [event.target.name]: event.target.value });
   };
@@ -30,6 +30,7 @@ function Register() {
       return;
     }
     addUser.mutate(newUser, {
+      //username: z.string(), password: z.string(), email: z.string(), pnr: z.string(), surname: z.string()
       onError() {
         alert(text?.error);
       },
@@ -38,6 +39,9 @@ function Register() {
           callbackUrl: "/my-application",
           username: newUser.username,
           password: newUser.password,
+          email: newUser.email,
+          pnr: newUser.pnr,
+          surname: newUser.surname,
         });
       },
     });

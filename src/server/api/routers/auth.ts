@@ -9,8 +9,8 @@ export const authRouter = createTRPCRouter({
   getUser: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.session?.user.email) return null;
 
-    return ctx.prisma.person.findUnique({
-      where: { person_id: parseInt(ctx.session.user.email) },
+    return ctx.prisma.user.findUnique({
+      where: { id: parseInt(ctx.session.user.email) },
       select: {
         username: true,
         role_id: true,
@@ -21,17 +21,26 @@ export const authRouter = createTRPCRouter({
   }),
   /* Mutations */
   signup: publicProcedure
-    .input(z.object({ username: z.string(), password: z.string() }))
+    .input(
+      z.object({ username: z.string(), password: z.string(), email: z.string(), pnr: z.string(), surname: z.string() }),
+    )
     .mutation(async ({ input, ctx }) => {
       //const salt = await bcrypt.genSalt(10);
       //const hashedPassword = await bcrypt.hash(input.password, salt);
 
-      return ctx.prisma.person.create({
+      return ctx.prisma.user.create({
         data: {
           username: input.username,
           password: input.password,
-          //salt: salt,
-          role_id: 1,
+          role: { connect: { id: 2 } },
+          person: {
+            create: {
+              name: input.username,
+              surname: input.surname,
+              pnr: input.pnr,
+              email: input.email,
+            },
+          },
         },
       });
     }),
