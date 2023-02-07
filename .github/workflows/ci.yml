@@ -80,7 +80,7 @@ jobs:
         id: get_branch_enpoint
         with: 
           path: 'output.json'
-          prop_path: 'endpoints[0].host'
+          prop_path: 'endpoints.0.host'
       # - run: echo "branch_enpoint=${{steps.get_branch_enpoint.outputs.prop}}" >> $GITHUB_OUTPUT
       #   shell: bash
       #   id: output-branch_enpoint
@@ -88,7 +88,7 @@ jobs:
       #   id: get_connection_uri
       #   with: 
       #     path: 'output.json'
-      #     prop_path: 'connection_uris[0].connection_uri'
+      #     prop_path: 'connection_uris.0.connection_uri'
       # - run: echo "connection_uri=${{steps.get_connection_uri.outputs.prop}}" >> $GITHUB_OUTPUT
       #   shell: bash
       #   id: output-connection_uri
