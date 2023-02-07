@@ -21,6 +21,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      # Dummy values to allow `npm run build` to run
+      DATABASE_URL: "postgres://d:u@m.m/y"
+      NEXTAUTH_SECRET: "plink"
+      NEXTAUTH_URL: "http://plonk"
 
     steps:
       # checkout
