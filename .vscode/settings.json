@@ -3,4 +3,5 @@
         "editor.defaultFormatter": "rome.rome"
     },
     "typescript.tsdk": "node_modules\\typescript\\lib",
+    "editor.tabSize": 2,
 }
