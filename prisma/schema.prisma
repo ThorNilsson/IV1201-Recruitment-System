@@ -8,12 +8,26 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+model application {
+  id                 Int                       @id @default(autoincrement())
+  name               String?                   @db.VarChar(255)
+  surname            String?                   @db.VarChar(255)
+  pnr                String?                   @db.VarChar(255)
+  email              String?                   @unique @db.VarChar(255)
+  status             competence_profile_status @default(UNHANDLED)
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @default(now()) @updatedAt
+  user               user?
+  availability       availability[]
+  competence_profile competence_profile[]
+}
+
 model availability {
-  id        Int      @id @default(autoincrement())
-  from_date DateTime @db.Date
-  to_date   DateTime @db.Date
-  person_id Int
-  person    person   @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             Int         @id @default(autoincrement())
+  from_date      DateTime    @db.Date
+  to_date        DateTime    @db.Date
+  application_id Int
+  application    application @relation(fields: [application_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model competence {
@@ -23,32 +37,18 @@ model competence {
 }
 
 model competence_profile {
-  id                  Int                       @id @default(autoincrement())
-  years_of_experience Decimal                   @db.Decimal(4, 2)
-  status              competence_profile_status @default(UNHANDLED)
-  createdAt           DateTime                  @default(now())
-  updatedAt           DateTime                  @default(now()) @updatedAt
-  person_id           Int
-  person              person                    @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                  Int         @id @default(autoincrement())
+  years_of_experience Decimal     @db.Decimal(4, 2)
+  application_id      Int
+  application         application @relation(fields: [application_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   competence_id       Int
-  competence          competence                @relation(fields: [competence_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  competence          competence  @relation(fields: [competence_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum competence_profile_status {
   UNHANDLED
   ACCEPTED
   REJECTED
-}
-
-model person {
-  id                 Int                  @id @default(autoincrement())
-  name               String?              @db.VarChar(255)
-  surname            String?              @db.VarChar(255)
-  pnr                String?              @db.VarChar(255)
-  email              String?              @unique @db.VarChar(255)
-  user               user?
-  availability       availability[]
-  competence_profile competence_profile[]
 }
 
 model role {
@@ -58,12 +58,12 @@ model role {
 }
 
 model user {
-  id        Int     @id @default(autoincrement())
-  username  String  @db.VarChar(255)
-  password  String  @db.VarChar(255)
-  role_id   Int
-  role      role    @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  // If the user is an applicant (role_id = 2 at the time of writing), a person entry should be present.
-  person_id Int?    @unique
-  person    person? @relation(fields: [person_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             Int          @id @default(autoincrement())
+  username       String       @db.VarChar(255)
+  password       String       @db.VarChar(255)
+  role_id        Int
+  role           role         @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  // If the user is an applicant (role_id = 2 at the time of writing) and applies, an application entry is added here.
+  application_id Int?         @unique
+  application    application? @relation(fields: [application_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
