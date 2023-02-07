@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths-ignore:
+      - '**/*.md'
+      - '**/.gitignore'
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths-ignore:
+      - '**/*.md'
+      - '**/.gitignore'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # checkout
+      - uses: actions/checkout@v3
+
+      # Node.js
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 18
+          cache: 'npm'
+      - name: npm install
+        run: npm clean-install
+
+      - name: Lint
+        run: npx rome ci .
+
+
+      # Create database branch to test migrations
+      - name: create-branch
+        id: create-branch
+        with:
+          project_id: gentle-boat-796453
+          parent_branch_id: br-tiny-resonance-872350
+          branch_name: ci
+          api_key: ${{ secrets.NEON_API_KEY }}
+        shell: bash
+        run: |
+          OUTPUT=`curl -X 'POST' \
+          'https://console.neon.tech/api/v2/projects/${{inputs.project_id}}/branches' \
+          -H 'accept: application/json' \
+          -H 'Authorization: Bearer ${{ inputs.api_key }}' \
+          -H 'Content-Type: application/json' \
+          -d '{
+          "endpoints": [
+            {
+              "type": "read_write"
+            }
+          ],
+          "branch": {
+            "parent_id": "${{inputs.parent_branch_id}}",
+            "name": "${{inputs.branch_name}}"
+          }
+          }'`
+          echo $OUTPUT > output.json
+      - uses: notiz-dev/github-action-json-property@release
+        id: get_branch_id
+        with: 
+          path: 'output.json'
+          prop_path: 'branch.id'
+      # - run: echo "branch_id=${{steps.get_branch_id.outputs.prop}}" >> $GITHUB_OUTPUT
+      #   shell: bash
+      #   id: output-branch-id
+      # - uses: notiz-dev/github-action-json-property@release
+      #   id: get_project_id
+      #   with: 
+      #     path: 'output.json'
+      #     prop_path: 'branch.project_id'
+      # - run: echo "project_id=${{steps.get_project_id.outputs.prop}}" >> $GITHUB_OUTPUT
+      #   shell: bash
+      #   id: output-project-id
+      - uses: notiz-dev/github-action-json-property@release
+        id: get_branch_enpoint
+        with: 
+          path: 'output.json'
+          prop_path: 'endpoints[0].host'
+      # - run: echo "branch_enpoint=${{steps.get_branch_enpoint.outputs.prop}}" >> $GITHUB_OUTPUT
+      #   shell: bash
+      #   id: output-branch_enpoint
+      # - uses: notiz-dev/github-action-json-property@release
+      #   id: get_connection_uri
+      #   with: 
+      #     path: 'output.json'
+      #     prop_path: 'connection_uris[0].connection_uri'
+      # - run: echo "connection_uri=${{steps.get_connection_uri.outputs.prop}}" >> $GITHUB_OUTPUT
+      #   shell: bash
+      #   id: output-connection_uri
+
+      # Prisma migrate
+      - name: Apply Prisma migration
+        env:
+          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
+        run: |
+          npx prisma migrate deploy
+          npx prisma migrate status
+
+      # yeetus deletus the ci db branch
+      - name: delete-branch
+        with:
+          project_id: gentle-boat-796453
+          api_key: ${{ secrets.NEON_API_KEY }}
+        if: ${{ steps.create-branch.conclusion == 'success' }}
+        shell: bash
+        run: |
+          OUTPUT=`curl -X 'DELETE' \
+            'https://console.neon.tech/api/v2/projects/${{inputs.project_id}}/branches/${{steps.get_branch_id.outputs.prop}}' \
+            -H 'accept: application/json' \
+            -H 'Authorization: Bearer ${{ inputs.api_key }}'`
+          echo $OUTPUT
