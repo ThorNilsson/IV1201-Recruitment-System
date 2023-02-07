@@ -87,3 +87,6 @@ jobs:
           'https://console.neon.tech/api/v2/projects/gentle-boat-796453/branches/${{steps.get_branch_id.outputs.prop}}' \
           -H 'accept: application/json' \
           -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}'
+
+      - name: Build
+        run: npm run build
