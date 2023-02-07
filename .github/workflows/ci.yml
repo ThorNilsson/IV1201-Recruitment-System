@@ -21,6 +21,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
 
     steps:
       # checkout
@@ -47,7 +50,6 @@ jobs:
           parent_branch_id: br-tiny-resonance-872350
           branch_name: ci
           api_key: ${{ secrets.NEON_API_KEY }}
-        shell: bash
         run: |
           OUTPUT=`curl -X 'POST' \
           'https://console.neon.tech/api/v2/projects/${{inputs.project_id}}/branches' \
