@@ -6,15 +6,15 @@ on:
       - develop
       - main
     paths-ignore:
-      - '**/*.md'
-      - '**/.gitignore'
+      - "**/*.md"
+      - "**/.gitignore"
   pull_request:
     branches:
       - develop
       - main
     paths-ignore:
-      - '**/*.md'
-      - '**/.gitignore'
+      - "**/*.md"
+      - "**/.gitignore"
   workflow_dispatch:
 
 jobs:
@@ -31,13 +31,12 @@ jobs:
         uses: actions/setup-node@v3.6.0
         with:
           node-version: 18
-          cache: 'npm'
+          cache: "npm"
       - name: npm install
         run: npm clean-install
 
       - name: Lint
         run: npx rome ci .
-
 
       # Create database branch to test migrations
       - name: create-branch
@@ -59,39 +58,18 @@ jobs:
             "name": "ci"
           }
           }'`
+          echo $OUTPUT
           echo $OUTPUT > output.json
       - uses: notiz-dev/github-action-json-property@release
         id: get_branch_id
-        with: 
-          path: 'output.json'
-          prop_path: 'branch.id'
-      # - run: echo "branch_id=${{steps.get_branch_id.outputs.prop}}" >> $GITHUB_OUTPUT
-      #   shell: bash
-      #   id: output-branch-id
-      # - uses: notiz-dev/github-action-json-property@release
-      #   id: get_project_id
-      #   with: 
-      #     path: 'output.json'
-      #     prop_path: 'branch.project_id'
-      # - run: echo "project_id=${{steps.get_project_id.outputs.prop}}" >> $GITHUB_OUTPUT
-      #   shell: bash
-      #   id: output-project-id
+        with:
+          path: "output.json"
+          prop_path: "branch.id"
       - uses: notiz-dev/github-action-json-property@release
         id: get_branch_enpoint
-        with: 
-          path: 'output.json'
-          prop_path: 'endpoints.0.host'
-      # - run: echo "branch_enpoint=${{steps.get_branch_enpoint.outputs.prop}}" >> $GITHUB_OUTPUT
-      #   shell: bash
-      #   id: output-branch_enpoint
-      # - uses: notiz-dev/github-action-json-property@release
-      #   id: get_connection_uri
-      #   with: 
-      #     path: 'output.json'
-      #     prop_path: 'connection_uris.0.connection_uri'
-      # - run: echo "connection_uri=${{steps.get_connection_uri.outputs.prop}}" >> $GITHUB_OUTPUT
-      #   shell: bash
-      #   id: output-connection_uri
+        with:
+          path: "output.json"
+          prop_path: "endpoints.0.host"
 
       # Prisma migrate
       - name: Apply Prisma migration
@@ -105,8 +83,7 @@ jobs:
       - name: delete-branch
         if: ${{ steps.create-branch.conclusion == 'success' }}
         run: |
-          OUTPUT=`curl -X 'DELETE' \
+          curl -X 'DELETE' \
           'https://console.neon.tech/api/v2/projects/gentle-boat-796453/branches/${{steps.get_branch_id.outputs.prop}}' \
           -H 'accept: application/json' \
-          -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}'`
-          echo $OUTPUT
+          -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}'
