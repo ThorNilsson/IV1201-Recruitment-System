@@ -3,17 +3,19 @@ import { useRouter } from "next/router";
 import React from "react";
 import { translations } from "../../../../languages/translations";
 import Loading from "../../../Components/Loading";
+import { api } from "../../../utils/api";
 
 export default function Applications() {
   /* Translations */
   const { locale } = useRouter();
   const text = translations[locale || "en"]?.applicationsPage;
 
-  /* Dummy Data */
-  const applications = [
-    { firstName: "Ola", lastName: "Salo", status: "Pending", date: "2021-05-01", id: 1 },
-    { firstName: "Olle", lastName: "Bolle", status: "Accepted", date: "2021-05-01", id: 2 },
-  ];
+  /* Queries */
+  const { data: applications } = api.admin.getFilterdUserPrev.useQuery({ filter: "test" });
+  const { data: competences } = api.admin.getCompetences.useQuery();
+
+  console.log(applications);
+
   const skills = ["Accounting", "Administration", "Advertising", "Agriculture"];
 
   /* Views */
@@ -39,7 +41,7 @@ export default function Applications() {
 
         {/* List of aplicants */}
         <div className="flex flex-col space-y-1">
-          {applications.map((application) => (
+          {applications?.map((application) => (
             <Link
               key={application.id}
               href={`/admin/applications/${application.id}`}
@@ -47,10 +49,12 @@ export default function Applications() {
               className="flex space-x-10 content-center px-10 max-w-lg bg-white border border-gray-200 rounded-sm shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
             >
               <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                {application.firstName} {application.lastName}
+                {application.name} {application.surname}
               </h5>
               <p className="font-normal text-gray-700 dark:text-gray-400">
-                {application.status} - {application.date}
+                {
+                  //{application.competence_profile[0]?.status} - {application.competence_profile[0]?.createdAt}
+                }
               </p>
             </Link>
           ))}
