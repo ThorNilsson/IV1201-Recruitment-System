@@ -42,16 +42,11 @@ jobs:
       # Create database branch to test migrations
       - name: create-branch
         id: create-branch
-        with:
-          project_id: gentle-boat-796453
-          parent_branch_id: br-tiny-resonance-872350
-          branch_name: ci
-          api_key: ${{ secrets.NEON_API_KEY }}
         run: |
           OUTPUT=`curl -X 'POST' \
-          'https://console.neon.tech/api/v2/projects/${{inputs.project_id}}/branches' \
+          'https://console.neon.tech/api/v2/projects/gentle-boat-796453/branches' \
           -H 'accept: application/json' \
-          -H 'Authorization: Bearer ${{ inputs.api_key }}' \
+          -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}' \
           -H 'Content-Type: application/json' \
           -d '{
           "endpoints": [
@@ -60,8 +55,8 @@ jobs:
             }
           ],
           "branch": {
-            "parent_id": "${{inputs.parent_branch_id}}",
-            "name": "${{inputs.branch_name}}"
+            "parent_id": "br-tiny-resonance-872350",
+            "name": "ci"
           }
           }'`
           echo $OUTPUT > output.json
@@ -108,13 +103,10 @@ jobs:
 
       # yeetus deletus the ci db branch
       - name: delete-branch
-        with:
-          project_id: gentle-boat-796453
-          api_key: ${{ secrets.NEON_API_KEY }}
         if: ${{ steps.create-branch.conclusion == 'success' }}
         run: |
           OUTPUT=`curl -X 'DELETE' \
-          'https://console.neon.tech/api/v2/projects/${{inputs.project_id}}/branches/${{steps.get_branch_id.outputs.prop}}' \
+          'https://console.neon.tech/api/v2/projects/gentle-boat-796453/branches/${{steps.get_branch_id.outputs.prop}}' \
           -H 'accept: application/json' \
-          -H 'Authorization: Bearer ${{ inputs.api_key }}'`
+          -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}'`
           echo $OUTPUT
