@@ -79,8 +79,7 @@ jobs:
             }
           ],
           "branch": {
-            "parent_id": "br-tiny-resonance-872350",
-            "name": "ci"
+            "parent_id": "br-tiny-resonance-872350"
           }
           }'`
           echo $OUTPUT
