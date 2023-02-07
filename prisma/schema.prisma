@@ -9,17 +9,23 @@ datasource db {
 }
 
 model application {
-  id                 Int                       @id @default(autoincrement())
-  name               String?                   @db.VarChar(255)
-  surname            String?                   @db.VarChar(255)
-  pnr                String?                   @db.VarChar(255)
-  email              String?                   @unique @db.VarChar(255)
-  status             competence_profile_status @default(UNHANDLED)
-  createdAt          DateTime                  @default(now())
-  updatedAt          DateTime                  @default(now()) @updatedAt
+  id                 Int                  @id @default(autoincrement())
+  name               String?              @db.VarChar(255)
+  surname            String?              @db.VarChar(255)
+  pnr                String?              @db.VarChar(255)
+  email              String?              @unique @db.VarChar(255)
+  status             application_status   @default(UNHANDLED)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @default(now()) @updatedAt
   user               user?
   availability       availability[]
   competence_profile competence_profile[]
+}
+
+enum application_status {
+  UNHANDLED
+  ACCEPTED
+  REJECTED
 }
 
 model availability {
@@ -43,12 +49,6 @@ model competence_profile {
   application         application @relation(fields: [application_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   competence_id       Int
   competence          competence  @relation(fields: [competence_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-enum competence_profile_status {
-  UNHANDLED
-  ACCEPTED
-  REJECTED
 }
 
 model role {

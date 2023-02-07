@@ -6,7 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "postinstall": "prisma generate",
-    "lint": "rome check --apply-suggested . && rome format --write .",
+    "lint": "rome check --apply-suggested . && rome format --write . && prisma format",
     "start": "next start"
   },
   "dependencies": {
