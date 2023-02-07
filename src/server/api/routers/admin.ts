@@ -21,4 +21,12 @@ export const adminRouter = createTRPCRouter({
       },
     });
   }),
+  getCompetences: publicProcedure.query(async ({ ctx }) => {
+    return ctx.prisma.competence.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+  }),
 });
