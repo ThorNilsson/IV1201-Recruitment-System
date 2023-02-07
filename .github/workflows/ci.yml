@@ -21,9 +21,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    defaults:
-      run:
-        shell: bash
 
     steps:
       # checkout
@@ -115,10 +112,9 @@ jobs:
           project_id: gentle-boat-796453
           api_key: ${{ secrets.NEON_API_KEY }}
         if: ${{ steps.create-branch.conclusion == 'success' }}
-        shell: bash
         run: |
           OUTPUT=`curl -X 'DELETE' \
-            'https://console.neon.tech/api/v2/projects/${{inputs.project_id}}/branches/${{steps.get_branch_id.outputs.prop}}' \
-            -H 'accept: application/json' \
-            -H 'Authorization: Bearer ${{ inputs.api_key }}'`
+          'https://console.neon.tech/api/v2/projects/${{inputs.project_id}}/branches/${{steps.get_branch_id.outputs.prop}}' \
+          -H 'accept: application/json' \
+          -H 'Authorization: Bearer ${{ inputs.api_key }}'`
           echo $OUTPUT
