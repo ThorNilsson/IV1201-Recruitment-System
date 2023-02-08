@@ -75,6 +75,9 @@ const locale: localeType = {
     avaliability: "Tillgänglighet",
     year: "år",
     edit: "Redigera ansökans status",
+    ACCEPTED: "Acceptera ansökan",
+    REJECTED: "Avvisa ansökan",
+    UNHANDLED: "Återställ ansökan till ohanterad",
   },
 
   /* Shared */
