@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { application, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -85,14 +85,18 @@ async function main() {
       },
     },
   });
-  // old application with no user
-  await prisma.application.create({
-    data: {
-      name: "Plink",
-      surname: "Plonk",
+  // old applications with no user
+  let arr = [];
+  for (let i = 1; i < 100; i++) {
+    arr.push({
+      name: `Plink${i}`,
+      surname: `Plonk${i}`,
       pnr: "123456-7890",
-      email: "plinnk.plonkee@thunder.vh",
-    },
+      email: `plinnk${i}.plonkee@thunder.vh`,
+    });
+  }
+  await prisma.application.createMany({
+    data: arr,
   });
 }
 
