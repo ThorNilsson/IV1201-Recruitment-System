@@ -66,10 +66,31 @@ const locale: localeType = {
     title: "Ansökningar",
     description: "Här kan du se alla mottagna ansökningar",
     filters: "Filter",
+    notFound: "Inga ansökningar hittades",
   },
-  applicationpage: {
+  applicationPage: {
     title: "Ansökan",
     description: "Här kan du redigera ansökan",
+    competences: "Kompetenser",
+    avaliability: "Tillgänglighet",
+    year: "år",
+    edit: "Redigera ansökans status",
+  },
+
+  /* Shared */
+  app: {
+    noAccess: "Du har inte tillgång till denna sida 😒",
+    notFound: "Sidan kunde inte hittas 🤷‍♀️",
+    back: "Tillbaka",
+    save: "Spara",
+    cancel: "Avbryt",
+    delete: "Ta bort",
+    edit: "Redigera",
+    create: "Skapa",
+    yes: "Ja",
+    no: "Nej",
+    confirm: "Konfirmera",
+    confirmDelete: "Är du säker på att du vill ta bort detta?",
   },
 
   competences: {

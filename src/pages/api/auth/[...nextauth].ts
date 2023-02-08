@@ -22,6 +22,7 @@ export const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findFirst({
           where: { username: credentials.username },
+          include: { role: true },
         });
 
         if (!user) return null;
@@ -36,7 +37,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id.toString(),
           email: user.id.toString(),
           name: user.username,
-          image: user.role_id?.toString(),
+          image: user.role.name,
         };
       },
     }),

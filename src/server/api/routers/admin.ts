@@ -5,13 +5,25 @@ import { application_status } from "@prisma/client";
 export const adminRouter = createTRPCRouter({
   /* Queries */
   getFilterdApplicationPrev: publicProcedure
-    .input(z.object({ filter: z.string().nullable() }))
-    .query(async ({ ctx }) => {
+    .input(z.object({ filter: z.string().array(), skip: z.number().nullable(), take: z.number().nullable() }))
+    .query(async ({ ctx, input }) => {
       return ctx.prisma.application.findMany({
-        skip: 0,
-        take: 10,
+        skip: input.skip || 0,
+        take: input.take || 20,
         where: {
           status: application_status.UNHANDLED,
+          competence_profile:
+            input.filter.length > 0
+              ? {
+                  some: {
+                    competence: {
+                      name: {
+                        in: input.filter,
+                      },
+                    },
+                  },
+                }
+              : {},
         },
         select: {
           id: true,
@@ -27,6 +39,28 @@ export const adminRouter = createTRPCRouter({
       select: {
         id: true,
         name: true,
+      },
+    });
+  }),
+  getApplication: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
+    return ctx.prisma.application.findUnique({
+      where: {
+        id: input.id,
+      },
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        status: true,
+        createdAt: true,
+        email: true,
+        pnr: true,
+        competence_profile: {
+          include: {
+            competence: true,
+          },
+        },
+        availability: true,
       },
     });
   }),
