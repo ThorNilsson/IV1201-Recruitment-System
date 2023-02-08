@@ -4,44 +4,43 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "../../../server/db";
 
 export const authOptions: NextAuthOptions = {
-	session: {
-		strategy: 'jwt',
-		maxAge: 3000,
-	},
-	callbacks: {
-	 },
-	providers: [
-		CredentialsProvider({
-			type: "credentials",
-			name: "Credentials",
-			credentials: {
-				username: { label: "Username", type: "text", placeholder: "jsmith" },
-				password: { label: "Password", type: "password",  },
-			},
-			async authorize(credentials, req) {
-				if (!credentials?.username || !credentials?.password) return null;
+  session: {
+    strategy: "jwt",
+    maxAge: 3000,
+  },
+  callbacks: {},
+  providers: [
+    CredentialsProvider({
+      type: "credentials",
+      name: "Credentials",
+      credentials: {
+        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials, req) {
+        if (!credentials?.username || !credentials?.password) return null;
 
-				const user = await prisma.user.findFirst({
-					where: { username: credentials.username },
-				});
+        const user = await prisma.user.findFirst({
+          where: { username: credentials.username },
+        });
 
-				if (!user) return null;
+        if (!user) return null;
 
-				//const validPassword = await bcrypt.compare(credentials.password, user.password);
+        //const validPassword = await bcrypt.compare(credentials.password, user.password);
 
-				//if (!validPassword) return null;
+        //if (!validPassword) return null;
 
-				if(credentials.password !== user.password) return null;
+        if (credentials.password !== user.password) return null;
 
-				return {
-					id: user.id.toString(),
-					email: user.id.toString(),
-					name: user.username,
-					image: user.role_id?.toString(),
-				};
-			},
-		}),
-	],
+        return {
+          id: user.id.toString(),
+          email: user.id.toString(),
+          name: user.username,
+          image: user.role_id?.toString(),
+        };
+      },
+    }),
+  ],
 };
 
 export default NextAuth(authOptions);
