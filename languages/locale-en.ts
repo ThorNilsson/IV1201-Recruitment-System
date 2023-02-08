@@ -22,7 +22,7 @@ const locale = {
     title: "Lisseburg 🦎🏰 Recruitment System ☝🤓",
     cardTitle: "Start your application here",
     cardDescription:
-      "Are you the right summer employee for ud? - Here you can apply for a job at Lisseburg - The amusement park in Sweden",
+      "Are you the right summer employee for us? - Here you can apply for a job at Lisseburg - The amusement park in Sweden",
   },
 
   /* Authentication */
