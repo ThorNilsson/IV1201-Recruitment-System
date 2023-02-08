@@ -5,6 +5,7 @@ import { translations } from "../../../../languages/translations";
 import Loading from "../../../Components/Loading";
 import NoAccess from "../../../Components/NoAccess";
 import { api } from "../../../utils/api";
+import { application_status } from "@prisma/client";
 
 function Application() {
   /* Router */
@@ -19,7 +20,15 @@ function Application() {
   const { data: session } = useSession();
 
   /* Queries */
-  const { data: application } = api.admin.getApplication.useQuery({ id: parseInt(applicationId as string) });
+  const { data: application, refetch } = api.admin.getApplication.useQuery({ id: parseInt(applicationId as string) });
+
+  /* Mutations */
+  const updateApplicationStatus = api.admin.updateApplicationStatus.useMutation();
+
+  /* Handlers */
+  const handleStatusChange = (status: application_status) => {
+    updateApplicationStatus.mutate({ id: parseInt(applicationId as string), status }, { onSuccess: () => refetch() });
+  };
 
   /* Views */
   if (!(applText && compText && application)) return <Loading />;
@@ -59,9 +68,18 @@ function Application() {
           </div>
         ))}
       </div>
-      <button className="px-4 py-2 font-semibold text-white bg-gray-900 rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75">
-        {applText.edit}
-      </button>
+      <div className="flex flex-row space-x-5">
+        {Object.values(application_status).map((status: application_status) =>
+          application.status !== status ? (
+            <button
+              className="px-4 py-2 font-semibold text-white bg-gray-900 rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75"
+              onClick={() => handleStatusChange(status)}
+            >
+              {applText[status]}
+            </button>
+          ) : null,
+        )}
+      </div>
     </div>
   );
 }

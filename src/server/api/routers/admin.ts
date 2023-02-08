@@ -64,4 +64,19 @@ export const adminRouter = createTRPCRouter({
       },
     });
   }),
+  /* Mutations */
+  updateApplicationStatus: protectedProcedure
+    .input(z.object({ id: z.number(), status: z.enum(["ACCEPTED", "UNHANDLED", "REJECTED"]) }))
+    //TODO: Ue enum from prisma client instead of strings Object.values(application_status)
+    //TODO: Add date validation to not edit old applications (createdAt)
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.application.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          status: input.status,
+        },
+      });
+    }),
 });

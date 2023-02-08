@@ -73,6 +73,9 @@ const locale = {
     avaliability: "Avaliability",
     year: "year",
     edit: "Edit application status",
+    ACCEPTED: "Accept",
+    REJECTED: "Reject",
+    UNHANDLED: "Unhandle",
   },
 
   /* Shared */
