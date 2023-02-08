@@ -1,26 +1,27 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+import { application_status } from "@prisma/client";
 
 export const adminRouter = createTRPCRouter({
   /* Queries */
-  getFilterdUserPrev: publicProcedure.input(z.object({ filter: z.string().nullable() })).query(async ({ ctx }) => {
-    return ctx.prisma.person.findMany({
-      skip: 0,
-      take: 10,
-      where: {
-        competence_profile: {
-          some: {
-            status: "UNHANDLED",
-          },
+  getFilterdApplicationPrev: publicProcedure
+    .input(z.object({ filter: z.string().nullable() }))
+    .query(async ({ ctx }) => {
+      return ctx.prisma.application.findMany({
+        skip: 0,
+        take: 10,
+        where: {
+          status: application_status.UNHANDLED,
         },
-      },
-      select: {
-        id: true,
-        name: true,
-        surname: true,
-      },
-    });
-  }),
+        select: {
+          id: true,
+          name: true,
+          surname: true,
+          status: true,
+          createdAt: true,
+        },
+      });
+    }),
   getCompetences: publicProcedure.query(async ({ ctx }) => {
     return ctx.prisma.competence.findMany({
       select: {

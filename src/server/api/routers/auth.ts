@@ -13,8 +13,8 @@ export const authRouter = createTRPCRouter({
       where: { id: parseInt(ctx.session.user.email) },
       select: {
         username: true,
-        role_id: true,
-        person_id: true,
+        //role_id: true,
+        //person_id: true,
         role: { select: { name: true } },
       },
     });
@@ -33,14 +33,6 @@ export const authRouter = createTRPCRouter({
           username: input.username,
           password: input.password,
           role: { connect: { id: 2 } },
-          person: {
-            create: {
-              name: input.username,
-              surname: input.surname,
-              pnr: input.pnr,
-              email: input.email,
-            },
-          },
         },
       });
     }),

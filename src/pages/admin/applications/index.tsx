@@ -11,7 +11,7 @@ export default function Applications() {
   const text = translations[locale || "en"]?.applicationsPage;
 
   /* Queries */
-  const { data: applications } = api.admin.getFilterdUserPrev.useQuery({ filter: "test" });
+  const { data: applications } = api.admin.getFilterdApplicationPrev.useQuery({ filter: "test" });
   const { data: competences } = api.admin.getCompetences.useQuery();
 
   console.log(applications);
