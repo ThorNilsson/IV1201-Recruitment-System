@@ -4,14 +4,12 @@ on:
   push:
     branches:
       - develop
-      - main
     paths-ignore:
       - "**/*.md"
       - "**/.gitignore"
   pull_request:
     branches:
       - develop
-      - main
     paths-ignore:
       - "**/*.md"
       - "**/.gitignore"
