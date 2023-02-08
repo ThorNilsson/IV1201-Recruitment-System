@@ -14,11 +14,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      # Dummy values to allow `npm run build` to run
-      DATABASE_URL: "postgres://d:u@m.m/y"
-      NEXTAUTH_SECRET: "plink"
-      NEXTAUTH_URL: "http://plonk"
 
     steps:
       - uses: actions/checkout@v3
@@ -27,11 +22,3 @@ jobs:
         env:
           DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@ep-winter-mud-418148.eu-central-1.aws.neon.tech/lisseborg?connect_timeout=10"
         run: npx prisma migrate deploy
-
-      - name: Publish
-        uses: netlify/actions/build@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_CMD: npm run build
-          NETLIFY_DIR: .next
