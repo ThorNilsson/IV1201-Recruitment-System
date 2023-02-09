@@ -11,7 +11,9 @@ import { useRouter } from "next/router";
 import React from "react";
 import { translations } from "../../../../languages/translations";
 import Loading from "../../../Components/Loading";
+import LoadingPage from "../../../Components/LoadingPage";
 import NoAccess from "../../../Components/NoAccess";
+import PageBackground from "../../../Components/PageBackground";
 import { api } from "../../../utils/api";
 
 /**
@@ -43,12 +45,12 @@ export default function Applications() {
   };
 
   /* Views */
-  if (!(text && session)) return <Loading />;
+  if (!(text && session)) return <LoadingPage />;
 
   if (session?.user?.image !== "recruiter") return <NoAccess />;
 
   return (
-    <div className="flex flex-col items-center space-y-5 h-screen white dark:bg-gray-900">
+    <PageBackground>
       {/* Title */}
       <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{text.title}</h1>
 
@@ -98,6 +100,6 @@ export default function Applications() {
           )}
         </div>
       </div>
-    </div>
+    </PageBackground>
   );
 }
