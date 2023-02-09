@@ -31,6 +31,16 @@ async function main() {
       },
     ],
   });
+  // 10 admins
+  await prisma.user.createMany({
+    data: Array(10)
+      .fill(0)
+      .map((_, i) => ({
+        username: `some_admin${i + 1}`,
+        password: "oogabooga",
+        role_id: 1,
+      })),
+  });
   await prisma.user.createMany({
     data: [
       {
@@ -86,17 +96,15 @@ async function main() {
     },
   });
   // old applications with no user
-  let arr = [];
-  for (let i = 1; i < 100; i++) {
-    arr.push({
-      name: `Plink${i}`,
-      surname: `Plonk${i}`,
-      pnr: "123456-7890",
-      email: `plinnk${i}.plonkee@thunder.vh`,
-    });
-  }
   await prisma.application.createMany({
-    data: arr,
+    data: Array(100)
+      .fill(0)
+      .map((_, i) => ({
+        name: `Plink${i}`,
+        surname: `Plonk${i}`,
+        pnr: "123456-7890",
+        email: `plinnk${i}.plonkee@thunder.vh`,
+      })),
   });
 }
 
