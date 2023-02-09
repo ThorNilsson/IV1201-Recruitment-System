@@ -1,3 +1,10 @@
+/**
+ * @file index.tsx
+ * @description Page for listing and viewing all applications.
+ * @author Thor Nilsson
+ * @exports Applications - React component.
+ */
+
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -7,6 +14,10 @@ import Loading from "../../../Components/Loading";
 import NoAccess from "../../../Components/NoAccess";
 import { api } from "../../../utils/api";
 
+/**
+ * @returns {React.ReactElement} - React component.
+ * @description Page for listing and viewing all applications.
+ */
 export default function Applications() {
   /* React State */
   const [filter, setFilter] = React.useState<string[]>([]);
@@ -82,11 +93,6 @@ export default function Applications() {
                 <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                   {application.name} {application.surname}
                 </h5>
-                <p className="font-normal text-gray-700 dark:text-gray-400">
-                  {
-                    //{application.competence_profile[0]?.status} - {application.competence_profile[0]?.createdAt}
-                  }
-                </p>
               </Link>
             ))
           )}

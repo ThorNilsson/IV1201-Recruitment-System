@@ -1,3 +1,9 @@
+/**
+ * @file Header.tsx
+ * @description Header component.
+ * @author Thor Nilsson
+ * @exports Header - React component for logo, localisation and session status.
+ */
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import router, { useRouter } from "next/router";
@@ -6,6 +12,10 @@ import { translations } from "../../languages/translations";
 import { api } from "../utils/api";
 import Loading from "./Loading";
 
+/**
+ * @returns {React.ReactElement} - React component.
+ * @description Header component for logo, localisation and session status.
+ */
 function Header() {
   /* Translations */
   const { locale, locales } = useRouter();

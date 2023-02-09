@@ -75,6 +75,8 @@ const locale: localeType = {
     avaliability: "Tillgänglighet",
     year: "år",
     edit: "Redigera ansökans status",
+    updateSyncError:
+      "Ett fel uppstod ändring av status, någon annan kanske redan ändrat statusen, uppdatera sidan och försök igen",
     ACCEPTED: "Acceptera ansökan",
     REJECTED: "Avvisa ansökan",
     UNHANDLED: "Återställ ansökan till ohanterad",
@@ -94,6 +96,7 @@ const locale: localeType = {
     no: "Nej",
     confirm: "Konfirmera",
     confirmDelete: "Är du säker på att du vill ta bort detta?",
+    error: "Ett fel uppstod, försök igen",
   },
 
   competences: {
