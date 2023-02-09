@@ -17,35 +17,18 @@ on:
 
 jobs:
   lint:
+    name: Code check and lint
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Check code style
+      - name: Check code style and format
         run: npx rome ci .
 
-  test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3.6.0
-        with:
-          node-version: 18
-          cache: npm
-
-      - name: Install Node modules
-        run: npm clean-install
-
-      - name: Run tests
-        run: npm test --if-present
-
-  migrate:
+  migrate_test:
+    name: Migrate DB and run tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -98,6 +81,11 @@ jobs:
         env:
           DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
         run: npx prisma migrate deploy
+
+      - name: Run tests
+        env:
+          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
+        run: npm test --if-present
 
       - if: ${{ success() || failure() }} # Make sure this always runs
         name: Delete database branch
