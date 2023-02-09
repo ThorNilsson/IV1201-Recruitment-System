@@ -1,8 +1,9 @@
 import { z } from "zod";
-//mport bcrypt from "bcrypt";
-//import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+
+export const HASH_ROUNDS = 10;
 
 export const authRouter = createTRPCRouter({
   /* Queries */
@@ -25,13 +26,12 @@ export const authRouter = createTRPCRouter({
       z.object({ username: z.string(), password: z.string(), email: z.string(), pnr: z.string(), surname: z.string() }),
     )
     .mutation(async ({ input, ctx }) => {
-      //const salt = await bcrypt.genSalt(10);
-      //const hashedPassword = await bcrypt.hash(input.password, salt);
+      const hashedPassword = await bcrypt.hash(input.password, HASH_ROUNDS);
 
       return ctx.prisma.user.create({
         data: {
           username: input.username,
-          password: input.password,
+          password: hashedPassword,
           role: { connect: { id: 2 } },
         },
       });

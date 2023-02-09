@@ -1,4 +1,5 @@
-import { application, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
@@ -37,7 +38,7 @@ async function main() {
       .fill(0)
       .map((_, i) => ({
         username: `some_admin${i + 1}`,
-        password: "oogabooga",
+        password: bcrypt.hashSync("oogabooga", 10),
         role_id: 1,
       })),
   });
@@ -45,17 +46,17 @@ async function main() {
     data: [
       {
         username: "a",
-        password: "a",
+        password: bcrypt.hashSync("a", 10),
         role_id: 1, // admin
       },
       {
         username: "alice",
-        password: "alice",
+        password: bcrypt.hashSync("alice", 10),
         role_id: 2, // applicant
       },
       {
         username: "bob",
-        password: "bob",
+        password: bcrypt.hashSync("bob", 10),
         role_id: 2,
       },
     ],
@@ -89,7 +90,7 @@ async function main() {
       user: {
         create: {
           username: "thor",
-          password: "thor",
+          password: bcrypt.hashSync("thor", 10),
           role_id: 2, // applicant
         },
       },
