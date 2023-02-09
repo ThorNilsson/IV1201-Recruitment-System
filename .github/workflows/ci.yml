@@ -19,22 +19,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      # Dummy values to allow `npm run build` to run
-      DATABASE_URL: "postgres://d:u@m.m/y"
-      NEXTAUTH_SECRET: "plink"
-      NEXTAUTH_URL: "http://plonk"
 
     steps:
-      # checkout
       - uses: actions/checkout@v3
 
-      # Node.js
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.6.0
         with:
           node-version: 18
-          cache: "npm"
+          cache: npm
 
       - name: Install Node modules
         run: npm clean-install
@@ -85,6 +78,27 @@ jobs:
           'https://console.neon.tech/api/v2/projects/gentle-boat-796453/branches/${{ steps.get_branch_id.outputs.prop }}' \
           -H 'accept: application/json' \
           -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}'
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Dummy values to allow `npm run build` to run
+      DATABASE_URL: "postgres://d:u@m.m/y"
+      NEXTAUTH_SECRET: "plink"
+      NEXTAUTH_URL: "http://plonk"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install Node modules
+        run: npm clean-install
 
       - name: Build app
         run: npm run build
