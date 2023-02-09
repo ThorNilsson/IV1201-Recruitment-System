@@ -1,3 +1,9 @@
+/**
+ * @file AlreadySignedIn.tsx
+ * @description Component for showing that the user is already signed in.
+ * @author Thor Nilsson
+ * @exports AlreadySignedIn - React component for showing that the user is already signed in.
+ */
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -6,6 +12,10 @@ import { translations } from "../../languages/translations";
 import Loading from "./Loading";
 import { api } from "../utils/api";
 
+/**
+ * @returns {React.ReactElement} - React component.
+ * @description Component for showing that the user is already signed in.
+ */
 function AlreadySignedIn() {
   /* Translations */
   const { locale } = useRouter();

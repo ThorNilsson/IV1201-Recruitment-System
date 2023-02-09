@@ -1,8 +1,20 @@
+/**
+ * @file Footer.tsx
+ * @description Footer component for displaying copyright and links.
+ * @author Thor Nilsson
+ * @returns {React.ReactElement} - React component.
+ */
+
 import { useRouter } from "next/router";
 import React from "react";
 import { translations } from "../../languages/translations";
 import Loading from "./Loading";
 
+/**
+ *
+ * @returns {React.ReactElement} - React component.
+ * @description Footer component for displaying copyright and links.
+ */
 function Footer() {
   /* Translations */
   const { locale } = useRouter();

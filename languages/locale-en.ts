@@ -64,17 +64,44 @@ const locale = {
     title: "Applications",
     description: "Here you can see all recieved applications",
     filters: "Filters",
+    notFound: "No applications found",
   },
-  applicationpage: {
+  applicationPage: {
     title: "Application",
     description: "Here you can edit the application",
+    competences: "Competences",
+    avaliability: "Avaliability",
+    year: "year",
+    edit: "Edit application status",
+    updateSyncError:
+      "Failed to update application status, someone else might have updated it before you, reload the page to get the latest version",
+    ACCEPTED: "Accept",
+    REJECTED: "Reject",
+    UNHANDLED: "Unhandle",
+  },
+
+  /* Shared */
+  app: {
+    noAccess: "You do not have access to this page 🤔",
+    notFound: "Page not found 🤨",
+    back: "Back",
+    save: "Save",
+    cancel: "Cancel",
+    delete: "Delete",
+    edit: "Edit",
+    create: "Create",
+    yes: "Yes",
+    no: "No",
+    confirm: "Confirm",
+    confirmDelete: "Are you sure you want to delete this?",
+    error: "Something went wrong, try again later",
   },
 
   competences: {
     "ticket sales": "Ticket sales",
     lotteries: "Lotteries",
     "roller coaster operation": "Roller Coaster operation",
-  },
+  } as Record<string, string>,
 };
 
 export type localeType = typeof locale;

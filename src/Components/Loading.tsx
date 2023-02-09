@@ -1,5 +1,16 @@
+/**
+ * @file Loading.tsx
+ * @description Component for showing a loading animation.
+ * @author Thor Nilsson
+ * @exports Loading - React component.
+ */
+
 import React from "react";
 
+/**
+ * @returns {React.ReactElement} - React component.
+ * @description Component for showing a loading animation.
+ */
 export default function Loading() {
   return (
     <div className="flex min-h-screen flex-col space-y-5 items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">
@@ -19,7 +30,6 @@ export default function Loading() {
           fill="currentFill"
         />
       </svg>
-      <span className="sr-only">Loading...</span>
     </div>
   );
 }
