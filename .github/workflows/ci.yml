@@ -16,6 +16,16 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check code style
+        run: npx rome ci .
+
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -32,10 +42,26 @@ jobs:
       - name: Install Node modules
         run: npm clean-install
 
-      - name: Check code style
-        run: npx rome ci .
+      - name: Run tests
+        run: npm test --if-present
 
-      - name: Create database branch to test migrations
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install Node modules
+        run: npm clean-install
+
+      - name: Create database branch
         id: create-branch
         run: |
           OUTPUT=`curl -X 'POST' \
@@ -55,12 +81,14 @@ jobs:
           }'`
           echo $OUTPUT
           echo $OUTPUT > output.json
-      - uses: notiz-dev/github-action-json-property@release
+      - name: Get branch id
+        uses: notiz-dev/github-action-json-property@release
         id: get_branch_id
         with:
           path: "output.json"
           prop_path: "branch.id"
-      - uses: notiz-dev/github-action-json-property@release
+      - name: Get branch enpoint
+        uses: notiz-dev/github-action-json-property@release
         id: get_branch_enpoint
         with:
           path: "output.json"
