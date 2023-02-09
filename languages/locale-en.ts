@@ -73,6 +73,8 @@ const locale = {
     avaliability: "Avaliability",
     year: "year",
     edit: "Edit application status",
+    updateSyncError:
+      "Failed to update application status, someone else might have updated it before you, reload the page to get the latest version",
     ACCEPTED: "Accept",
     REJECTED: "Reject",
     UNHANDLED: "Unhandle",
@@ -92,6 +94,7 @@ const locale = {
     no: "No",
     confirm: "Confirm",
     confirmDelete: "Are you sure you want to delete this?",
+    error: "Something went wrong, try again later",
   },
 
   competences: {
