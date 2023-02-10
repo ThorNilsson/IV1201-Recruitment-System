@@ -6,7 +6,7 @@
  */
 
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+import { createTRPCRouter, adminProcedure } from "../trpc";
 import { application_status } from "@prisma/client";
 
 export const adminRouter = createTRPCRouter({
@@ -44,7 +44,7 @@ export const adminRouter = createTRPCRouter({
    * @returns {Promise<Application[]>} - Array of applications
    * @description - Get all applications that are unhandled and filtered by competences, if no competences are provided all unhandled applications will return
    */
-  getFilterdApplicationPrev: publicProcedure
+  getFilterdApplicationPrev: adminProcedure
     .input(z.object({ filter: z.string().array(), skip: z.number().nullable(), take: z.number().nullable() }))
     .query(async ({ ctx, input }) => {
       return ctx.prisma.application.findMany({
@@ -78,7 +78,7 @@ export const adminRouter = createTRPCRouter({
    *  @returns {Promise<Competence[]>} - Array of competences
    *  @description - Get all competences with id and name
    */
-  getCompetences: publicProcedure.query(async ({ ctx }) => {
+  getCompetences: adminProcedure.query(async ({ ctx }) => {
     return ctx.prisma.competence.findMany({
       select: {
         id: true,
@@ -91,7 +91,7 @@ export const adminRouter = createTRPCRouter({
    * @returns {Promise<Application>} - The application with the given id
    * @description - Get an application with the given id, including competence profiles and availabilies
    */
-  getApplication: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
+  getApplication: adminProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
     return ctx.prisma.application.findUnique({
       where: {
         id: input.id,
@@ -124,7 +124,7 @@ export const adminRouter = createTRPCRouter({
    * @returns {Promise<Prisma.BatchPayload>} - The number of applications that were updated (should be 1)
    * @description - Updates the status of an application
    */
-  updateApplicationStatus: protectedProcedure
+  updateApplicationStatus: adminProcedure
     .input(z.object({ id: z.number(), status: z.nativeEnum(application_status), updatedAt: z.date() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.application.updateMany({

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
@@ -31,21 +32,31 @@ async function main() {
       },
     ],
   });
+  // 10 admins
+  await prisma.user.createMany({
+    data: Array(10)
+      .fill(0)
+      .map((_, i) => ({
+        username: `some_admin${i + 1}`,
+        password: bcrypt.hashSync("oogabooga", 10),
+        role_id: 1,
+      })),
+  });
   await prisma.user.createMany({
     data: [
       {
         username: "a",
-        password: "a",
+        password: bcrypt.hashSync("a", 10),
         role_id: 1, // admin
       },
       {
         username: "alice",
-        password: "alice",
+        password: bcrypt.hashSync("alice", 10),
         role_id: 2, // applicant
       },
       {
         username: "bob",
-        password: "bob",
+        password: bcrypt.hashSync("bob", 10),
         role_id: 2,
       },
     ],
@@ -79,20 +90,22 @@ async function main() {
       user: {
         create: {
           username: "thor",
-          password: "thor",
+          password: bcrypt.hashSync("thor", 10),
           role_id: 2, // applicant
         },
       },
     },
   });
-  // old application with no user
-  await prisma.application.create({
-    data: {
-      name: "Plink",
-      surname: "Plonk",
-      pnr: "123456-7890",
-      email: "plinnk.plonkee@thunder.vh",
-    },
+  // old applications with no user
+  await prisma.application.createMany({
+    data: Array(100)
+      .fill(0)
+      .map((_, i) => ({
+        name: `Plink${i}`,
+        surname: `Plonk${i}`,
+        pnr: "123456-7890",
+        email: `plinnk${i}.plonkee@thunder.vh`,
+      })),
   });
 }
 

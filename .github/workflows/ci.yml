@@ -16,33 +16,35 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  lint:
+    name: Code check and lint
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      # Dummy values to allow `npm run build` to run
-      DATABASE_URL: "postgres://d:u@m.m/y"
-      NEXTAUTH_SECRET: "plink"
-      NEXTAUTH_URL: "http://plonk"
 
     steps:
-      # checkout
       - uses: actions/checkout@v3
 
-      # Node.js
+      - name: Check code style and format
+        run: npx rome ci .
+
+  migrate_test:
+    name: Migrate DB and run tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v3
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.6.0
         with:
           node-version: 18
-          cache: "npm"
+          cache: npm
 
       - name: Install Node modules
         run: npm clean-install
 
-      - name: Check code style
-        run: npx rome ci .
-
-      - name: Create database branch to test migrations
+      - name: Create database branch
         id: create-branch
         run: |
           OUTPUT=`curl -X 'POST' \
@@ -62,12 +64,14 @@ jobs:
           }'`
           echo $OUTPUT
           echo $OUTPUT > output.json
-      - uses: notiz-dev/github-action-json-property@release
+      - name: Get branch id
+        uses: notiz-dev/github-action-json-property@release
         id: get_branch_id
         with:
           path: "output.json"
           prop_path: "branch.id"
-      - uses: notiz-dev/github-action-json-property@release
+      - name: Get branch enpoint
+        uses: notiz-dev/github-action-json-property@release
         id: get_branch_enpoint
         with:
           path: "output.json"
@@ -78,6 +82,28 @@ jobs:
           DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
         run: npx prisma migrate deploy
 
+      - name: Run tests
+        env:
+          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
+        run: npm test --if-present
+
+      - name: Build app
+        env:
+          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
+          NEXTAUTH_SECRET: "plink"
+          NEXTAUTH_URL: "http://localhost:3000"
+        run: npm run build
+
+      - name: Run Cypress tests
+        env:
+          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
+          NEXTAUTH_SECRET: "plink"
+          NEXTAUTH_URL: "http://localhost:3000"
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm start
+          wait-on: "http://localhost:3000"
+
       - if: ${{ success() || failure() }} # Make sure this always runs
         name: Delete database branch
         run: |
@@ -85,6 +111,27 @@ jobs:
           'https://console.neon.tech/api/v2/projects/gentle-boat-796453/branches/${{ steps.get_branch_id.outputs.prop }}' \
           -H 'accept: application/json' \
           -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}'
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Dummy values to allow `npm run build` to run
+      DATABASE_URL: "postgres://d:u@m.m/y"
+      NEXTAUTH_SECRET: "plink"
+      NEXTAUTH_URL: "http://plonk"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install Node modules
+        run: npm clean-install
 
       - name: Build app
         run: npm run build

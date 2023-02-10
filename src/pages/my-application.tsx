@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { translations } from "../../languages/translations";
 import Loading from "../Components/Loading";
+import NoAccess from "../Components/NoAccess";
 import Login from "./login";
 
 export default function MyApplication() {
@@ -14,12 +15,14 @@ export default function MyApplication() {
   const { data: session } = useSession();
 
   /* Views */
-  if (!text) return <Loading />;
+  if (!text || session === undefined) return <Loading />;
+
+  if (session?.user?.image !== "applicant") return <NoAccess />;
 
   if (!session?.user) return <Login />;
 
   return (
-    <div className="flex min-h-screen flex-col space-y-5 items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">
+    <div className="flex flex-col space-y-7 items-center justify-center min-h-full">
       <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">{text.title}</h1>
       <h1 className="mb-4 text-lg font-extrabold leading-none tracking-tight text-gray-900 dark:text-white">
         {text.description} {session?.user?.name} {session?.user?.email}

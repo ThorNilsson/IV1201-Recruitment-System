@@ -5,14 +5,15 @@
  * @exports Applications - React component.
  */
 
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import { translations } from "../../../../languages/translations";
+import { api } from "../../../utils/api";
+import Link from "next/link";
 import Loading from "../../../Components/Loading";
 import NoAccess from "../../../Components/NoAccess";
-import { api } from "../../../utils/api";
+import Login from "../../login";
 
 /**
  * @returns {React.ReactElement} - React component.

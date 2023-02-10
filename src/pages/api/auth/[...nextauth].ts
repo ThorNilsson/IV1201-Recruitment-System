@@ -1,6 +1,6 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-//import bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 import { prisma } from "../../../server/db";
 
 export const authOptions: NextAuthOptions = {
@@ -27,11 +27,8 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) return null;
 
-        //const validPassword = await bcrypt.compare(credentials.password, user.password);
-
-        //if (!validPassword) return null;
-
-        if (credentials.password !== user.password) return null;
+        const validPassword = await bcrypt.compare(credentials.password, user.password);
+        if (!validPassword) return null;
 
         return {
           id: user.id.toString(),
