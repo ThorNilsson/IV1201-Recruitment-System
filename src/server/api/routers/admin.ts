@@ -11,7 +11,32 @@ import { application_status } from "@prisma/client";
 
 export const adminRouter = createTRPCRouter({
   /* Queries */
-
+  /**
+   * @param filter - Array of competences to filter by
+   * @returns {Promise<number>} - Array of applications
+   * @description - Get the number of unhandled applications filterd (used for pagination)
+   */
+  getFilterdApplicationPreviewCount: adminProcedure
+    .input(z.object({ filter: z.string().array() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.application.count({
+        where: {
+          status: application_status.UNHANDLED,
+          competence_profile:
+            input.filter.length > 0
+              ? {
+                  some: {
+                    competence: {
+                      name: {
+                        in: input.filter,
+                      },
+                    },
+                  },
+                }
+              : {},
+        },
+      });
+    }),
   /**
    * @param filter - Array of competences to filter by
    * @param skip - How many applications to skip
