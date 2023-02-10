@@ -4,3 +4,5 @@ describe("The Home Page", () => {
     cy.get("h1").should("contain", "Lisseburg");
   });
 });
+
+export {};

@@ -45,3 +45,5 @@ describe("Login", () => {
     cy.contains("Sign in failed.").should("exist");
   });
 });
+
+export {};
