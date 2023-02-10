@@ -31,7 +31,7 @@ function Header() {
     router.push(router.pathname, router.asPath, { locale });
   };
 
-  const handleSignout = () => signOut();
+  const handleSignout = () => signOut({ callbackUrl: "/" });
 
   /* Views */
   if (text == null) return <Loading />;

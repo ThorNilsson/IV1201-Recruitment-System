@@ -35,10 +35,6 @@ function Home() {
           <h3 className="text-2xl font-bold">{text.cardTitle} →</h3>
           <div className="text-lg">{text.cardDescription}</div>
         </Link>
-
-        {/* Admin */}
-        {/* Client*/}
-        {/* Login*/}
       </div>
     </div>
   );

@@ -16,7 +16,6 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
   const text = translations[locale || "en"]?.meta;
 
   /* Views */
-
   return (
     <SessionProvider session={session}>
       <div className="h-screen flex flex-col">
