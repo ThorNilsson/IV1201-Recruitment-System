@@ -1,7 +1,7 @@
 describe("Login", () => {
   before(() => {
     // reset and seed the database
-    cy.exec("npm run db:reset");
+    cy.exec("npm run db:reset && npm run db:seed");
   });
   it("succeeds to login as admin", () => {
     const user = "a";
@@ -15,7 +15,7 @@ describe("Login", () => {
     // {enter} causes the form to submit
     cy.get("input[name=password]").type(`${pass}{enter}`);
 
-    cy.url().should("include", "/my-application"); // change to /admin/applications
+    cy.url().should("include", "/admin/applications");
     cy.getCookie("next-auth.session-token").should("exist");
   });
   it("succeeds to login as applicant", () => {

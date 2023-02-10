@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "db:reset": "prisma migrate reset -f",
+    "db:reset": "prisma migrate reset --force --skip-seed --skip-generate",
+    "db:seed": "prisma db seed",
     "dev": "next dev",
     "lint": "rome check --apply-suggested . && rome format --write . && prisma format",
     "postinstall": "prisma generate",
