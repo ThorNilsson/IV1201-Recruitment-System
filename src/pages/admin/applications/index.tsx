@@ -54,20 +54,12 @@ export default function Applications() {
   const handlePageDecrement = () => resultCount ? setPage( Math.max(0, page - 1) ) : null;
 
   /* Views */
-<<<<<<< Updated upstream
-  if (!(text && session)) return <Loading />;
-=======
-  if (!text || !compText || session === undefined) return <Login />;
->>>>>>> Stashed changes
+  if (!text || !compText || session === undefined) return <Loading />;
 
   if (session?.user?.image !== "recruiter") return <NoAccess />;
 
   return (
-<<<<<<< Updated upstream
-    <div className="flex flex-col items-center space-y-5 h-screen white dark:bg-gray-900">
-=======
     <div className="flex flex-col space-y-7 items-center min-h-full">
->>>>>>> Stashed changes
       {/* Title */}
       <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{text.title}</h1>
 
