@@ -5,14 +5,14 @@
  * @exports Application - React component.
  */
 
+import React from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import React from "react";
-import { translations } from "../../../../languages/translations";
-import Loading from "../../../Components/Loading";
-import NoAccess from "../../../Components/NoAccess";
-import { api } from "../../../utils/api";
 import { application_status } from "@prisma/client";
+import { api } from "../../../utils/api";
+import { translations } from "../../../../languages/translations";
+import NoAccess from "../../../Components/NoAccess";
+import Loading from "../../../Components/Loading";
 
 /**
  * @returns {React.ReactElement} - React component.
@@ -55,12 +55,12 @@ function Application() {
   };
 
   /* Views */
-  if (!(applText && compText && application)) return <Loading />;
+  if (!(applText && compText && application) || session === undefined) return <Loading />;
 
   if (session?.user?.image !== "recruiter") return <NoAccess />;
 
   return (
-    <div className="flex flex-col items-center space-y-5 h-screen white dark:bg-gray-900">
+    <div className="flex flex-col space-y-7 items-center justify-center min-h-full">
       {/* Aplicant information */}
       <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
         {applText.title} - {application.name} {application.surname}
