@@ -114,7 +114,7 @@ jobs:
           cache: npm
 
       - name: Install Node modules
-        run: npm clean-install --omit dev
+        run: npm clean-install
 
       - name: Build app
         run: npm run build
