@@ -25,16 +25,16 @@ function Login() {
       alert(text?.emptyFields);
       return;
     }
-    signIn("credentials", { callbackUrl: "/my-application", username: newUser.username, password: newUser.password });
+    signIn("credentials", { callbackUrl: "/", username: newUser.username, password: newUser.password });
   };
 
   /* Views */
-  if (!text) return <Loading />;
+  if (!text || session === undefined) return <Loading />;
 
   if (session?.user) return <AlreadySignedIn />;
 
   return (
-    <div className="flex min-h-screen flex-col space-y-5 items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">
+    <div className="flex flex-col space-y-7 items-center justify-center min-h-full">
       <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">{text.title}</h1>
       <h1 className="mb-4 text-lg font-extrabold leading-none tracking-tight text-gray-900 dark:text-white">
         {text.description}
