@@ -36,7 +36,10 @@ export default function Applications() {
 
   /* Queries */
   const { data: resultCount } = api.admin.getFilterdApplicationPreviewCount.useQuery({ filter: filter });
-  const { data: applications } = api.admin.getFilterdApplicationPrev.useQuery({ filter: filter, skip: page * applicationsPerPage, take: applicationsPerPage }, {enabled: !!resultCount || resultCount === 0});
+  const { data: applications } = api.admin.getFilterdApplicationPrev.useQuery(
+    { filter: filter, skip: page * applicationsPerPage, take: applicationsPerPage },
+    { enabled: !!resultCount || resultCount === 0 },
+  );
   const { data: competences } = api.admin.getCompetences.useQuery();
 
   /* Constants */
@@ -51,11 +54,12 @@ export default function Applications() {
     }
   };
   const handleSetPage = (page: number) => setPage(page);
-  const handlePageIncrement = () => resultCount ? setPage( Math.min(resultCount/applicationsPerPage, page +1) ) : null;
-  const handlePageDecrement = () => resultCount ? setPage( Math.max(0, page - 1) ) : null;
+  const handlePageIncrement = () =>
+    resultCount ? setPage(Math.min(resultCount / applicationsPerPage, page + 1)) : null;
+  const handlePageDecrement = () => (resultCount ? setPage(Math.max(0, page - 1)) : null);
 
   /* Views */
-  if (!text || !compText || session === undefined) return <Loading />;
+  if (!(text && compText) || session === undefined) return <Loading />;
 
   if (session?.user?.image !== "recruiter") return <NoAccess />;
 
@@ -80,11 +84,15 @@ export default function Applications() {
                   onChange={() => handleFilterToggle(competence.name)}
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
-                <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">{compText[competence.name]}</span>
+                <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                  {compText[competence.name]}
+                </span>
               </label>
             ))
           )}
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{resultCount} {text.results}</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {resultCount} {text.results}
+          </h1>
         </div>
 
         {/* List of aplicants */}
@@ -111,47 +119,48 @@ export default function Applications() {
           )}
 
           {/* Pagination */}
-          {!resultCount || resultCount <= applicationsPerPage ?
-          null: (
-          <nav aria-label="Page navigation example">
-            <ul className="inline-flex -space-x-px">
-              <li>
-                <button 
-                  onClick={handlePageDecrement}
-                  className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                  disabled={page === 0}
+          {!resultCount || resultCount <= applicationsPerPage ? null : (
+            <nav aria-label="Page navigation example">
+              <ul className="inline-flex -space-x-px">
+                <li>
+                  <button
+                    onClick={handlePageDecrement}
+                    className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    disabled={page === 0}
                   >
-                  {text.previous}
-                </button>
-              </li>
-              <>
-                {resultCount
-                  ? pages.map((pageNr) => (
-                      <li key={pageNr}>
-                        <button
-                          onClick={() => handleSetPage(pageNr)}
-                          className={
-                            pageNr === page
-                              ? "px-3 py-2 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-                              : "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                          }
-                        >
-                          {pageNr + 1}
-                        </button>
-                      </li>
-                    ))
-                  : null}
-              </>
-              <li>
-                <button
-                  onClick={handlePageIncrement}
-                  className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                  disabled={page >= (resultCount || 0) /applicationsPerPage -1}>
-                  {text.next}
-                </button>
-              </li>
-            </ul>
-          </nav>)}
+                    {text.previous}
+                  </button>
+                </li>
+                <>
+                  {resultCount
+                    ? pages.map((pageNr) => (
+                        <li key={pageNr}>
+                          <button
+                            onClick={() => handleSetPage(pageNr)}
+                            className={
+                              pageNr === page
+                                ? "px-3 py-2 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                                : "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                            }
+                          >
+                            {pageNr + 1}
+                          </button>
+                        </li>
+                      ))
+                    : null}
+                </>
+                <li>
+                  <button
+                    onClick={handlePageIncrement}
+                    className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    disabled={page >= (resultCount || 0) / applicationsPerPage - 1}
+                  >
+                    {text.next}
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          )}
         </div>
       </div>
     </div>
