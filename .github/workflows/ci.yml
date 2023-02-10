@@ -88,6 +88,10 @@ jobs:
         run: npm test --if-present
 
       - name: Build app
+        env:
+          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
+          NEXTAUTH_SECRET: "plink"
+          NEXTAUTH_URL: "http://localhost:3000"
         run: npm run build
 
       - name: Run Cypress tests
