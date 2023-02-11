@@ -87,10 +87,15 @@ jobs:
           DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
         run: npm test --if-present
 
-      - name: Reset and seed database branch
+      - name: Reset database branch
         env:
           DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
-        run: npx prisma migrate reset --force
+        run: npx prisma migrate reset --force --skip-seed --skip-generate
+
+      - name: (Manual) seeding of database branch
+        env:
+          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
+        run: npx ts-node --compiler-options {"module":"CommonJS"} prisma/seed.ts
 
       - name: Run Cypress tests
         env:
