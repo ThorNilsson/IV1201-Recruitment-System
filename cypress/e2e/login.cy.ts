@@ -1,8 +1,8 @@
 describe("Login", () => {
-  // before(() => {
-  //   // reset and seed the database
-  //   cy.exec("npm run db:reset && npm run db:seed");
-  // });
+  before(() => {
+    // reset and seed the database
+    cy.exec("npm run db:reset && npm run db:seed");
+  });
   it("succeeds to login as admin", () => {
     const user = "a";
     const pass = "a";
