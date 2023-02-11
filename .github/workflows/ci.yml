@@ -95,7 +95,7 @@ jobs:
       - name: (Manual) seeding of database branch
         env:
           DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
-        run: 'npx ts-node --compiler-options {"module":"CommonJS"} prisma/seed.ts'
+        run: npx ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts
 
       - name: Run Cypress tests
         env:
