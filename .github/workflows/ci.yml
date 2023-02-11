@@ -87,12 +87,10 @@ jobs:
           DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
         run: npm test --if-present
 
-      - name: Build app
+      - name: Reset and seed database branch
         env:
           DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
-          NEXTAUTH_SECRET: "plink"
-          NEXTAUTH_URL: "http://localhost:3000"
-        run: npm run build
+        run: npx prisma migrate reset --force
 
       - name: Run Cypress tests
         env:
@@ -101,7 +99,7 @@ jobs:
           NEXTAUTH_URL: "http://localhost:3000"
         uses: cypress-io/github-action@v5
         with:
-          start: npm start
+          start: npm run dev
           wait-on: "http://localhost:3000"
 
       - if: ${{ success() || failure() }} # Make sure this always runs
