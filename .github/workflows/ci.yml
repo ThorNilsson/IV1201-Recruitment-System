@@ -52,26 +52,15 @@ jobs:
       - name: Build app
         run: npm run build
 
-  migrate_test:
-    name: Migrate DB and run tests
+  create_db_branch:
+    name: Create database branch
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      branch-id: ${{ steps.get_branch_enpoint.outputs.prop }}
-      url: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
+      branch-endpoint: ${{ steps.get_branch_enpoint.outputs.prop }}
+      branch-id: ${{ steps.get_branch_id.outputs.prop }}
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3.6.0
-        with:
-          node-version: 16
-          cache: npm
-
-      - name: Install Node modules
-        run: npm clean-install
-
       - name: Create database branch
         id: create-branch
         run: |
@@ -99,19 +88,35 @@ jobs:
           path: "output.json"
           prop_path: "endpoints.0.host"
 
+  migrate_test:
+    name: Migrate DB and run tests
+    needs: create_db_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ needs.create_db_branch.outputs.branch-endpoint }}/lisseborg?connect_timeout=10"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: Install Node modules
+        run: npm clean-install
+
       - name: Apply Prisma migration
-        env:
-          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
         run: npx prisma migrate deploy
 
       - name: Run tests
-        env:
-          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
         run: npm test --if-present
 
   e2e_tests:
     name: Run Cypress tests
-    needs: migrate_test
+    needs: [create_db_branch, migrate_test]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
@@ -119,7 +124,7 @@ jobs:
         browser: [chrome, edge, firefox]
       max-parallel: 1
     env:
-      DATABASE_URL: ${{ needs.migrate_test.outputs.url }}
+      DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ needs.create_db_branch.outputs.branch-endpoint }}/lisseborg?connect_timeout=10"
       NEXTAUTH_SECRET: "plink"
       NEXTAUTH_URL: "http://localhost:3000"
 
@@ -141,7 +146,7 @@ jobs:
 
   delete_db_branch:
     name: Delete database branch
-    needs: [migrate_test, e2e_tests]
+    needs: [create_db_branch, migrate_test, e2e_tests]
     if: ${{ success() || failure() }} # Make sure this always runs
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -150,6 +155,6 @@ jobs:
       - name: Delete database branch
         run: |
           curl -X 'DELETE' \
-          'https://console.neon.tech/api/v2/projects/gentle-boat-796453/branches/${{ needs.migrate_test.outputs.branch-id }}' \
+          'https://console.neon.tech/api/v2/projects/gentle-boat-796453/branches/${{ needs.create_db_branch.outputs.branch-id }}' \
           -H 'accept: application/json' \
           -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}'
