@@ -19,7 +19,7 @@ jobs:
   lint:
     name: Code check and lint
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v3
@@ -27,10 +27,38 @@ jobs:
       - name: Check code style and format
         run: npx rome ci .
 
+  build:
+    name: Build production
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # Dummy values to allow `npm run build` to run
+      DATABASE_URL: "postgres://d:u@m.m/y"
+      NEXTAUTH_SECRET: "plink"
+      NEXTAUTH_URL: "http://plonk"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: Install Node modules
+        run: npm clean-install
+
+      - name: Build app
+        run: npm run build
+
   migrate_test:
     name: Migrate DB and run tests
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
+    outputs:
+      branch-id: ${{ steps.get_branch_enpoint.outputs.prop }}
+      url: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
 
     steps:
       - uses: actions/checkout@v3
@@ -53,14 +81,8 @@ jobs:
           -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}' \
           -H 'Content-Type: application/json' \
           -d '{
-          "endpoints": [
-            {
-              "type": "read_write"
-            }
-          ],
-          "branch": {
-            "parent_id": "br-tiny-resonance-872350"
-          }
+          "endpoints": [ { "type": "read_write" } ],
+          "branch": { "parent_id": "br-tiny-resonance-872350" }
           }'`
           echo $OUTPUT
           echo $OUTPUT > output.json
@@ -87,55 +109,19 @@ jobs:
           DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
         run: npm test --if-present
 
-      - name: Run Cypress tests (chrome)
-        env:
-          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
-          NEXTAUTH_SECRET: "plink"
-          NEXTAUTH_URL: "http://localhost:3000"
-        uses: cypress-io/github-action@v5
-        with:
-          browser: chrome
-          start: npm run dev
-          wait-on: "http://localhost:3000"
-
-      - name: Run Cypress tests (edge)
-        env:
-          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
-          NEXTAUTH_SECRET: "plink"
-          NEXTAUTH_URL: "http://localhost:3000"
-        uses: cypress-io/github-action@v5
-        with:
-          browser: edge
-          start: npm run dev
-          wait-on: "http://localhost:3000"
-
-      - name: Run Cypress tests (firefox)
-        env:
-          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
-          NEXTAUTH_SECRET: "plink"
-          NEXTAUTH_URL: "http://localhost:3000"
-        uses: cypress-io/github-action@v5
-        with:
-          browser: firefox
-          start: npm run dev
-          wait-on: "http://localhost:3000"
-
-      - if: ${{ success() || failure() }} # Make sure this always runs
-        name: Delete database branch
-        run: |
-          curl -X 'DELETE' \
-          'https://console.neon.tech/api/v2/projects/gentle-boat-796453/branches/${{ steps.get_branch_id.outputs.prop }}' \
-          -H 'accept: application/json' \
-          -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}'
-
-  build:
+  e2e_tests:
+    name: Run Cypress tests
+    needs: migrate_test
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        browser: [chrome, edge, firefox]
+      max-parallel: 1
     env:
-      # Dummy values to allow `npm run build` to run
-      DATABASE_URL: "postgres://d:u@m.m/y"
+      DATABASE_URL: ${{ needs.migrate_test.outputs.url }}
       NEXTAUTH_SECRET: "plink"
-      NEXTAUTH_URL: "http://plonk"
+      NEXTAUTH_URL: "http://localhost:3000"
 
     steps:
       - uses: actions/checkout@v3
@@ -146,8 +132,24 @@ jobs:
           node-version: 16
           cache: npm
 
-      - name: Install Node modules
-        run: npm clean-install
+      - name: Run Cypress tests (${{ matrix.browser }})
+        uses: cypress-io/github-action@v5
+        with:
+          browser: ${{ matrix.browser }}
+          start: npm run dev
+          wait-on: "http://localhost:3000"
 
-      - name: Build app
-        run: npm run build
+  delete_db_branch:
+    name: Delete database branch
+    needs: [migrate_test, e2e_tests]
+    if: ${{ success() || failure() }} # Make sure this always runs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Delete database branch
+        run: |
+          curl -X 'DELETE' \
+          'https://console.neon.tech/api/v2/projects/gentle-boat-796453/branches/${{ needs.migrate_test.outputs.branch-id }}' \
+          -H 'accept: application/json' \
+          -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}'
