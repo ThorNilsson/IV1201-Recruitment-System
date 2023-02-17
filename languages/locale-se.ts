@@ -83,6 +83,7 @@ const locale: localeType = {
     ACCEPTED: "Acceptera ansökan",
     REJECTED: "Avvisa ansökan",
     UNHANDLED: "Återställ ansökan till ohanterad",
+    INCOMPLETE: "Återställ ansökan till ej fullständig",
   },
 
   /* Shared */

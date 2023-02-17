@@ -80,7 +80,8 @@ const locale = {
       "Failed to update application status, someone else might have updated it before you, reload the page to get the latest version",
     ACCEPTED: "Accept",
     REJECTED: "Reject",
-    UNHANDLED: "Unhandle",
+    UNHANDLED: "Mark Unhandled",
+    INCOMPLETE: "Mark Incomplete",
   },
 
   /* Shared */
