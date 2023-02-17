@@ -13,18 +13,19 @@ import { api } from "../../../utils/api";
 import Link from "next/link";
 import Loading from "../../../Components/Loading";
 import NoAccess from "../../../Components/NoAccess";
-import Login from "../../login";
+import ErrorMessage from "../../../Components/Error";
 
 /**
  * @returns {React.ReactElement} - React component.
  * @description Page for listing and viewing all applications.
  */
 export default function Applications() {
+  /* Constants */
+  const RES_PER_PAGE = 10;
+
   /* React State */
   const [filter, setFilter] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
-
-  const applicationsPerPage = 10;
 
   /* Translations */
   const { locale } = useRouter();
@@ -35,23 +36,24 @@ export default function Applications() {
   const { data: session } = useSession();
 
   /* Queries */
-  const { data: resultCount } = api.admin.getFilterdApplicationPreviewCount.useQuery({ filter: filter });
-  const { data: applications } = api.admin.getFilterdApplicationPrev.useQuery(
-    { filter: filter, skip: page * applicationsPerPage, take: applicationsPerPage },
-    { enabled: !!resultCount || resultCount === 0 },
+  const { data: competences, error: competencesErr } = api.admin.getCompetences.useQuery();
+  const { data: results, error: resultsErr } = api.admin.getFilterdApplicationPreviewCount.useQuery({ filter: filter });
+  const { data: applications, error: applicationsErr } = api.admin.getFilterdApplicationPrev.useQuery(
+    { filter: filter, skip: page * RES_PER_PAGE, take: RES_PER_PAGE },
+    { enabled: !!results || results === 0 },
   );
-  const { data: competences } = api.admin.getCompetences.useQuery();
 
   /* Constants */
   const pages = resultCount ? [...Array(Math.ceil(resultCount / applicationsPerPage)).keys()] : [];
 
   /* Handlers */
+  const handlePageIncrement = () => setPage((page) => Math.min(Math.floor((results || 0) / RES_PER_PAGE), page + 1));
+  const handlePageDecrement = () => setPage((page) => Math.max(0, page - 1));
+  const handleSetPage = (page: number) => setPage(page);
   const handleFilterToggle = (competence: string) => {
-    if (filter.includes(competence)) {
-      setFilter(filter.filter((item) => item !== competence));
-    } else {
-      setFilter([...filter, competence]);
-    }
+    filter.includes(competence)
+      ? setFilter(filter.filter((item) => item !== competence))
+      : setFilter([...filter, competence]);
   };
   const handleSetPage = (page: number) => setPage(page);
   const handlePageIncrement = () =>
@@ -59,6 +61,10 @@ export default function Applications() {
   const handlePageDecrement = () => (resultCount ? setPage(Math.max(0, page - 1)) : null);
 
   /* Views */
+  if (competencesErr?.data?.code) return <ErrorMessage errorCode={competencesErr.data.code} />;
+  if (resultsErr?.data?.code) return <ErrorMessage errorCode={resultsErr.data.code} />;
+  if (applicationsErr?.data?.code) return <ErrorMessage errorCode={applicationsErr.data.code} />;
+  
   if (!(text && compText) || session === undefined) return <Loading />;
 
   if (session?.user?.image !== "recruiter") return <NoAccess />;
@@ -91,7 +97,7 @@ export default function Applications() {
             ))
           )}
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-            {resultCount} {text.results}
+            {results} {text.results}
           </h1>
         </div>
 
@@ -119,7 +125,7 @@ export default function Applications() {
           )}
 
           {/* Pagination */}
-          {!resultCount || resultCount <= applicationsPerPage ? null : (
+          {!results || results <= RES_PER_PAGE ? null : (
             <nav aria-label="Page navigation example">
               <ul className="inline-flex -space-x-px">
                 <li>
@@ -132,8 +138,8 @@ export default function Applications() {
                   </button>
                 </li>
                 <>
-                  {resultCount
-                    ? pages.map((pageNr) => (
+                  {results
+                    ? [...Array(Math.ceil(results / RES_PER_PAGE)).keys()].map((pageNr) => (
                         <li key={pageNr}>
                           <button
                             onClick={() => handleSetPage(pageNr)}
@@ -153,7 +159,7 @@ export default function Applications() {
                   <button
                     onClick={handlePageIncrement}
                     className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    disabled={page >= (resultCount || 0) / applicationsPerPage - 1}
+                    disabled={page >= (results || 0) / RES_PER_PAGE - 1}
                   >
                     {text.next}
                   </button>

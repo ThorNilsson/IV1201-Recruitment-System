@@ -102,6 +102,22 @@ const locale: localeType = {
     error: "Ett fel uppstod, försök igen",
   },
 
+  errors: {
+    PARSE_ERROR: "Det gick inte att tolka svaret från servern",
+    BAD_REQUEST: "Felaktig begäran",
+    INTERNAL_SERVER_ERROR: "Ett fel uppstod på servern",
+    UNAUTHORIZED: "Du har inte behörighet att göra denna begäran",
+    FORBIDDEN: "Du får inte göra denna begäran",
+    NOT_FOUND: "Det gick inte att hitta den begärda resursen",
+    METHOD_NOT_SUPPORTED: "Metoden stöds inte",
+    TIMEOUT: "Tidsgränsen för begäran uppnådd",
+    CONFLICT: "Det finns redan en resurs med samma identitet",
+    PRECONDITION_FAILED: "Förhandskrav misslyckades",
+    PAYLOAD_TOO_LARGE: "Den begärda resursen är för stor",
+    TOO_MANY_REQUESTS: "Du har gjort för många begäran",
+    CLIENT_CLOSED_REQUEST: "Den här begäran har stängts av klienten",
+  },
+
   competences: {
     "ticket sales": "Biljettförsäljning",
     lotteries: "Lotteri",

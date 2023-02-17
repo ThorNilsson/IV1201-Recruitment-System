@@ -8,7 +8,7 @@ export const HASH_ROUNDS = 10;
 export const authRouter = createTRPCRouter({
   /* Queries */
   getUser: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.session?.user.email) return null;
+    if (!ctx.session?.user?.email) return null;
 
     return ctx.prisma.user.findUnique({
       where: { id: parseInt(ctx.session.user.email) },

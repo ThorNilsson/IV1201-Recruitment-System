@@ -18,6 +18,7 @@ export const adminRouter = createTRPCRouter({
    */
   getFilterdApplicationPreviewCount: adminProcedure
     .input(z.object({ filter: z.string().array() }))
+    .output(z.number())
     .query(async ({ ctx, input }) => {
       return ctx.prisma.application.count({
         where: {
