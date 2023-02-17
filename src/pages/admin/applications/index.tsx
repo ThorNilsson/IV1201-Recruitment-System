@@ -37,17 +37,20 @@ export default function Applications() {
 
   /* Queries */
   const { data: competences, error: competencesErr } = api.admin.getCompetences.useQuery();
-  const { data: results, error: resultsErr } = api.admin.getFilterdApplicationPreviewCount.useQuery({ filter: filter });
+  const { data: resultCount, error: resultCountErr } = api.admin.getFilterdApplicationPreviewCount.useQuery({
+    filter: filter,
+  });
   const { data: applications, error: applicationsErr } = api.admin.getFilterdApplicationPrev.useQuery(
     { filter: filter, skip: page * RES_PER_PAGE, take: RES_PER_PAGE },
-    { enabled: !!results || results === 0 },
+    { enabled: !!resultCount || resultCount === 0 },
   );
 
   /* Constants */
-  const pages = resultCount ? [...Array(Math.ceil(resultCount / applicationsPerPage)).keys()] : [];
+  const pages = resultCount ? [...Array(Math.ceil(resultCount / RES_PER_PAGE)).keys()] : [];
 
   /* Handlers */
-  const handlePageIncrement = () => setPage((page) => Math.min(Math.floor((results || 0) / RES_PER_PAGE), page + 1));
+  const handlePageIncrement = () =>
+    setPage((page) => Math.min(Math.floor((resultCount || 0) / RES_PER_PAGE), page + 1));
   const handlePageDecrement = () => setPage((page) => Math.max(0, page - 1));
   const handleSetPage = (page: number) => setPage(page);
   const handleFilterToggle = (competence: string) => {
@@ -55,16 +58,12 @@ export default function Applications() {
       ? setFilter(filter.filter((item) => item !== competence))
       : setFilter([...filter, competence]);
   };
-  const handleSetPage = (page: number) => setPage(page);
-  const handlePageIncrement = () =>
-    resultCount ? setPage(Math.min(resultCount / applicationsPerPage, page + 1)) : null;
-  const handlePageDecrement = () => (resultCount ? setPage(Math.max(0, page - 1)) : null);
 
   /* Views */
   if (competencesErr?.data?.code) return <ErrorMessage errorCode={competencesErr.data.code} />;
-  if (resultsErr?.data?.code) return <ErrorMessage errorCode={resultsErr.data.code} />;
+  if (resultCountErr?.data?.code) return <ErrorMessage errorCode={resultCountErr.data.code} />;
   if (applicationsErr?.data?.code) return <ErrorMessage errorCode={applicationsErr.data.code} />;
-  
+
   if (!(text && compText) || session === undefined) return <Loading />;
 
   if (session?.user?.image !== "recruiter") return <NoAccess />;
@@ -97,7 +96,7 @@ export default function Applications() {
             ))
           )}
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-            {results} {text.results}
+            {resultCount} {text.results}
           </h1>
         </div>
 
@@ -125,7 +124,7 @@ export default function Applications() {
           )}
 
           {/* Pagination */}
-          {!results || results <= RES_PER_PAGE ? null : (
+          {!resultCount || resultCount <= RES_PER_PAGE ? null : (
             <nav aria-label="Page navigation example">
               <ul className="inline-flex -space-x-px">
                 <li>
@@ -138,8 +137,8 @@ export default function Applications() {
                   </button>
                 </li>
                 <>
-                  {results
-                    ? [...Array(Math.ceil(results / RES_PER_PAGE)).keys()].map((pageNr) => (
+                  {resultCount
+                    ? [...Array(Math.ceil(resultCount / RES_PER_PAGE)).keys()].map((pageNr) => (
                         <li key={pageNr}>
                           <button
                             onClick={() => handleSetPage(pageNr)}
@@ -159,7 +158,7 @@ export default function Applications() {
                   <button
                     onClick={handlePageIncrement}
                     className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    disabled={page >= (results || 0) / RES_PER_PAGE - 1}
+                    disabled={page >= (resultCount || 0) / RES_PER_PAGE - 1}
                   >
                     {text.next}
                   </button>
