@@ -65,6 +65,9 @@ const locale = {
     description: "Here you can see all recieved applications",
     filters: "Filters",
     notFound: "No applications found",
+    previous: "Previous",
+    next: "Next",
+    results: "applications",
   },
   applicationPage: {
     title: "Application",

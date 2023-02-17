@@ -8,7 +8,6 @@
 import { z } from "zod";
 import { createTRPCRouter, adminProcedure } from "../trpc";
 import { application_status } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
 
 export const adminRouter = createTRPCRouter({
   /* Queries */
@@ -21,8 +20,6 @@ export const adminRouter = createTRPCRouter({
     .input(z.object({ filter: z.string().array() }))
     .output(z.number())
     .query(async ({ ctx, input }) => {
-      //throw new TRPCError({ code: "TIMEOUT", message: "testdsfsdf" });
-
       return ctx.prisma.application.count({
         where: {
           status: application_status.UNHANDLED,

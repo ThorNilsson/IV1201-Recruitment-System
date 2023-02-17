@@ -36,28 +36,27 @@ export default function Applications() {
   const { data: session } = useSession();
 
   /* Queries */
-  const { data: competences } = api.admin.getCompetences.useQuery();
+  const { data: competences, error: competencesErr } = api.admin.getCompetences.useQuery();
   const { data: results, error: resultsErr } = api.admin.getFilterdApplicationPreviewCount.useQuery({ filter: filter });
   const { data: applications, error: applicationsErr } = api.admin.getFilterdApplicationPrev.useQuery(
     { filter: filter, skip: page * RES_PER_PAGE, take: RES_PER_PAGE },
     { enabled: !!results || results === 0 },
   );
-  //console.log(resultsErr);
 
   /* Handlers */
-  const handleFilterToggle = (competence: string) => {
-    if (filter.includes(competence)) {
-      setFilter(filter.filter((item) => item !== competence));
-    } else {
-      setFilter([...filter, competence]);
-    }
-  };
-  const handleSetPage = (page: number) => setPage(page);
   const handlePageIncrement = () => setPage((page) => Math.min(Math.floor((results || 0) / RES_PER_PAGE), page + 1));
   const handlePageDecrement = () => setPage((page) => Math.max(0, page - 1));
+  const handleSetPage = (page: number) => setPage(page);
+  const handleFilterToggle = (competence: string) => {
+    filter.includes(competence)
+      ? setFilter(filter.filter((item) => item !== competence))
+      : setFilter([...filter, competence]);
+  };
 
   /* Views */
-  //if (resultsErr || applicationsErr) return <ErrorMessage errors={[resultsErr, applicationsErr]} />;
+  if (competencesErr?.data?.code) return <ErrorMessage errorCode={competencesErr.data.code} />;
+  if (resultsErr?.data?.code) return <ErrorMessage errorCode={resultsErr.data.code} />;
+  if (applicationsErr?.data?.code) return <ErrorMessage errorCode={applicationsErr.data.code} />;
 
   if (!(text && compText) || session === undefined) return <Loading />;
 
@@ -124,7 +123,7 @@ export default function Applications() {
                   <button
                     onClick={handlePageDecrement}
                     className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    //disabled={page === 0}
+                    disabled={page === 0}
                   >
                     {text.previous}
                   </button>
@@ -151,7 +150,7 @@ export default function Applications() {
                   <button
                     onClick={handlePageIncrement}
                     className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    //disabled={page >= (results || 0) / RES_PER_PAGE - 1}
+                    disabled={page >= (results || 0) / RES_PER_PAGE - 1}
                   >
                     {text.next}
                   </button>
