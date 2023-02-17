@@ -14,7 +14,7 @@ model application {
   surname            String?              @db.VarChar(255)
   pnr                String?              @db.VarChar(255)
   email              String?              @unique @db.VarChar(255)
-  status             application_status   @default(UNHANDLED)
+  status             application_status   @default(INCOMPLETE)
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @default(now()) @updatedAt
   user               user?
@@ -23,6 +23,10 @@ model application {
 }
 
 enum application_status {
+  // User info is present, but has not filled in availability, comp.profile, and submitted the application yet.
+  // User might not even be registered.
+  INCOMPLETE
+  // User has submitted the application and is waiting for admin to handle
   UNHANDLED
   ACCEPTED
   REJECTED
