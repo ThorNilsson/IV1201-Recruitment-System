@@ -67,9 +67,9 @@ const locale: localeType = {
     description: "Här kan du se alla mottagna ansökningar",
     filters: "Filter",
     notFound: "Inga ansökningar hittades",
+    results: "ansökningar",
     previous: "Föregående",
     next: "Nästa",
-    results: "Resultat",
   },
   applicationPage: {
     title: "Ansökan",

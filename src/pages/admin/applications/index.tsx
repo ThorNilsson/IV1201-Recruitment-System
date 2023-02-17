@@ -43,6 +43,9 @@ export default function Applications() {
     { enabled: !!results || results === 0 },
   );
 
+  /* Constants */
+  const pages = resultCount ? [...Array(Math.ceil(resultCount / applicationsPerPage)).keys()] : [];
+
   /* Handlers */
   const handlePageIncrement = () => setPage((page) => Math.min(Math.floor((results || 0) / RES_PER_PAGE), page + 1));
   const handlePageDecrement = () => setPage((page) => Math.max(0, page - 1));
@@ -52,24 +55,28 @@ export default function Applications() {
       ? setFilter(filter.filter((item) => item !== competence))
       : setFilter([...filter, competence]);
   };
+  const handleSetPage = (page: number) => setPage(page);
+  const handlePageIncrement = () =>
+    resultCount ? setPage(Math.min(resultCount / applicationsPerPage, page + 1)) : null;
+  const handlePageDecrement = () => (resultCount ? setPage(Math.max(0, page - 1)) : null);
 
   /* Views */
   if (competencesErr?.data?.code) return <ErrorMessage errorCode={competencesErr.data.code} />;
   if (resultsErr?.data?.code) return <ErrorMessage errorCode={resultsErr.data.code} />;
   if (applicationsErr?.data?.code) return <ErrorMessage errorCode={applicationsErr.data.code} />;
-
+  
   if (!(text && compText) || session === undefined) return <Loading />;
 
   if (session?.user?.image !== "recruiter") return <NoAccess />;
 
   return (
-    <div className="flex flex-col space-y-7 items-center  min-h-full">
+    <div className="flex flex-col space-y-7 items-center min-h-full">
       {/* Title */}
       <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{text.title}</h1>
 
-      <div className="flex flex-row items-top space-x-10">
+      <div className="flex flex-row items-top space-x-10 ">
         {/* Filter manu */}
-        <div className="flex flex-col space-y-5">
+        <div className="flex flex-col space-y-5 min-w-screen/3">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{text.filters}</h1>
           {!competences ? (
             <Loading />
@@ -83,7 +90,9 @@ export default function Applications() {
                   onChange={() => handleFilterToggle(competence.name)}
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
-                <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">{competence.name}</span>
+                <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                  {compText[competence.name]}
+                </span>
               </label>
             ))
           )}
@@ -93,7 +102,7 @@ export default function Applications() {
         </div>
 
         {/* List of aplicants */}
-        <div className="flex flex-col space-y-1">
+        <div className="flex flex-col space-y-5 min-w-screen/3">
           {!applications ? <Loading /> : null}
 
           {applications?.length === 0 ? (
