@@ -13,26 +13,36 @@ import { api } from "../../../utils/api";
 import Link from "next/link";
 import Loading from "../../../Components/Loading";
 import NoAccess from "../../../Components/NoAccess";
-import Login from "../../login";
+import ErrorMessage from "../../../Components/Error";
 
 /**
  * @returns {React.ReactElement} - React component.
  * @description Page for listing and viewing all applications.
  */
 export default function Applications() {
+  /* Constants */
+  const RES_PER_PAGE = 10;
+
   /* React State */
   const [filter, setFilter] = React.useState<string[]>([]);
+  const [page, setPage] = React.useState(0);
 
   /* Translations */
   const { locale } = useRouter();
   const text = translations[locale || "en"]?.applicationsPage;
+  const compText = translations[locale || "en"]?.competences;
 
   /* Session */
   const { data: session } = useSession();
 
   /* Queries */
-  const { data: applications } = api.admin.getFilterdApplicationPrev.useQuery({ filter: filter, skip: 0, take: 0 });
   const { data: competences } = api.admin.getCompetences.useQuery();
+  const { data: results, error: resultsErr } = api.admin.getFilterdApplicationPreviewCount.useQuery({ filter: filter });
+  const { data: applications, error: applicationsErr } = api.admin.getFilterdApplicationPrev.useQuery(
+    { filter: filter, skip: page * RES_PER_PAGE, take: RES_PER_PAGE },
+    { enabled: !!results || results === 0 },
+  );
+  //console.log(resultsErr);
 
   /* Handlers */
   const handleFilterToggle = (competence: string) => {
@@ -42,14 +52,19 @@ export default function Applications() {
       setFilter([...filter, competence]);
     }
   };
+  const handleSetPage = (page: number) => setPage(page);
+  const handlePageIncrement = () => setPage((page) => Math.min(Math.floor((results || 0) / RES_PER_PAGE), page + 1));
+  const handlePageDecrement = () => setPage((page) => Math.max(0, page - 1));
 
   /* Views */
-  if (!text || session === undefined) return <Login />;
+  //if (resultsErr || applicationsErr) return <ErrorMessage errors={[resultsErr, applicationsErr]} />;
+
+  if (!(text && compText) || session === undefined) return <Loading />;
 
   if (session?.user?.image !== "recruiter") return <NoAccess />;
 
   return (
-    <div className="flex flex-col space-y-7 items-center justify-center min-h-full">
+    <div className="flex flex-col space-y-7 items-center  min-h-full">
       {/* Title */}
       <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{text.title}</h1>
 
@@ -73,6 +88,9 @@ export default function Applications() {
               </label>
             ))
           )}
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {results} {text.results}
+          </h1>
         </div>
 
         {/* List of aplicants */}
@@ -96,6 +114,50 @@ export default function Applications() {
                 </h5>
               </Link>
             ))
+          )}
+
+          {/* Pagination */}
+          {!results || results <= RES_PER_PAGE ? null : (
+            <nav aria-label="Page navigation example">
+              <ul className="inline-flex -space-x-px">
+                <li>
+                  <button
+                    onClick={handlePageDecrement}
+                    className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    //disabled={page === 0}
+                  >
+                    {text.previous}
+                  </button>
+                </li>
+                <>
+                  {results
+                    ? [...Array(Math.ceil(results / RES_PER_PAGE)).keys()].map((pageNr) => (
+                        <li key={pageNr}>
+                          <button
+                            onClick={() => handleSetPage(pageNr)}
+                            className={
+                              pageNr === page
+                                ? "px-3 py-2 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                                : "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                            }
+                          >
+                            {pageNr + 1}
+                          </button>
+                        </li>
+                      ))
+                    : null}
+                </>
+                <li>
+                  <button
+                    onClick={handlePageIncrement}
+                    className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    //disabled={page >= (results || 0) / RES_PER_PAGE - 1}
+                  >
+                    {text.next}
+                  </button>
+                </li>
+              </ul>
+            </nav>
           )}
         </div>
       </div>

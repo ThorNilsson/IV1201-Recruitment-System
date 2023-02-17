@@ -97,6 +97,22 @@ const locale = {
     error: "Something went wrong, try again later",
   },
 
+  errors: {
+    PARSE_ERROR: "The request body could not be parsed",
+    BAD_REQUEST: "The request was malformed",
+    INTERNAL_SERVER_ERROR: "Internal server error",
+    UNAUTHORIZED: "The request was not authorized",
+    FORBIDDEN: "The request was not allowed",
+    NOT_FOUND: "The requested resource was not found",
+    METHOD_NOT_SUPPORTED: "This method is not supported",
+    TIMEOUT: "The request timed out",
+    CONFLICT: "The request conflicted with another request",
+    PRECONDITION_FAILED: "The request failed due to preconditions",
+    PAYLOAD_TOO_LARGE: "The request payload is too large",
+    TOO_MANY_REQUESTS: "Too many requests",
+    CLIENT_CLOSED_REQUEST: "Client closed request",
+  },
+
   competences: {
     "ticket sales": "Ticket sales",
     lotteries: "Lotteries",

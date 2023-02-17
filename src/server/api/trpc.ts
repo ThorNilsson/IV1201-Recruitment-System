@@ -97,10 +97,9 @@ export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
 /**
- * Reusable middleware that enforces users are logged in and have client status before running the
- * procedure
+ * Reusable middleware that enforces users are logged in and have client status before running the procedure
  */
-const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+const enforceUserIsAuthedMiddleware = t.middleware(({ ctx, next }) => {
   if (!ctx.session?.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
@@ -113,10 +112,9 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 });
 
 /**
- * Reusable middleware that enforces users are logged in and have client status before running the
- * procedure
+ * Reusable middleware that enforces users are logged in and have client status before running the procedure
  */
-const enforceUserIsAuthedClient = t.middleware(({ ctx, next }) => {
+const enforceUserIsAuthedClientMiddleware = t.middleware(({ ctx, next }) => {
   if (!ctx.session?.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
@@ -135,7 +133,7 @@ const enforceUserIsAuthedClient = t.middleware(({ ctx, next }) => {
  * Reusable middleware that enforces users are logged and have admin status in before running the
  * procedure
  */
-const enforceUserIsAuthedAdmin = t.middleware(({ ctx, next }) => {
+const enforceUserIsAuthedAdminMiddleware = t.middleware(({ ctx, next }) => {
   if (!ctx.session?.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
@@ -151,14 +149,16 @@ const enforceUserIsAuthedAdmin = t.middleware(({ ctx, next }) => {
 });
 
 /**
- * Protected (authed) procedure
- *
- * If you want a query or mutation to ONLY be accessible to logged in users, use
- * this. It verifies the session is valid and guarantees ctx.session.user is not
- * null
- *
- * @see https://trpc.io/docs/procedures
+ * Reusable middleware that logs the time it takes to run the procedure
+ * ? Maybe use this for logging or similar if it takes to long time to run???
  */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
-export const clientProcedure = t.procedure.use(enforceUserIsAuthedClient);
-export const adminProcedure = t.procedure.use(enforceUserIsAuthedAdmin);
+const timingMiddleware = t.middleware(async ({ ctx, next }) => {
+  console.time(`Timing Middleware ${ctx.session?.user?.image} user ${ctx.session?.user?.name}`);
+  const res = await next({ ctx });
+  console.timeEnd(`Timing Middleware ${ctx.session?.user?.image} user ${ctx.session?.user?.name}`);
+  return res;
+});
+
+export const protectedProcedure = t.procedure.use(timingMiddleware).use(enforceUserIsAuthedMiddleware);
+export const clientProcedure = t.procedure.use(timingMiddleware).use(enforceUserIsAuthedClientMiddleware);
+export const adminProcedure = t.procedure.use(timingMiddleware).use(enforceUserIsAuthedAdminMiddleware);
