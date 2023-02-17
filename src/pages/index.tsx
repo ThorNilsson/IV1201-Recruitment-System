@@ -1,9 +1,9 @@
+import React from "react";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import React from "react";
 import { translations } from "../../languages/translations";
-import Loading from "../Components/Loading";
+import LoadingPage from "../Components/LoadingPage";
 
 function Home() {
   /* Translations */
@@ -20,7 +20,7 @@ function Home() {
   if (session?.user?.image === "applicant") router.push("my-application");
 
   /* Views */
-  if (!text || session === undefined) return <Loading />;
+  if (!text || session === undefined) return <LoadingPage />;
 
   return (
     <div className="flex flex-col space-y-7 items-center justify-center min-h-full">

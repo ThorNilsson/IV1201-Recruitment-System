@@ -11,8 +11,8 @@ import { useRouter } from "next/router";
 import { application_status } from "@prisma/client";
 import { api } from "../../../utils/api";
 import { translations } from "../../../../languages/translations";
-import NoAccess from "../../../Components/NoAccess";
-import Loading from "../../../Components/Loading";
+import NoAccessPage from "../../../Components/NoAccessPage";
+import LoadingPage from "../../../Components/LoadingPage";
 
 /**
  * @returns {React.ReactElement} - React component.
@@ -55,9 +55,9 @@ function Application() {
   };
 
   /* Views */
-  if (!(applText && compText && application) || session === undefined) return <Loading />;
+  if (!(applText && compText && application) || session === undefined) return <LoadingPage />;
 
-  if (session?.user?.image !== "recruiter") return <NoAccess />;
+  if (session?.user?.image !== "recruiter") return <NoAccessPage />;
 
   return (
     <div className="flex flex-col space-y-7 items-center justify-center min-h-full">

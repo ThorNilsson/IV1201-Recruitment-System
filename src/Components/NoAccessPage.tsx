@@ -13,7 +13,7 @@ import { translations } from "../../languages/translations";
  * @returns {React.ReactElement} - React component.
  * @description Component for showing that the user has no access to the page.
  */
-export default function NoAccess() {
+export default function NoAccessPage() {
   /* Translations */
   const { locale } = useRouter();
   const text = translations[locale || "en"]?.app;

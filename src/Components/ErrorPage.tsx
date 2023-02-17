@@ -1,21 +1,20 @@
 /**
- * @file Error.tsx
- * @description Component for showing a loading animation.
+ * @file ErrorPage.tsx
+ * @description Page for showing a loading animation.
  * @author Thor Nilsson
- * @exports Error - React component.
+ * @exports ErrorPage - React component.
  */
 
 import React from "react";
 import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";
 import { TRPCError } from "@trpc/server";
-import Loading from "./Loading";
 
 /**
  * @returns {React.ReactElement} - React component.
- * @description Error for showing a error messages.
+ * @description Error page for showing a error messages.
  */
-export default function ErrorMessage({ errorCode }: { errorCode: TRPCError["code"] }) {
+export default function ErrorPage({ errorCode }: { errorCode: TRPCError["code"] }) {
   /* Translations */
   const { locale } = useRouter();
   const text = translations[locale || "en"]?.errors;

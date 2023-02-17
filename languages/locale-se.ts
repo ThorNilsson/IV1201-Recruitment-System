@@ -16,9 +16,13 @@ const locale: localeType = {
     register: "Registrera",
   },
   footer: {
-    companyName: "Lisseborg",
+    companyName: "Lisseborg AB",
     companySlogan: "Nöje för dig att parkera",
-    copyright: "C 2020 Lisseborg AB",
+    copyright: "Alla rättigheter reserverade",
+    about: "Om oss",
+    privacyPolicy: "Integritetspolicy",
+    licenceing: "Licensiering",
+    contact: "Kontakt",
   },
   homePage: {
     title: "Lisseborg 🦎🏰 Rekryterings System ☝🤓",
