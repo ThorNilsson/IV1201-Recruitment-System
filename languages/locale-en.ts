@@ -14,9 +14,13 @@ const locale = {
     register: "Register",
   },
   footer: {
-    companyName: "Lieesburg",
+    companyName: "Lieesburg  AB",
     companySlogan: "Abmusement for you to park",
-    copyright: "C 2020 Lisseborg AB",
+    copyright: "All Rights Reserved.",
+    about: "About",
+    privacyPolicy: "Privacy policy",
+    licenceing: "Licencing",
+    contact: "Contact",
   },
   homePage: {
     title: "Lisseburg 🦎🏰 Recruitment System ☝🤓",
