@@ -12,8 +12,9 @@ import { translations } from "../../../../languages/translations";
 import { api } from "../../../utils/api";
 import Link from "next/link";
 import Loading from "../../../Components/Loading";
-import NoAccess from "../../../Components/NoAccess";
-import ErrorMessage from "../../../Components/Error";
+import LoadingPage from "../../../Components/LoadingPage";
+import NoAccessPage from "../../../Components/NoAccessPage";
+import ErrorPage from "../../../Components/ErrorPage";
 
 /**
  * @returns {React.ReactElement} - React component.
@@ -60,13 +61,13 @@ export default function Applications() {
   };
 
   /* Views */
-  if (competencesErr?.data?.code) return <ErrorMessage errorCode={competencesErr.data.code} />;
-  if (resultCountErr?.data?.code) return <ErrorMessage errorCode={resultCountErr.data.code} />;
-  if (applicationsErr?.data?.code) return <ErrorMessage errorCode={applicationsErr.data.code} />;
+  if (competencesErr?.data?.code) return <ErrorPage errorCode={competencesErr.data.code} />;
+  if (resultCountErr?.data?.code) return <ErrorPage errorCode={resultCountErr.data.code} />;
+  if (applicationsErr?.data?.code) return <ErrorPage errorCode={applicationsErr.data.code} />;
 
-  if (!(text && compText) || session === undefined) return <Loading />;
+  if (!(text && compText) || session === undefined) return <LoadingPage />;
 
-  if (session?.user?.image !== "recruiter") return <NoAccess />;
+  if (session?.user?.image !== "recruiter") return <NoAccessPage />;
 
   return (
     <div className="flex flex-col space-y-7 items-center min-h-full">

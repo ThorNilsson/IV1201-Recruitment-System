@@ -4,19 +4,19 @@
  * @author Thor Nilsson
  * @exports Header - React component for logo, localisation and session status.
  */
+import React from "react";
+import router, { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import router, { useRouter } from "next/router";
-import React from "react";
 import { translations } from "../../languages/translations";
 import { api } from "../utils/api";
-import Loading from "./Loading";
+import LoadingPage from "./LoadingPage";
 
 /**
  * @returns {React.ReactElement} - React component.
  * @description Header component for logo, localisation and session status.
  */
-function Header() {
+export default function Header() {
   /* Translations */
   const { locale, locales } = useRouter();
   const text = translations[locale || "en"]?.header;
@@ -34,7 +34,7 @@ function Header() {
   const handleSignout = () => signOut({ callbackUrl: "/" });
 
   /* Views */
-  if (text == null) return <Loading />;
+  if (text == null) return <LoadingPage />;
 
   return (
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 dark:bg-gray-900">
@@ -121,5 +121,3 @@ function Header() {
     </nav>
   );
 }
-
-export default Header;

@@ -5,8 +5,8 @@
  * @returns {React.ReactElement} - React component.
  */
 
-import { useRouter } from "next/router";
 import React from "react";
+import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";
 import Loading from "./Loading";
 

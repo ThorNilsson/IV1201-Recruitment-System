@@ -2,8 +2,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { translations } from "../../languages/translations";
-import Loading from "../Components/Loading";
-import NoAccess from "../Components/NoAccess";
+import LoadingPage from "../Components/LoadingPage";
+import NoAccess from "../Components/NoAccessPage";
 import Login from "./login";
 
 export default function MyApplication() {
@@ -15,7 +15,7 @@ export default function MyApplication() {
   const { data: session } = useSession();
 
   /* Views */
-  if (!text || session === undefined) return <Loading />;
+  if (!text || session === undefined) return <LoadingPage />;
 
   if (session?.user?.image !== "applicant") return <NoAccess />;
 

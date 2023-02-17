@@ -1,22 +1,22 @@
 /**
- * @file AlreadySignedIn.tsx
- * @description Component for showing that the user is already signed in.
+ * @file AlreadySignedInPage.tsx
+ * @description Page for showing that the user is already signed in.
  * @author Thor Nilsson
- * @exports AlreadySignedIn - React component for showing that the user is already signed in.
+ * @exports AlreadySignedInPage - React component for showing that the user is already signed in.
  */
+import React from "react";
+import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import React from "react";
 import { translations } from "../../languages/translations";
-import Loading from "./Loading";
 import { api } from "../utils/api";
+import LoadingPage from "./LoadingPage";
 
 /**
  * @returns {React.ReactElement} - React component.
- * @description Component for showing that the user is already signed in.
+ * @description Page for showing that the user is already signed in.
  */
-function AlreadySignedIn() {
+export default function AlreadySignedInPage() {
   /* Translations */
   const { locale } = useRouter();
   const text = translations[locale || "en"]?.alreadySignedInPage;
@@ -29,7 +29,7 @@ function AlreadySignedIn() {
   const handleSignout = () => signOut();
 
   /* Views */
-  if (text == null) return <Loading />;
+  if (text == null) return <LoadingPage />;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">
@@ -62,5 +62,3 @@ function AlreadySignedIn() {
     </div>
   );
 }
-
-export default AlreadySignedIn;

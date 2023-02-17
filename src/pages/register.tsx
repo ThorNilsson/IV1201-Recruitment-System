@@ -1,10 +1,10 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";
-import Loading from "../Components/Loading";
 import { api } from "../utils/api";
 import { signIn, useSession } from "next-auth/react";
-import AlreadySignedIn from "../Components/AlreadySignedIn";
+import AlreadySignedInPage from "../Components/AlreadySignedInPage";
+import LoadingPage from "../Components/LoadingPage";
 
 function Register() {
   /* React State */
@@ -48,9 +48,9 @@ function Register() {
   };
 
   /* Views */
-  if (!text || session === undefined) return <Loading />;
+  if (!text || session === undefined) return <LoadingPage />;
 
-  if (session?.user) return <AlreadySignedIn />;
+  if (session?.user) return <AlreadySignedInPage />;
 
   return (
     <div className="flex flex-col space-y-7 items-center justify-center min-h-full">
