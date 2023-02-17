@@ -13,18 +13,19 @@ import { api } from "../../../utils/api";
 import Link from "next/link";
 import Loading from "../../../Components/Loading";
 import NoAccess from "../../../Components/NoAccess";
-import Login from "../../login";
+import ErrorMessage from "../../../Components/Error";
 
 /**
  * @returns {React.ReactElement} - React component.
  * @description Page for listing and viewing all applications.
  */
 export default function Applications() {
+  /* Constants */
+  const RES_PER_PAGE = 10;
+
   /* React State */
   const [filter, setFilter] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
-
-  const applicationsPerPage = 10;
 
   /* Translations */
   const { locale } = useRouter();
@@ -35,30 +36,34 @@ export default function Applications() {
   const { data: session } = useSession();
 
   /* Queries */
-  const { data: resultCount } = api.admin.getFilterdApplicationPreviewCount.useQuery({ filter: filter });
-  const { data: applications } = api.admin.getFilterdApplicationPrev.useQuery(
-    { filter: filter, skip: page * applicationsPerPage, take: applicationsPerPage },
+  const { data: competences, error: competencesErr } = api.admin.getCompetences.useQuery();
+  const { data: resultCount, error: resultCountErr } = api.admin.getFilterdApplicationPreviewCount.useQuery({
+    filter: filter,
+  });
+  const { data: applications, error: applicationsErr } = api.admin.getFilterdApplicationPrev.useQuery(
+    { filter: filter, skip: page * RES_PER_PAGE, take: RES_PER_PAGE },
     { enabled: !!resultCount || resultCount === 0 },
   );
-  const { data: competences } = api.admin.getCompetences.useQuery();
 
   /* Constants */
-  const pages = resultCount ? [...Array(Math.ceil(resultCount / applicationsPerPage)).keys()] : [];
+  const pages = resultCount ? [...Array(Math.ceil(resultCount / RES_PER_PAGE)).keys()] : [];
 
   /* Handlers */
-  const handleFilterToggle = (competence: string) => {
-    if (filter.includes(competence)) {
-      setFilter(filter.filter((item) => item !== competence));
-    } else {
-      setFilter([...filter, competence]);
-    }
-  };
-  const handleSetPage = (page: number) => setPage(page);
   const handlePageIncrement = () =>
-    resultCount ? setPage(Math.min(resultCount / applicationsPerPage, page + 1)) : null;
-  const handlePageDecrement = () => (resultCount ? setPage(Math.max(0, page - 1)) : null);
+    setPage((page) => Math.min(Math.floor((resultCount || 0) / RES_PER_PAGE), page + 1));
+  const handlePageDecrement = () => setPage((page) => Math.max(0, page - 1));
+  const handleSetPage = (page: number) => setPage(page);
+  const handleFilterToggle = (competence: string) => {
+    filter.includes(competence)
+      ? setFilter(filter.filter((item) => item !== competence))
+      : setFilter([...filter, competence]);
+  };
 
   /* Views */
+  if (competencesErr?.data?.code) return <ErrorMessage errorCode={competencesErr.data.code} />;
+  if (resultCountErr?.data?.code) return <ErrorMessage errorCode={resultCountErr.data.code} />;
+  if (applicationsErr?.data?.code) return <ErrorMessage errorCode={applicationsErr.data.code} />;
+
   if (!(text && compText) || session === undefined) return <Loading />;
 
   if (session?.user?.image !== "recruiter") return <NoAccess />;
@@ -119,7 +124,7 @@ export default function Applications() {
           )}
 
           {/* Pagination */}
-          {!resultCount || resultCount <= applicationsPerPage ? null : (
+          {!resultCount || resultCount <= RES_PER_PAGE ? null : (
             <nav aria-label="Page navigation example">
               <ul className="inline-flex -space-x-px">
                 <li>
@@ -133,7 +138,7 @@ export default function Applications() {
                 </li>
                 <>
                   {resultCount
-                    ? pages.map((pageNr) => (
+                    ? [...Array(Math.ceil(resultCount / RES_PER_PAGE)).keys()].map((pageNr) => (
                         <li key={pageNr}>
                           <button
                             onClick={() => handleSetPage(pageNr)}
@@ -153,7 +158,7 @@ export default function Applications() {
                   <button
                     onClick={handlePageIncrement}
                     className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    disabled={page >= (resultCount || 0) / applicationsPerPage - 1}
+                    disabled={page >= (resultCount || 0) / RES_PER_PAGE - 1}
                   >
                     {text.next}
                   </button>
