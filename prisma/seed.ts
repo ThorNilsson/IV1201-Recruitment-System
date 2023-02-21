@@ -61,6 +61,7 @@ async function main() {
       },
     ],
   });
+  /*
   await prisma.application.create({
     data: {
       name: "Thor",
@@ -95,10 +96,50 @@ async function main() {
         },
       },
     },
+  });*/
+
+  //Add applications with  user
+  await prisma.application.createMany({
+    data: Array(50)
+      .fill(0)
+      .map((_, i) => ({
+        name: `Olle${i}`,
+        surname: `Bolle${i}`,
+        pnr: `0113-80113${i}`,
+        email: `olle${i}@bolle.ob`,
+      })),
   });
+  await prisma.user.createMany({
+    data: Array(50)
+      .fill(0)
+      .map((_, i) => ({
+        username: `OlleBolle${i}`,
+        password: bcrypt.hashSync(`Bolle${i}`, 10),
+        role_id: 2,
+        application_id: i + 1,
+      })),
+  });
+  /*
+  competence_profile: {
+    create: [
+      {
+        years_of_experience: 1,
+        competence_id: 1,
+      },
+    ],
+  },
+  availability: {
+    create: [
+      {
+        from_date: new Date("2023-06-01"),
+        to_date: new Date("2023-08-01"),
+      },
+    ],
+  },*/
+
   // old applications with no user
   await prisma.application.createMany({
-    data: Array(100)
+    data: Array(20)
       .fill(0)
       .map((_, i) => ({
         name: `Plink${i}`,

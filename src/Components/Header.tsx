@@ -60,7 +60,7 @@ export default function Header() {
                 href='/admin/applications'
                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
-                {textSignout?.adminPage}
+                {textSignout?.adminPageBtn}
               </Link>
             ) : null}
             {user?.role?.name === "applicant" ? (
@@ -68,7 +68,7 @@ export default function Header() {
                 href='/my-application'
                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
-                {textSignout?.myApplicationPage}
+                {textSignout?.myApplicationPageBtn}
               </Link>
             ) : null}
 
@@ -78,7 +78,7 @@ export default function Header() {
                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                 onClick={handleSignout}
               >
-                {textSignout?.signOut}
+                {textSignout?.signOutBtn}
               </button>
             ) : (
               <>
