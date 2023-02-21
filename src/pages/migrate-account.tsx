@@ -15,6 +15,9 @@ import InputField from "../Components/InputField";
 import Loading from "../Components/Loading";
 import LoadingPage from "../Components/LoadingPage";
 import { migrationValidationObject } from "../validation/validation";
+import ErrorPage from "../Components/ErrorPage";
+import { SubmitButton } from "../Components/Buttons";
+import { Description, Title } from "../Components/Typography";
 /**
  * @returns {JSX.Element} - React component.
  * @description Page for migrating an old applicant account to the new system.
@@ -29,7 +32,8 @@ export default function MigrateAccount() {
 
   /* Translations */
   const { locale } = useRouter();
-  const text = translations[locale || "en"]?.loginPage;
+  const text = translations[locale || "en"]?.migrationPage;
+  const input = translations[locale || "en"]?.inputFields;
 
   /* Session */
   const { data: session } = useSession();
@@ -39,7 +43,7 @@ export default function MigrateAccount() {
 
   /* Validation */
   const validation = migrationValidationObject.safeParse(newUser);
-  const isFieldValid = (field: string) =>
+  const isValid = (field: string) =>
     validation.success ? true : validation.error.issues.find((i) => i.path[0] === field) === undefined;
 
   /* Handelers */
@@ -51,7 +55,7 @@ export default function MigrateAccount() {
 
     migrateAccount.mutate(newUser, {
       onError() {
-        alert(text?.error);
+        //alert(error.message);
         setLoading(false);
       },
       onSuccess: () => {
@@ -65,40 +69,24 @@ export default function MigrateAccount() {
   };
 
   /* Views */
-  if (!text || session === undefined) return <LoadingPage />;
+  if (migrateAccount.error?.data?.code) return <ErrorPage errorCode={migrateAccount.error.data.code} />;
+
+  if (!(text && input) || session === undefined) return <LoadingPage />;
 
   if (session?.user) return <AlreadySignedInPage />;
 
   return (
     <div className="flex flex-col space-y-7 items-center justify-center min-h-full">
-      {/* Title */}
-      <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">{"Migrate Account"}</h1>
-      <h1 className="mb-4 text-lg font-extrabold leading-none tracking-tight text-gray-900 dark:text-white">
-        {"Migrate your old application to a new account"}
-      </h1>
-      {/* Input fields */}
+      <Title>{text.title}</Title>
+      <Description>{text.description}</Description>
+
       <form onSubmit={handleSubmit}>
         <div className="grid gap-20 mb-6 md:grid-cols-3">
-          {InputField("email", "Email", "text", newUser.email, true, handleUpdateNewUser, isFieldValid)}
-          {InputField("username", "Username", "text", newUser.username, true, handleUpdateNewUser, isFieldValid)}
-          {InputField("password", "Password", "password", newUser.password, true, handleUpdateNewUser, isFieldValid)}
+          {InputField("email", input.email, "text", newUser.email, true, handleUpdateNewUser, isValid)}
+          {InputField("username", input.username, "text", newUser.username, true, handleUpdateNewUser, isValid)}
+          {InputField("password", input.password, "password", newUser.password, true, handleUpdateNewUser, isValid)}
         </div>
-
-        {/* Submit button */}
-        <div className="flex flex-col space-y-7 items-center justify-center">
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <input
-              className={`text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800${
-                validation.success ? "" : " opacity-50 cursor-not-allowed"
-              }`}
-              type="submit"
-              value={"Migrate"}
-              disabled={!validation.success}
-            />
-          )}
-        </div>
+        <SubmitButton label={text.submitBtn} isLoading={isLoading} disabled={!validation.success} />
       </form>
     </div>
   );

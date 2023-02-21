@@ -38,7 +38,7 @@ export default function InputField(
         style={valid || value === "" ? {} : { borderColor: "red" }}
         placeholder={label}
         required={required}
-        onBlur={onInput}
+        onChange={onInput}
       />
     </div>
   );
