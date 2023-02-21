@@ -6,10 +6,18 @@ import { signIn, useSession } from "next-auth/react";
 import AlreadySignedInPage from "../Components/AlreadySignedInPage";
 import LoadingPage from "../Components/LoadingPage";
 import InputField from "../Components/InputField";
+import { signupValidationObject } from "../server/api/routers/auth";
 
 function Register() {
   /* React State */
-  const [newUser, setNewUser] = React.useState({ username: "", password: "", email: "", pnr: "", surname: "",name: ""});
+  const [newUser, setNewUser] = React.useState({
+    username: "",
+    password: "",
+    email: "",
+    pnr: "",
+    surname: "",
+    name: "",
+  });
   const handleUpdateNewUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewUser({ ...newUser, [event.target.name]: event.target.value });
   };
@@ -23,6 +31,11 @@ function Register() {
 
   /* Mutations */
   const addUser = api.auth.signup.useMutation();
+
+  /* Validation */
+  const inputValidation = signupValidationObject.safeParse(newUser);
+  const isFieldValid = (field: string) =>
+    inputValidation.success ? true : inputValidation.error.issues.find((i) => i.path[0] === field) === undefined;
 
   /* Handelers */
   const handleSignup = async () => {

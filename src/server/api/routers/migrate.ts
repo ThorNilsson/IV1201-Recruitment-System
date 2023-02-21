@@ -11,6 +11,12 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const HASH_ROUNDS = 10;
 
+export const migrationValidationObject = z.object({
+  email: z.string().min(4).email(),
+  username: z.string().min(4),
+  password: z.string().min(6),
+});
+
 export const migrationRouter = createTRPCRouter({
   /* Mutations */
 
@@ -21,35 +27,33 @@ export const migrationRouter = createTRPCRouter({
    * @returns {Promise<Prisma.BatchPayload>} - The number of applications that were updated (should be 1)
    * @description - Updates the status of an application
    */
-  createUserForOldApplication: publicProcedure
-    .input(z.object({ email: z.string().email(), username: z.string(), password: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      //Find application id by email address
-      const application = await ctx.prisma.application.findUniqueOrThrow({
-        where: {
-          email: input.email,
+  createUserForOldApplication: publicProcedure.input(migrationValidationObject).mutation(async ({ ctx, input }) => {
+    //Find application id by email address
+    const application = await ctx.prisma.application.findUniqueOrThrow({
+      where: {
+        email: input.email,
+      },
+      select: {
+        id: true,
+      },
+    });
+    const hashedPassword = await bcrypt.hash(input.password, HASH_ROUNDS);
+    //Update user with nothing if it exists, else create user and connect to application
+    return ctx.prisma.user.upsert({
+      where: {
+        application_id: application.id,
+      },
+      update: {},
+      create: {
+        username: input.username,
+        password: hashedPassword,
+        role: {
+          connect: { id: 2 }, // Applicants
         },
-        select: {
-          id: true,
+        application: {
+          connect: { id: application.id },
         },
-      });
-      const hashedPassword = await bcrypt.hash(input.password, HASH_ROUNDS);
-      //Update user with nothing if it exists, else create user and connect to application
-      return ctx.prisma.user.upsert({
-        where: {
-          application_id: application.id,
-        },
-        update: {},
-        create: {
-          username: input.username,
-          password: hashedPassword,
-          role: {
-            connect: { id: 2 }, // Applicants
-          },
-          application: {
-            connect: { id: application.id },
-          },
-        },
-      });
-    }),
+      },
+    });
+  }),
 });
