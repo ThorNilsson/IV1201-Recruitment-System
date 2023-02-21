@@ -59,7 +59,6 @@ const locale: localeType = {
     register: "Registrera",
     error: "Ett fel uppstod, försök igen med ett annat användarnamn",
     emptyFields: "Både användarnamn och lösenord måste fyllas i",
-    
   },
 
   /* Client */

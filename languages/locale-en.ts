@@ -57,7 +57,6 @@ const locale = {
     register: "Register",
     error: "Failed to create user, try another username",
     emptyFields: "Username or password cannot be empty",
-
   },
 
   /* Client */

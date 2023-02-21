@@ -8,7 +8,14 @@ import LoadingPage from "../Components/LoadingPage";
 
 function Register() {
   /* React State */
-  const [newUser, setNewUser] = React.useState({ username: "", password: "", email: "", pnr: "", surname: "",name: ""});
+  const [newUser, setNewUser] = React.useState({
+    username: "",
+    password: "",
+    email: "",
+    pnr: "",
+    surname: "",
+    name: "",
+  });
   const handleUpdateNewUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewUser({ ...newUser, [event.target.name]: event.target.value });
   };
@@ -124,7 +131,6 @@ function Register() {
               onInput={handleUpdateNewUser}
             />
           </div>
-          
         </div>
       </form>
       <button

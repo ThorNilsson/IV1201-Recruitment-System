@@ -86,8 +86,24 @@ export default function MigrateAccount() {
       <form onSubmit={handleSubmit}>
         <div className="grid gap-20 mb-6 md:grid-cols-3">
           {InputField("email", "Email", "text", newUser.email, true, handleUpdateNewUser, isFieldValid("email"))}
-          {InputField("username","Username", "text", newUser.username, true, handleUpdateNewUser, isFieldValid("username"))}
-          {InputField("password","Password", "password", newUser.password, true, handleUpdateNewUser, isFieldValid("password"))}
+          {InputField(
+            "username",
+            "Username",
+            "text",
+            newUser.username,
+            true,
+            handleUpdateNewUser,
+            isFieldValid("username"),
+          )}
+          {InputField(
+            "password",
+            "Password",
+            "password",
+            newUser.password,
+            true,
+            handleUpdateNewUser,
+            isFieldValid("password"),
+          )}
         </div>
 
         {/* Submit button */}
