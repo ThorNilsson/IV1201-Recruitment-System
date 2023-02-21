@@ -23,7 +23,7 @@ export const authRouter = createTRPCRouter({
   /* Mutations */
   signup: publicProcedure
     .input(
-      z.object({ username: z.string(), password: z.string(), email: z.string(), pnr: z.string(), surname: z.string() }),
+      z.object({ username: z.string(), password: z.string(), email: z.string().email(), pnr: z.string(), surname: z.string(), name: z.string() }),
     )
     .mutation(async ({ input, ctx }) => {
       const hashedPassword = await bcrypt.hash(input.password, HASH_ROUNDS);
@@ -33,6 +33,12 @@ export const authRouter = createTRPCRouter({
           username: input.username,
           password: hashedPassword,
           role: { connect: { id: 2 } },
+          application: { create: {
+            email: input.email,
+            pnr: input.pnr,
+            surname: input.surname,
+            name: input.name,
+          } },
         },
       });
     }),

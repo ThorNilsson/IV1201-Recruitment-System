@@ -50,9 +50,14 @@ const locale = {
     description: "Register here to apply for a job at Lisseburg",
     username: "Username",
     password: "Password",
+    email: "Email",
+    pnr: "Personal number",
+    surname: "Surname",
+    name: "Name",
     register: "Register",
     error: "Failed to create user, try another username",
     emptyFields: "Username or password cannot be empty",
+
   },
 
   /* Client */

@@ -8,7 +8,7 @@ import LoadingPage from "../Components/LoadingPage";
 
 function Register() {
   /* React State */
-  const [newUser, setNewUser] = React.useState({ username: "", password: "", email: "", pnr: "", surname: "" });
+  const [newUser, setNewUser] = React.useState({ username: "", password: "", email: "", pnr: "", surname: "",name: ""});
   const handleUpdateNewUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewUser({ ...newUser, [event.target.name]: event.target.value });
   };
@@ -39,9 +39,6 @@ function Register() {
           callbackUrl: "/",
           username: newUser.username,
           password: newUser.password,
-          email: newUser.email,
-          pnr: newUser.pnr,
-          surname: newUser.surname,
         });
       },
     });
@@ -83,6 +80,51 @@ function Register() {
               onInput={handleUpdateNewUser}
             />
           </div>
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{text?.email} </label>
+            <input
+              type="text"
+              name="email"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="email"
+              required
+              onInput={handleUpdateNewUser}
+            />
+          </div>
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{text?.pnr} </label>
+            <input
+              type="text"
+              name="pnr"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="personal number"
+              required
+              onInput={handleUpdateNewUser}
+            />
+          </div>
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{text?.name} </label>
+            <input
+              type="text"
+              name="name"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder={text?.name}
+              required
+              onInput={handleUpdateNewUser}
+            />
+          </div>
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{text?.surname} </label>
+            <input
+              type="text"
+              name="surname"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder={text?.surname}
+              required
+              onInput={handleUpdateNewUser}
+            />
+          </div>
+          
         </div>
       </form>
       <button

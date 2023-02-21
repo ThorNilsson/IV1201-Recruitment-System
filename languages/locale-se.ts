@@ -52,9 +52,14 @@ const locale: localeType = {
     description: "Registrera här för att ansöka om ett jobb på Lisseborg",
     username: "Användarnamn",
     password: "Lösenord",
+    email: "Email",
+    pnr: "Personnummer",
+    surname: "Efternamn",
+    name: "Förnamn",
     register: "Registrera",
     error: "Ett fel uppstod, försök igen med ett annat användarnamn",
     emptyFields: "Både användarnamn och lösenord måste fyllas i",
+    
   },
 
   /* Client */
