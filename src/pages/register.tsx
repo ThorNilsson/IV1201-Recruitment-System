@@ -5,6 +5,7 @@ import { api } from "../utils/api";
 import { signIn, useSession } from "next-auth/react";
 import AlreadySignedInPage from "../Components/AlreadySignedInPage";
 import LoadingPage from "../Components/LoadingPage";
+import InputField from "../Components/InputField";
 
 function Register() {
   /* React State */
@@ -58,73 +59,12 @@ function Register() {
       </h1>
       <form>
         <div className="grid gap-20 mb-6 md:grid-cols-2">
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{text?.username}</label>
-            <input
-              type="text"
-              name="username"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Username"
-              required
-              onInput={handleUpdateNewUser}
-            />
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{text?.password} </label>
-            <input
-              type="password"
-              name="password"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Password"
-              required
-              onInput={handleUpdateNewUser}
-            />
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{text?.email} </label>
-            <input
-              type="text"
-              name="email"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="email"
-              required
-              onInput={handleUpdateNewUser}
-            />
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{text?.pnr} </label>
-            <input
-              type="text"
-              name="pnr"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="personal number"
-              required
-              onInput={handleUpdateNewUser}
-            />
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{text?.name} </label>
-            <input
-              type="text"
-              name="name"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder={text?.name}
-              required
-              onInput={handleUpdateNewUser}
-            />
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{text?.surname} </label>
-            <input
-              type="text"
-              name="surname"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder={text?.surname}
-              required
-              onInput={handleUpdateNewUser}
-            />
-          </div>
-          
+        {InputField("name", text?.name, "text", newUser.name, true, handleUpdateNewUser, true)}
+        {InputField("surname", text?.surname, "text", newUser.surname, true, handleUpdateNewUser, true)}
+        {InputField("email", text?.email, "email", newUser.email, true, handleUpdateNewUser, true)}
+        {InputField("pnr", text?.pnr, "text", newUser.pnr, true, handleUpdateNewUser, true)}
+        {InputField("username", text?.username, "text", newUser.username, true, handleUpdateNewUser, true)}
+        {InputField("password", text?.password, "password", newUser.password, true, handleUpdateNewUser, true)} 
         </div>
       </form>
       <button
