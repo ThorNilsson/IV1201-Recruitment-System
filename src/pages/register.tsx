@@ -5,6 +5,7 @@ import { api } from "../utils/api";
 import { signIn, useSession } from "next-auth/react";
 import AlreadySignedInPage from "../Components/AlreadySignedInPage";
 import LoadingPage from "../Components/LoadingPage";
+import { signupValidationObject } from "../server/api/routers/auth";
 
 function Register() {
   /* React State */
@@ -29,6 +30,11 @@ function Register() {
 
   /* Mutations */
   const addUser = api.auth.signup.useMutation();
+
+  /* Validation */
+  const inputValidation = signupValidationObject.safeParse(newUser);
+  const isFieldValid = (field: string) =>
+    inputValidation.success ? true : inputValidation.error.issues.find((i) => i.path[0] === field) === undefined;
 
   /* Handelers */
   const handleSignup = async () => {

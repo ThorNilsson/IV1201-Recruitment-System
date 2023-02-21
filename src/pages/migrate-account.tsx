@@ -15,7 +15,7 @@ import AlreadySignedInPage from "../Components/AlreadySignedInPage";
 import InputField from "../Components/InputField";
 import Loading from "../Components/Loading";
 import LoadingPage from "../Components/LoadingPage";
-
+import { migrationValidationObject } from "../server/api/routers/migrate";
 /**
  * @returns {JSX.Element} - React component.
  * @description Page for migrating an old applicant account to the new system.
@@ -39,12 +39,7 @@ export default function MigrateAccount() {
   const migrateAccount = api.migration.createUserForOldApplication.useMutation();
 
   /* Validation */
-  const MigrateUserInputObject = z.object({
-    email: z.string().min(1).email(),
-    username: z.string().min(1),
-    password: z.string().min(6),
-  });
-  const inputValidation = MigrateUserInputObject.safeParse(newUser);
+  const inputValidation = migrationValidationObject.safeParse(newUser);
   const isFieldValid = (field: string) =>
     inputValidation.success ? true : inputValidation.error.issues.find((i) => i.path[0] === field) === undefined;
 
