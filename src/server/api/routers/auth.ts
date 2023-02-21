@@ -1,18 +1,8 @@
-import { z } from "zod";
 import bcrypt from "bcrypt";
-
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+import { signupValidationObject } from "../../../validation/validation";
 
-export const HASH_ROUNDS = 10;
-
-export const signupValidationObject = z.object({
-  username: z.string().min(4),
-  password: z.string().min(6),
-  email: z.string().min(4).email(),
-  pnr: z.string().min(10).max(12),
-  surname: z.string().min(1),
-  name: z.string().min(1),
-});
+const HASH_ROUNDS = 10;
 
 export const authRouter = createTRPCRouter({
   /* Queries */
@@ -29,6 +19,7 @@ export const authRouter = createTRPCRouter({
       },
     });
   }),
+
   /* Mutations */
   signup: publicProcedure.input(signupValidationObject).mutation(async ({ input, ctx }) => {
     const hashedPassword = await bcrypt.hash(input.password, HASH_ROUNDS);

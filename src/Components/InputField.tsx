@@ -23,8 +23,9 @@ export default function InputField(
   value: string,
   required: boolean,
   onInput: FormEventHandler<HTMLInputElement>,
-  valid: boolean,
+  validate: (value: string) => boolean,
 ) {
+  const valid = validate(name);
   return (
     <div>
       <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{label}</label>

@@ -5,21 +5,13 @@
  * @exports migrationRouter - TRPC router
  */
 
-import { z } from "zod";
 import bcrypt from "bcrypt";
 import { createTRPCRouter, publicProcedure } from "../trpc";
+import { migrationValidationObject } from "../../../validation/validation";
 
-export const HASH_ROUNDS = 10;
-
-export const migrationValidationObject = z.object({
-  email: z.string().min(4).email(),
-  username: z.string().min(4),
-  password: z.string().min(6),
-});
+const HASH_ROUNDS = 10;
 
 export const migrationRouter = createTRPCRouter({
-  /* Mutations */
-
   /**
    * @param id - The id of the application to update the status of
    * @param status - The status to update the application to

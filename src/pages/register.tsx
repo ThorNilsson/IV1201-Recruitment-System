@@ -6,7 +6,7 @@ import { signIn, useSession } from "next-auth/react";
 import AlreadySignedInPage from "../Components/AlreadySignedInPage";
 import LoadingPage from "../Components/LoadingPage";
 import InputField from "../Components/InputField";
-import { signupValidationObject } from "../server/api/routers/auth";
+import { signupValidationObject } from "../validation/validation";
 
 function Register() {
   /* React State */
@@ -33,9 +33,9 @@ function Register() {
   const addUser = api.auth.signup.useMutation();
 
   /* Validation */
-  const inputValidation = signupValidationObject.safeParse(newUser);
+  const validation = signupValidationObject.safeParse(newUser);
   const isFieldValid = (field: string) =>
-    inputValidation.success ? true : inputValidation.error.issues.find((i) => i.path[0] === field) === undefined;
+    validation.success ? true : validation.error.issues.find((i) => i.path[0] === field) === undefined;
 
   /* Handelers */
   const handleSignup = async () => {
@@ -72,12 +72,20 @@ function Register() {
       </h1>
       <form>
         <div className="grid gap-20 mb-6 md:grid-cols-2">
-        {InputField("name", text?.name, "text", newUser.name, true, handleUpdateNewUser, true)}
-        {InputField("surname", text?.surname, "text", newUser.surname, true, handleUpdateNewUser, true)}
-        {InputField("email", text?.email, "email", newUser.email, true, handleUpdateNewUser, true)}
-        {InputField("pnr", text?.pnr, "text", newUser.pnr, true, handleUpdateNewUser, true)}
-        {InputField("username", text?.username, "text", newUser.username, true, handleUpdateNewUser, true)}
-        {InputField("password", text?.password, "password", newUser.password, true, handleUpdateNewUser, true)} 
+          {InputField("name", text?.name, "text", newUser.name, true, handleUpdateNewUser, isFieldValid)}
+          {InputField("surname", text?.surname, "text", newUser.surname, true, handleUpdateNewUser, isFieldValid)}
+          {InputField("email", text?.email, "email", newUser.email, true, handleUpdateNewUser, isFieldValid)}
+          {InputField("pnr", text?.pnr, "text", newUser.pnr, true, handleUpdateNewUser, isFieldValid)}
+          {InputField("username", text?.username, "text", newUser.username, true, handleUpdateNewUser, isFieldValid)}
+          {InputField(
+            "password",
+            text?.password,
+            "password",
+            newUser.password,
+            true,
+            handleUpdateNewUser,
+            isFieldValid,
+          )}
         </div>
       </form>
       <button
