@@ -7,9 +7,13 @@ import AlreadySignedInPage from "../Components/AlreadySignedInPage";
 import LoadingPage from "../Components/LoadingPage";
 import InputField from "../Components/InputField";
 import { signupValidationObject } from "../validation/validation";
+import ErrorPage from "../Components/ErrorPage";
+import { Button, SubmitButton } from "../Components/Buttons";
+import { Description, Title } from "../Components/Typography";
 
 function Register() {
   /* React State */
+  const [isLoading, setLoading] = React.useState(false);
   const [newUser, setNewUser] = React.useState({
     username: "",
     password: "",
@@ -25,6 +29,7 @@ function Register() {
   /* Translations */
   const { locale } = useRouter();
   const text = translations[locale || "en"]?.registerPage;
+  const input = translations[locale || "en"]?.inputFields;
 
   /* Session */
   const { data: session } = useSession();
@@ -34,20 +39,14 @@ function Register() {
 
   /* Validation */
   const validation = signupValidationObject.safeParse(newUser);
-  const isFieldValid = (field: string) =>
+  const isValid = (field: string) =>
     validation.success ? true : validation.error.issues.find((i) => i.path[0] === field) === undefined;
 
   /* Handelers */
   const handleSignup = async () => {
-    if (newUser.username === "" || newUser.password === "") {
-      alert(text?.emptyFields);
-      return;
-    }
+    if (!validation.success) return;
+    setLoading(true);
     addUser.mutate(newUser, {
-      //username: z.string(), password: z.string(), email: z.string(), pnr: z.string(), surname: z.string()
-      onError() {
-        alert(text?.error);
-      },
       onSuccess: () => {
         signIn("credentials", {
           callbackUrl: "/",
@@ -59,41 +58,28 @@ function Register() {
   };
 
   /* Views */
-  if (!text || session === undefined) return <LoadingPage />;
+  if (addUser.error?.data?.code) return <ErrorPage errorCode={addUser.error.data.code} />;
+
+  if (!(text && input) || session === undefined) return <LoadingPage />;
 
   if (session?.user) return <AlreadySignedInPage />;
 
   return (
     <div className="flex flex-col space-y-7 items-center justify-center min-h-full">
-      <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">{text?.title}</h1>
+      <Title> {text.title} </Title>
+      <Description> {text.description} </Description>
 
-      <h1 className="mb-4 text-lg font-extrabold leading-none tracking-tight text-gray-900 dark:text-white">
-        {text?.description}
-      </h1>
-      <form>
+      <form onSubmit={handleSignup}>
         <div className="grid gap-20 mb-6 md:grid-cols-2">
-          {InputField("name", text?.name, "text", newUser.name, true, handleUpdateNewUser, isFieldValid)}
-          {InputField("surname", text?.surname, "text", newUser.surname, true, handleUpdateNewUser, isFieldValid)}
-          {InputField("email", text?.email, "email", newUser.email, true, handleUpdateNewUser, isFieldValid)}
-          {InputField("pnr", text?.pnr, "text", newUser.pnr, true, handleUpdateNewUser, isFieldValid)}
-          {InputField("username", text?.username, "text", newUser.username, true, handleUpdateNewUser, isFieldValid)}
-          {InputField(
-            "password",
-            text?.password,
-            "password",
-            newUser.password,
-            true,
-            handleUpdateNewUser,
-            isFieldValid,
-          )}
+          {InputField("name", input.name, "text", newUser.name, true, handleUpdateNewUser, isValid)}
+          {InputField("surname", input.surname, "text", newUser.surname, true, handleUpdateNewUser, isValid)}
+          {InputField("email", input.email, "email", newUser.email, true, handleUpdateNewUser, isValid)}
+          {InputField("pnr", input.pnr, "text", newUser.pnr, true, handleUpdateNewUser, isValid)}
+          {InputField("username", input.username, "text", newUser.username, true, handleUpdateNewUser, isValid)}
+          {InputField("password", input.password, "password", newUser.password, true, handleUpdateNewUser, isValid)}
         </div>
+        <SubmitButton label={text.submitBtn} isLoading={isLoading} disabled={!validation.success} />
       </form>
-      <button
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        onClick={handleSignup}
-      >
-        {text?.register}
-      </button>
     </div>
   );
 }

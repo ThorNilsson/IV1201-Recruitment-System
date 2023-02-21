@@ -30,33 +30,44 @@ const locale = {
   },
 
   /* Authentication */
-  loginPage: {
-    title: "Login",
-    description: "Login here to apply for a job at Lisseburg",
-    username: "Username",
-    password: "Password",
-    login: "Login",
-    error: "Failed to login, try again",
-    emptyFields: "Username or password cannot be empty",
-  },
-  alreadySignedInPage: {
-    alreadySignedIn: "You are already signed in",
-    signOut: "Sign out",
-    adminPage: "Admin page",
-    myApplicationPage: "My application",
-  },
-  registerPage: {
-    title: "Register",
-    description: "Register here to apply for a job at Lisseburg",
+  inputFields: {
     username: "Username",
     password: "Password",
     email: "Email",
     pnr: "Personal number",
     surname: "Surname",
     name: "Name",
-    register: "Register",
-    error: "Failed to create user, try another username",
-    emptyFields: "Username or password cannot be empty",
+  },
+  loginPage: {
+    title: "Login",
+    description: "Login here to apply for a job at Lisseburg",
+    submitBtn: "Login",
+    migrateBtn: "Old Account? Migrate Here!",
+
+    //error: "Failed to login, try again",
+    //emptyFields: "Username or password cannot be empty",
+  },
+  alreadySignedInPage: {
+    title: "You are already signed in",
+    signOutBtn: "Sign out",
+    adminPageBtn: "Admin page",
+    myApplicationPageBtn: "My application",
+  },
+  registerPage: {
+    title: "Register",
+    description: "Register here to apply for a job at Lisseburg",
+    submitBtn: "Register",
+
+    //error: "Failed to create user, try another username",
+    //emptyFields: "Username or password cannot be empty",
+  },
+  migrationPage: {
+    title: "Migrate account",
+    description: "Migrate your old account to the new system",
+    submitBtn: "Migrate",
+
+    //error: "Failed to migrate account, try again",
+    //emptyFields: "Email, password or username cannot be empty",
   },
 
   /* Client */

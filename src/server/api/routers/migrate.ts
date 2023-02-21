@@ -8,6 +8,7 @@
 import bcrypt from "bcrypt";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { migrationValidationObject } from "../../../validation/validation";
+import { TRPCError } from "@trpc/server";
 
 const HASH_ROUNDS = 10;
 
@@ -21,15 +22,21 @@ export const migrationRouter = createTRPCRouter({
    */
   createUserForOldApplication: publicProcedure.input(migrationValidationObject).mutation(async ({ ctx, input }) => {
     //Find application id by email address
-    const application = await ctx.prisma.application.findUniqueOrThrow({
-      where: {
-        email: input.email,
-      },
-      select: {
-        id: true,
-      },
-    });
+    const application = await ctx.prisma.application
+      .findUniqueOrThrow({
+        where: {
+          email: input.email,
+        },
+        select: {
+          id: true,
+        },
+      })
+      .catch(() => {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Old Application not found" });
+      });
+
     const hashedPassword = await bcrypt.hash(input.password, HASH_ROUNDS);
+
     //Update user with nothing if it exists, else create user and connect to application
     return ctx.prisma.user.upsert({
       where: {

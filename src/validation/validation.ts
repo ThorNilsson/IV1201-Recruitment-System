@@ -1,9 +1,12 @@
 import { z } from "zod";
 
-export const migrationValidationObject = z.object({
+export const loginValidationObject = z.object({
+  username: z.string().min(1),
+  password: z.string().min(1),
+});
+
+export const migrationValidationObject = loginValidationObject.extend({
   email: z.string().min(4).email(),
-  username: z.string().min(4),
-  password: z.string().min(6),
 });
 
 export const signupValidationObject = migrationValidationObject.extend({

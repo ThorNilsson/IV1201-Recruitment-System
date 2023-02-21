@@ -34,28 +34,28 @@ export default function AlreadySignedInPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">
       <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-        {user?.username}! {text.alreadySignedIn}
+        {user?.username}! {text.title}
       </h1>
       <div className="flex space-x-5 m-10">
         <button
           onClick={handleSignout}
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
-          {text.signOut}
+          {text.signOutBtn}
         </button>
         {user?.role?.name === "recruiter" ? (
           <Link
             href="/admin/applications"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
-            {text.adminPage}
+            {text.adminPageBtn}
           </Link>
         ) : (
           <Link
             href="/my-application"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
-            {text.myApplicationPage}
+            {text.myApplicationPageBtn}
           </Link>
         )}
       </div>

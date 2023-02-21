@@ -32,33 +32,39 @@ const locale: localeType = {
   },
 
   /* Authentication */
-  loginPage: {
-    title: "Logga in",
-    description: "Logga in här för att ansöka om ett jobb på Lisseborg",
-    username: "Användarnamn",
-    password: "Lösenord",
-    login: "Logga in",
-    error: "Fel användarnamn eller lösenord",
-    emptyFields: "Både användarnamn och lösenord måste fyllas i",
-  },
-  alreadySignedInPage: {
-    alreadySignedIn: "Du är redan inloggad",
-    signOut: "Logga ut",
-    adminPage: "Admin sida",
-    myApplicationPage: "Min ansökan",
-  },
-  registerPage: {
-    title: "Registrera",
-    description: "Registrera här för att ansöka om ett jobb på Lisseborg",
+  inputFields: {
     username: "Användarnamn",
     password: "Lösenord",
     email: "Email",
     pnr: "Personnummer",
     surname: "Efternamn",
     name: "Förnamn",
-    register: "Registrera",
-    error: "Ett fel uppstod, försök igen med ett annat användarnamn",
-    emptyFields: "Både användarnamn och lösenord måste fyllas i",
+  },
+  loginPage: {
+    title: "Logga in",
+    description: "Logga in här för att ansöka om ett jobb på Lisseborg",
+    submitBtn: "Logga in",
+    migrateBtn: "Gammalt konto? Migrera här!",
+    //error: "Fel användarnamn eller lösenord",
+    //emptyFields: "Både användarnamn och lösenord måste fyllas i",
+  },
+  alreadySignedInPage: {
+    title: "Du är redan inloggad",
+    signOutBtn: "Logga ut",
+    adminPageBtn: "Admin sida",
+    myApplicationPageBtn: "Min ansökan",
+  },
+  registerPage: {
+    title: "Registrera",
+    description: "Registrera här för att ansöka om ett jobb på Lisseborg",
+    submitBtn: "Registrera",
+    //error: "Ett fel uppstod, försök igen med ett annat användarnamn",
+    //emptyFields: "Både användarnamn och lösenord måste fyllas i",
+  },
+  migrationPage: {
+    title: "Överför ditt gamla konto",
+    description: "Skriv din tidigare epost och Välj ett nytt användarnamn och lösenord för ditt nya konto",
+    submitBtn: "Migrera",
   },
 
   /* Client */
