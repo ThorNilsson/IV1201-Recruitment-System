@@ -5,6 +5,7 @@ import { signIn, useSession } from "next-auth/react";
 import AlreadySignedInPage from "../Components/AlreadySignedInPage";
 import LoadingPage from "../Components/LoadingPage";
 import Loading from "../Components/Loading";
+import Link from "next/link";
 
 function Login() {
   /* React State */
@@ -84,6 +85,13 @@ function Login() {
           )}
         </div>
       </form>
+
+      <Link
+        href="/migrate-account"
+        className="text-white bg-blue-300 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        Old Account? Migrate Here!
+      </Link>
     </div>
   );
 }
