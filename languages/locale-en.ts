@@ -121,6 +121,7 @@ const locale = {
   },
 
   errors: {
+    retryBtn: "Try again",
     PARSE_ERROR: "The request body could not be parsed",
     BAD_REQUEST: "The request was malformed",
     INTERNAL_SERVER_ERROR: "Internal server error",

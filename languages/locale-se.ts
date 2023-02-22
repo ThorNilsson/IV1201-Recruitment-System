@@ -118,6 +118,7 @@ const locale: localeType = {
   },
 
   errors: {
+    retryBtn: "Försök igen",
     PARSE_ERROR: "Det gick inte att tolka svaret från servern",
     BAD_REQUEST: "Felaktig begäran",
     INTERNAL_SERVER_ERROR: "Ett fel uppstod på servern",

@@ -6,9 +6,11 @@
  */
 
 import React from "react";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";
 import { TRPCError } from "@trpc/server";
+import { Button } from "./Buttons";
+import { Title } from "./Typography";
 
 /**
  * @returns {React.ReactElement} - React component.
@@ -29,8 +31,10 @@ export default function ErrorPage({ errorCode }: { errorCode: TRPCError["code"] 
   /* Views */
   return (
     <div className="flex flex-col space-y-7 items-center justify-center min-h-full">
-      <div className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">❌ {text?.[errorCode]}</div>
-      <button onClick={handleReload}> Try again </button> //Todo: Add translation
+      <Title>❌ {text?.[errorCode]}</Title>
+      <Button onClick={handleReload} disabled>
+        {text?.retryBtn}
+      </Button>
     </div>
   );
 }
