@@ -9,6 +9,7 @@ import bcrypt from "bcrypt";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { migrationValidationObject } from "../../../validation/validation";
 import { HASH_ROUNDS } from "./auth";
+import { TRPCError } from "@trpc/server";
 
 export const migrationRouter = createTRPCRouter({
   /**
