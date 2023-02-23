@@ -15,6 +15,7 @@ import Loading from "../../../Components/Loading";
 import LoadingPage from "../../../Components/LoadingPage";
 import NoAccessPage from "../../../Components/NoAccessPage";
 import ErrorPage from "../../../Components/ErrorPage";
+import { Description, Subtitle, Title } from "../../../Components/Typography";
 
 /**
  * @returns {React.ReactElement} - React component.
@@ -71,13 +72,13 @@ export default function Applications() {
 
   return (
     <div className="flex flex-col space-y-7 items-center min-h-full">
-      {/* Title */}
-      <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{text.title}</h1>
+      <Title>{text.title}</Title>
+      <Description>{text.description}</Description>
 
       <div className="flex flex-row items-top space-x-10 ">
         {/* Filter manu */}
         <div className="flex flex-col space-y-5 min-w-screen/3">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{text.filters}</h1>
+          <Subtitle>{text.filters}</Subtitle>
           {!competences ? (
             <Loading />
           ) : (
@@ -96,9 +97,7 @@ export default function Applications() {
               </label>
             ))
           )}
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-            {resultCount} {text.results}
-          </h1>
+          <Subtitle>{`${resultCount} ${text.results}`}</Subtitle>
         </div>
 
         {/* List of aplicants */}

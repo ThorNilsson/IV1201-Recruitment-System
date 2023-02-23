@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import moment from "moment";
 
 const prisma = new PrismaClient();
 
@@ -61,6 +62,58 @@ async function main() {
       },
     ],
   });
+
+  //Add applications with  user
+  await prisma.application.createMany({
+    data: Array(50)
+      .fill(0)
+      .map((_, i) => ({
+        name: "Olle",
+        surname: `Bolle-${i}`,
+        pnr: `0113-80113${i}`,
+        email: `olle${i}@bolle.ob`,
+        status: "UNHANDLED",
+      })),
+  });
+  await prisma.user.createMany({
+    data: Array(50)
+      .fill(0)
+      .map((_, i) => ({
+        username: `OlleBolle${i}`,
+        password: bcrypt.hashSync(`OlleBolle${i}`, 10),
+        role_id: 2,
+        application_id: i + 1,
+      })),
+  });
+  await prisma.competence_profile.createMany({
+    data: Array(100)
+      .fill(0)
+      .map((_, i) => ({
+        years_of_experience: Math.floor(Math.random() * 8),
+        competence_id: Math.floor(Math.random() * 2 + 1),
+        application_id: Math.floor(Math.random() * 49 + 1),
+      })),
+  });
+
+  const getDates = () => {
+    const from_date = moment().add(Math.floor(Math.random() * 90), "days");
+    return {
+      from_date: from_date.toDate(),
+      to_date: moment(from_date)
+        .add(Math.floor(Math.random() * 7), "days")
+        .toDate(),
+    };
+  };
+
+  await prisma.availability.createMany({
+    data: Array(300)
+      .fill(0)
+      .map((_, i) => ({
+        ...getDates(),
+        application_id: Math.floor(Math.random() * 49 + 1),
+      })),
+  });
+
   await prisma.application.create({
     data: {
       name: "Thor",
@@ -96,9 +149,10 @@ async function main() {
       },
     },
   });
+
   // old applications with no user
   await prisma.application.createMany({
-    data: Array(100)
+    data: Array(20)
       .fill(0)
       .map((_, i) => ({
         name: `Plink${i}`,
