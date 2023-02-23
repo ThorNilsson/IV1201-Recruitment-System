@@ -62,9 +62,25 @@ const locale = {
   /* Client */
   myApplicationPage: {
     title: "My application",
-    description: "Here you can see your application",
-    noApplication: "You have not applied for a job yet",
-    createApplication: "Create application",
+    incompletePrompt: "Fill in competences & available working times and then hit Send to send your applicaiton",
+    applicationStatusKey: "Status:",
+    applicationStatus: {
+      /* what to display to the user */
+      ACCEPTED: "Accepted 😊",
+      REJECTED: "Rejected 😭",
+      UNHANDLED: "Waiting for recruiter response",
+      INCOMPLETE: "Incomplete ⚠",
+    },
+    competences: "Competences",
+    competence: "Competence",
+    years: "Years of experience",
+    availability: "Available periods for work",
+    from: "From",
+    to: "To",
+    delete: "Delete",
+    add: "+ Add",
+    edit: "Edit",
+    sumbit: "Send",
   },
 
   /* Admin */

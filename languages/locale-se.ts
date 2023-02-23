@@ -64,9 +64,25 @@ const locale: localeType = {
   /* Client */
   myApplicationPage: {
     title: "Min ansökan",
-    description: "Här kan du se din ansökan",
-    noApplication: "Du har inte ansökt om ett jobb än",
-    createApplication: "Skapa ansökan",
+    incompletePrompt: "Fyll i kompetenser & arbetstider och klicka sedan Skicka för att skicka in din ansökan",
+    applicationStatusKey: "Status:",
+    applicationStatus: {
+      /* what to display to the user */
+      ACCEPTED: "Antagen 😊",
+      REJECTED: "Nekad 😭",
+      UNHANDLED: "Väntar på rekryterares svar",
+      INCOMPLETE: "Inkomplett ⚠",
+    },
+    competences: "Kompetenser",
+    competence: "Kompetens",
+    years: "År erfarenhet",
+    availability: "Tillgängliga arbetstider",
+    from: "Från",
+    to: "Till",
+    delete: "Ta bort",
+    add: "+ Lägg till",
+    edit: "Redigera",
+    sumbit: "Skicka",
   },
 
   /* Admin */

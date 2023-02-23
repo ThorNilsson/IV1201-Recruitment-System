@@ -114,7 +114,7 @@ const enforceUserIsAuthedMiddleware = t.middleware(({ ctx, next }) => {
 /**
  * Reusable middleware that enforces users are logged in and have client status before running the procedure
  */
-const enforceUserIsAuthedClientMiddleware = t.middleware(({ ctx, next }) => {
+const enforceUserIsAuthedApplicantMiddleware = t.middleware(({ ctx, next }) => {
   if (!ctx.session?.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
@@ -153,12 +153,13 @@ const enforceUserIsAuthedAdminMiddleware = t.middleware(({ ctx, next }) => {
  * ? Maybe use this for logging or similar if it takes to long time to run???
  */
 const timingMiddleware = t.middleware(async ({ ctx, next }) => {
-  console.time(`Timing Middleware ${ctx.session?.user?.image} user ${ctx.session?.user?.name}`);
+  const label = `Timing Middleware ${ctx.session?.user?.image} user ${ctx.session?.user?.name}`;
+  console.time(label);
   const res = await next({ ctx });
-  console.timeEnd(`Timing Middleware ${ctx.session?.user?.image} user ${ctx.session?.user?.name}`);
+  console.timeEnd(label);
   return res;
 });
 
 export const protectedProcedure = t.procedure.use(timingMiddleware).use(enforceUserIsAuthedMiddleware);
-export const clientProcedure = t.procedure.use(timingMiddleware).use(enforceUserIsAuthedClientMiddleware);
+export const applicantProcedure = t.procedure.use(timingMiddleware).use(enforceUserIsAuthedApplicantMiddleware);
 export const adminProcedure = t.procedure.use(timingMiddleware).use(enforceUserIsAuthedAdminMiddleware);

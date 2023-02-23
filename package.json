@@ -26,6 +26,7 @@
     "next": "13.1.6",
     "next-auth": "^4.19.2",
     "react": "18.2.0",
+    "react-datepicker": "^4.10.0",
     "react-dom": "18.2.0",
     "superjson": "1.12.2",
     "zod": "^3.20.6"
@@ -35,6 +36,7 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.13.0",
     "@types/react": "^18.0.28",
+    "@types/react-datepicker": "^4.8.0",
     "@types/react-dom": "^18.0.10",
     "autoprefixer": "^10.4.13",
     "cypress": "^12.5.1",

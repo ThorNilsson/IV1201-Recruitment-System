@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { signupValidationObject } from "../../../validation/validation";
 
-const HASH_ROUNDS = 10;
+export const HASH_ROUNDS = 10;
 
 export const authRouter = createTRPCRouter({
   /* Queries */
@@ -13,8 +13,6 @@ export const authRouter = createTRPCRouter({
       where: { id: parseInt(ctx.session.user.email) },
       select: {
         username: true,
-        //role_id: true,
-        //person_id: true,
         role: { select: { name: true } },
       },
     });
