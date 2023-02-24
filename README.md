@@ -4,8 +4,19 @@ IV1201 project
 
 ## Description
 
-TODO
+Lisseborg Recruitment App is schoolproject in the course "Arkitektur och design av globala applikationer" at KTH for group 5.
+The system distinguishes between two types of users, applicants and recruiters. An applicant applies for a position within the company while a
+recruiter manages applications. The system is divided into two parts: The
+registration of job applications and the administration of applications.
+It was not necessary to implement all the functionality but most of it was done anyway.
 
+The project was done by using the T3 Stack which consisted the parts that can be read below.
+The project was done for school but is open for future developers to keep on working with it.
+## How to run
+1. Simply download the repo/project.
+2. Run "npm install" - this will install all the necessary dependencies
+3. After that run "npm run dev" to get the application running.
+4. Now the application should be up and running on your localhost (http://localhost:3000)
 ## Development
 
 ### Front-end to Back-end stack
