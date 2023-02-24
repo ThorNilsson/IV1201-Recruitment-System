@@ -63,7 +63,7 @@ function Login() {
         <SubmitButton label={text.submitBtn} isLoading={isLoading} disabled={!validation.success} />
       </form>
 
-      <LinkButton href="/migrate-account">{text.migrateBtn}</LinkButton>
+      <LinkButton href="/auth/migrate-account">{text.migrateBtn}</LinkButton>
     </div>
   );
 }

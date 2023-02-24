@@ -6,11 +6,16 @@ export const loginValidationObject = z.object({
 });
 
 export const migrationValidationObject = loginValidationObject.extend({
-  email: z.string().min(4).email(),
+  URL: z.string(),
 });
 
-export const signupValidationObject = migrationValidationObject.extend({
+export const signupValidationObject = loginValidationObject.extend({
+  email: z.string().min(4).email(),
   pnr: z.string().min(10).max(12),
   surname: z.string().min(1),
   name: z.string().min(1),
+});
+
+export const migrationRequestValidationObject = z.object({
+  email: z.string().min(4).email(),
 });
