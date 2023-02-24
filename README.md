@@ -13,10 +13,21 @@ It was not necessary to implement all the functionality but most of it was done 
 The project was done by using the T3 Stack which consisted the parts that can be read below.
 The project was done for school but is open for future developers to keep on working with it.
 ## How to run
-1. Simply download the repo/project.
-2. Run "npm install" - this will install all the necessary dependencies
+1. Simply clone the repo/project
+2. Run "npm install" - this will install all the necessary dependencies and create/recreate the Prisma client which is the interface to the database.
+4. Copy the .env.example and rename to .env and make sure to the envirement variables are up to date.
 3. After that run "npm run dev" to get the application running.
 4. Now the application should be up and running on your localhost (http://localhost:3000)
+
+## Other functionalities
+1. To view the database run "npx prsima studio"
+2. To seed the test database run "npm run db:reset" and "npm run db:seed"
+3. To add a new language copy the locale-se.ts file in the languages folder and rename to "locale-[insert two letter country code].ts" and do your translations. The translation files need to have the same fields as the default "locale-en.ts" file or else typescript will mark the errors.
+4. To enable linting download the Rome pluggin in VS code.
+5. To enable typescript download the JavaScript and TypeScript pluggin in VS code.
+6. To run a test locally run "npm run test-e2e"
+7. To run a build locally run "npm run build"
+
 ## Development
 
 ### Front-end to Back-end stack
