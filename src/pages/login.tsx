@@ -44,7 +44,9 @@ function Login() {
   };
 
   /* Views */
-  if (!(text && input) || session === undefined) return <LoadingPage />;
+  if (session === undefined) return <></>;
+
+  if (!(text && input)) return <LoadingPage />;
 
   if (session?.user) return <AlreadySignedInPage />;
 

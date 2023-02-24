@@ -8,6 +8,8 @@
 import { z } from "zod";
 import { createTRPCRouter, adminProcedure } from "../trpc";
 import { application_status } from "@prisma/client";
+import { logger } from "../../log";
+import { TRPCError } from "@trpc/server";
 
 export const adminRouter = createTRPCRouter({
   /* Queries */
@@ -128,7 +130,7 @@ export const adminRouter = createTRPCRouter({
   updateApplicationStatus: adminProcedure
     .input(z.object({ id: z.number(), status: z.nativeEnum(application_status), updatedAt: z.date() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.prisma.application.updateMany({
+      const numberOfUpdatedApplications = await ctx.prisma.application.updateMany({
         where: {
           id: input.id,
           updatedAt: input.updatedAt,
@@ -140,5 +142,14 @@ export const adminRouter = createTRPCRouter({
           status: input.status,
         },
       });
+
+      if (numberOfUpdatedApplications.count !== 1) {
+        logger.error(`Application ${input.id} was not updated by user ${ctx.session.user.email}`);
+        throw new TRPCError({ code: "CONFLICT", message: "Application was not updated" });
+      }
+
+      logger.info(`Application ${input.id} had status changed to ${input.status} by user ${ctx.session.user.email}`);
+
+      return true;
     }),
 });

@@ -12,8 +12,6 @@ import { translations } from "../../languages/translations";
 import { api } from "../utils/api";
 import AlreadySignedInPage from "../Components/AlreadySignedInPage";
 import InputField from "../Components/InputField";
-import Loading from "../Components/Loading";
-import LoadingPage from "../Components/LoadingPage";
 import { migrationValidationObject } from "../validation/validation";
 import ErrorPage from "../Components/ErrorPage";
 import { SubmitButton } from "../Components/Buttons";
@@ -25,7 +23,6 @@ import { Description, Title } from "../Components/Typography";
 export default function MigrateAccount() {
   /* React State */
   const [newUser, setNewUser] = React.useState({ email: "", username: "", password: "" });
-  const [isLoading, setLoading] = React.useState(false);
   const handleUpdateNewUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewUser({ ...newUser, [event.target.name]: event.target.value });
   };
@@ -49,15 +46,9 @@ export default function MigrateAccount() {
   /* Handelers */
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     if (!validation.success) return;
-
     e.preventDefault();
-    setLoading(true);
 
     migrateAccount.mutate(newUser, {
-      onError() {
-        //alert(error.message);
-        setLoading(false);
-      },
       onSuccess: () => {
         signIn("credentials", {
           callbackUrl: "/",
@@ -69,11 +60,11 @@ export default function MigrateAccount() {
   };
 
   /* Views */
-  if (migrateAccount.error?.data?.code) return <ErrorPage errorCode={migrateAccount.error.data.code} />;
-
-  if (!(text && input) || session === undefined) return <LoadingPage />;
+  if (!(text && input) || session === undefined) return <></>;
 
   if (session?.user) return <AlreadySignedInPage />;
+
+  if (migrateAccount.error?.data?.code) return <ErrorPage errorCode={migrateAccount.error.data.code} />;
 
   return (
     <div className="flex flex-col space-y-7 items-center justify-center min-h-full">
@@ -86,7 +77,7 @@ export default function MigrateAccount() {
           {InputField("username", input.username, "text", newUser.username, true, handleUpdateNewUser, isValid)}
           {InputField("password", input.password, "password", newUser.password, true, handleUpdateNewUser, isValid)}
         </div>
-        <SubmitButton label={text.submitBtn} isLoading={isLoading} disabled={!validation.success} />
+        <SubmitButton label={text.submitBtn} isLoading={migrateAccount.isLoading} disabled={!validation.success} />
       </form>
     </div>
   );

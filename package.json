@@ -30,6 +30,7 @@
     "react-datepicker": "^4.10.0",
     "react-dom": "18.2.0",
     "superjson": "1.12.2",
+    "winston": "^3.8.2",
     "zod": "^3.20.6"
   },
   "devDependencies": {

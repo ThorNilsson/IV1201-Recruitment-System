@@ -10,8 +10,27 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { migrationValidationObject } from "../../../validation/validation";
 import { HASH_ROUNDS } from "./auth";
 import { TRPCError } from "@trpc/server";
+import { logger } from "../../log";
+import { z } from "zod";
 
 export const migrationRouter = createTRPCRouter({
+  /* Mutations */
+  createMigrationURL: publicProcedure.input(z.object({ email: z.string() })).mutation(async ({ ctx, input }) => {
+    const application = await ctx.prisma.application
+      .findUniqueOrThrow({
+        where: {
+          email: input.email,
+        },
+        select: {
+          id: true,
+        },
+      })
+      .catch(() => {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Old Application not found" });
+      });
+
+    logger.info(`A URL was created for  old application ${application.id}`);
+  }),
   /**
    * @param id - The id of the application to update the status of
    * @param status - The status to update the application to
@@ -36,12 +55,11 @@ export const migrationRouter = createTRPCRouter({
 
     const hashedPassword = await bcrypt.hash(input.password, HASH_ROUNDS);
 
-    //Update user with nothing if it exists, else create user and connect to application
-    return ctx.prisma.user.upsert({
+    const newUser = await ctx.prisma.user.upsert({
       where: {
         application_id: application.id,
       },
-      update: {},
+      update: {}, // Update nothing
       create: {
         username: input.username,
         password: hashedPassword,
@@ -53,5 +71,9 @@ export const migrationRouter = createTRPCRouter({
         },
       },
     });
+
+    logger.info(`New user was created for old application ${application.id}`);
+
+    return newUser;
   }),
 });
