@@ -36,19 +36,20 @@ export default function Applications() {
 
   /* Session */
   const { data: session } = useSession();
+  const isRecruiter = session?.user?.image === "recruiter";
 
   /* Queries */
-  const { data: competences, error: competencesErr } = api.admin.getCompetences.useQuery();
-  const { data: resultCount, error: resultCountErr } = api.admin.getFilterdApplicationPreviewCount.useQuery({
-    filter: filter,
+  const { data: competences, error: competencesErr } = api.admin.getCompetences.useQuery(undefined, {
+    enabled: isRecruiter,
   });
+  const { data: resultCount, error: resultCountErr } = api.admin.getFilterdApplicationPreviewCount.useQuery(
+    { filter: filter },
+    { enabled: isRecruiter },
+  );
   const { data: applications, error: applicationsErr } = api.admin.getFilterdApplicationPrev.useQuery(
     { filter: filter, skip: page * RES_PER_PAGE, take: RES_PER_PAGE },
-    { enabled: !!resultCount || resultCount === 0 },
+    { enabled: isRecruiter },
   );
-
-  /* Constants */
-  const pages = resultCount ? [...Array(Math.ceil(resultCount / RES_PER_PAGE)).keys()] : [];
 
   /* Handlers */
   const handlePageIncrement = () =>
@@ -62,13 +63,15 @@ export default function Applications() {
   };
 
   /* Views */
+  if (session === undefined) return <></>;
+
+  if (session?.user?.image !== "recruiter") return <NoAccessPage />;
+
+  if (!(text && compText)) return <LoadingPage />;
+
   if (competencesErr?.data?.code) return <ErrorPage errorCode={competencesErr.data.code} />;
   if (resultCountErr?.data?.code) return <ErrorPage errorCode={resultCountErr.data.code} />;
   if (applicationsErr?.data?.code) return <ErrorPage errorCode={applicationsErr.data.code} />;
-
-  if (!(text && compText) || session === undefined) return <LoadingPage />;
-
-  if (session?.user?.image !== "recruiter") return <NoAccessPage />;
 
   return (
     <div className="flex flex-col space-y-7 items-center min-h-full">

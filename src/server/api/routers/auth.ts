@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { signupValidationObject } from "../../../validation/validation";
+import { logger } from "../../log";
 
 export const HASH_ROUNDS = 10;
 
@@ -22,7 +23,7 @@ export const authRouter = createTRPCRouter({
   signup: publicProcedure.input(signupValidationObject).mutation(async ({ input, ctx }) => {
     const hashedPassword = await bcrypt.hash(input.password, HASH_ROUNDS);
 
-    return ctx.prisma.user.create({
+    const user = await ctx.prisma.user.create({
       data: {
         username: input.username,
         password: hashedPassword,
@@ -37,5 +38,9 @@ export const authRouter = createTRPCRouter({
         },
       },
     });
+
+    logger.info(`User ${user.id} was created`);
+
+    return user;
   }),
 });

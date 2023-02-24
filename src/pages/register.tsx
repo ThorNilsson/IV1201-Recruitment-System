@@ -4,16 +4,14 @@ import { translations } from "../../languages/translations";
 import { api } from "../utils/api";
 import { signIn, useSession } from "next-auth/react";
 import AlreadySignedInPage from "../Components/AlreadySignedInPage";
-import LoadingPage from "../Components/LoadingPage";
 import InputField from "../Components/InputField";
 import { signupValidationObject } from "../validation/validation";
 import ErrorPage from "../Components/ErrorPage";
-import { Button, SubmitButton } from "../Components/Buttons";
+import { SubmitButton } from "../Components/Buttons";
 import { Description, Title } from "../Components/Typography";
 
 function Register() {
   /* React State */
-  const [isLoading, setLoading] = React.useState(false);
   const [newUser, setNewUser] = React.useState({
     username: "",
     password: "",
@@ -45,24 +43,23 @@ function Register() {
   /* Handelers */
   const handleSignup = async () => {
     if (!validation.success) return;
-    setLoading(true);
     addUser.mutate(newUser, {
-      onSuccess: () => {
+      onSuccess: (res) => {
         signIn("credentials", {
           callbackUrl: "/",
-          username: newUser.username,
-          password: newUser.password,
+          username: res.username,
+          password: res.password,
         });
       },
     });
   };
 
   /* Views */
-  if (addUser.error?.data?.code) return <ErrorPage errorCode={addUser.error.data.code} />;
-
-  if (!(text && input) || session === undefined) return <LoadingPage />;
+  if (!(text && input) || session === undefined) return <> </>;
 
   if (session?.user) return <AlreadySignedInPage />;
+
+  if (addUser.error?.data?.code) return <ErrorPage errorCode={addUser.error.data.code} />;
 
   return (
     <div className="flex flex-col space-y-7 items-center justify-center min-h-full">
@@ -78,7 +75,7 @@ function Register() {
           {InputField("username", input.username, "text", newUser.username, true, handleUpdateNewUser, isValid)}
           {InputField("password", input.password, "password", newUser.password, true, handleUpdateNewUser, isValid)}
         </div>
-        <SubmitButton label={text.submitBtn} isLoading={isLoading} disabled={!validation.success} />
+        <SubmitButton label={text.submitBtn} isLoading={addUser.isLoading} disabled={!validation.success} />
       </form>
     </div>
   );

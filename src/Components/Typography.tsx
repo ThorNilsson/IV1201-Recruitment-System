@@ -17,5 +17,5 @@ export function Description({ children }: { children: React.ReactNode }) {
 }
 
 export function Text({ children }: { children: React.ReactNode }) {
-  return <p className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">{children}</p>;
+  return <p className="font-normal text-gray-700 dark:text-gray-400">{children}</p>;
 }

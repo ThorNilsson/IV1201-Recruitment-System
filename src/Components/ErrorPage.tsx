@@ -32,7 +32,7 @@ export default function ErrorPage({ errorCode }: { errorCode: TRPCError["code"] 
   return (
     <div className="flex flex-col space-y-7 items-center justify-center min-h-full">
       <Title>❌ {text?.[errorCode]}</Title>
-      <Button onClick={handleReload} disabled>
+      <Button onClick={handleReload} disabled={false}>
         {text?.retryBtn}
       </Button>
     </div>
