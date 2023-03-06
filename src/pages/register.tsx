@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FormEvent } from "react";
 import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";
 import { api } from "../utils/api";
@@ -41,14 +41,18 @@ function Register() {
     validation.success ? true : validation.error.issues.find((i) => i.path[0] === field) === undefined;
 
   /* Handelers */
-  const handleSignup = async () => {
+  const handleSignup = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (!validation.success) return;
+
     addUser.mutate(newUser, {
       onSuccess: (res) => {
+        console.log(res);
         signIn("credentials", {
           callbackUrl: "/",
-          username: res.username,
-          password: res.password,
+          username: newUser.username,
+          password: newUser.password,
         });
       },
     });
@@ -60,6 +64,8 @@ function Register() {
   if (session?.user) return <AlreadySignedInPage />;
 
   if (addUser.error?.data?.code) return <ErrorPage errorCode={addUser.error.data.code} />;
+
+  console.log(addUser.error);
 
   return (
     <div className="flex flex-col space-y-7 items-center justify-center min-h-full">
