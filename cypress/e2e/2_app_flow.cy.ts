@@ -73,7 +73,7 @@ describe("The app", () => {
     cy.visit("/auth/migrate-account");
     cy.get("input[name=email]").type(`${email}{enter}`);
 
-    cy.url().should("include", "/auth/migrate-account");
+    cy.url().should("not.match", /.*migrate-account$/); // url shoud now incluide the random id
 
     cy.get("input[name=username]").type(username);
     cy.get("input[name=password]").type(`${password}{enter}`);
