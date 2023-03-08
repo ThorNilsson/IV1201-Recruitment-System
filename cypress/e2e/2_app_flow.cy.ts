@@ -166,7 +166,7 @@ describe("The app", () => {
     cy.visit("/admin/applications");
     cy.contains("Kalle Anka").should("not.exist");
   });
-  it("can do a full use case flow", () => {
+  it.skip("can do a full use case flow", () => {
     // register, apply, login as admin, accept application (+ maybe more)
     // TODO (never)
   });
