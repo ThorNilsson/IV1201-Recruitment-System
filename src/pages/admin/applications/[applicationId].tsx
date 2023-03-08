@@ -29,7 +29,6 @@ function Application() {
   /* Translations */
   const { locale } = useRouter();
   const applText = translations[locale || "en_US"]?.applicationPage;
-  const compText = translations[locale || "en_US"]?.competences;
 
   /* Session */
   const { data: session } = useSession();
@@ -57,7 +56,7 @@ function Application() {
 
   if (session?.user?.image !== "recruiter") return <NoAccessPage />;
 
-  if (!(applText && compText && application)) return <LoadingPage />;
+  if (!(applText && application)) return <LoadingPage />;
 
   if (updateApplication.error?.data?.code) return <ErrorPage errorCode={updateApplication.error?.data?.code} />;
 
@@ -66,7 +65,7 @@ function Application() {
       {/* Aplicant information */}
       <Title>{applText.title}</Title>
       <Subtitle>{`${application.name} ${application.surname}`}</Subtitle>
-      <Text>{`${application.status} - ${new Date(application.createdAt).toLocaleDateString(locale)}`}</Text>
+      <Text>{`${application.status} - ${new Date(application.createdAt).toDateString()}`}</Text>
       <Text>{`${application.email} - ${application.pnr}`}</Text>
 
       {/* Competence profiles */}
@@ -74,7 +73,7 @@ function Application() {
       <div className="flex flex-col gap-4 rounded-xl bg-white/10 p-4">
         {application.competence_profile.map((competence_profile) => (
           <Text key={competence_profile.id}>
-            {`${compText[competence_profile.competence.name]} ${competence_profile.years_of_experience} ${
+            {`${competence_profile.competence.competence_name[0]?.name || "?"} ${competence_profile.years_of_experience} ${
               applText.year
             }`}
           </Text>
@@ -86,9 +85,9 @@ function Application() {
       <div className="flex flex-col gap-4 rounded-xl bg-white/10 p-4">
         {application.availability.map((availability) => (
           <Text key={availability.id}>
-            {`${new Date(availability.from_date).toLocaleDateString(locale)} -> ${new Date(
+            {`${new Date(availability.from_date).toDateString()} -> ${new Date(
               availability.to_date,
-            ).toLocaleDateString(locale)}`}
+            ).toDateString()}`}
           </Text>
         ))}
       </div>

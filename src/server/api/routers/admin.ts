@@ -7,7 +7,7 @@
 
 import { z } from "zod";
 import { createTRPCRouter, adminProcedure } from "../trpc";
-import { application_status } from "@prisma/client";
+import { application_status, language } from "@prisma/client";
 import { logger } from "../../log";
 import { TRPCError } from "@trpc/server";
 
@@ -19,7 +19,7 @@ export const adminRouter = createTRPCRouter({
    * @description - Get the number of unhandled applications filterd (used for pagination)
    */
   getFilterdApplicationPreviewCount: adminProcedure
-    .input(z.object({ filter: z.string().array() }))
+    .input(z.object({ filter: z.number().array() }))
     .output(z.number())
     .query(async ({ ctx, input }) => {
       return ctx.prisma.application.count({
@@ -30,9 +30,7 @@ export const adminRouter = createTRPCRouter({
               ? {
                   some: {
                     competence: {
-                      name: {
-                        in: input.filter,
-                      },
+                      id: { in: input.filter },
                     },
                   },
                 }
@@ -48,7 +46,14 @@ export const adminRouter = createTRPCRouter({
    * @description - Get all applications that are unhandled and filtered by competences, if no competences are provided all unhandled applications will return
    */
   getFilterdApplicationPrev: adminProcedure
-    .input(z.object({ filter: z.string().array(), skip: z.number().nullable(), take: z.number().nullable() }))
+    .input(
+      z.object({
+        filter: z.number().array(),
+        lang: z.string(),
+        skip: z.number().nullable(),
+        take: z.number().nullable(),
+      }),
+    )
     .query(async ({ ctx, input }) => {
       return ctx.prisma.application.findMany({
         skip: input.skip || 0,
@@ -60,8 +65,13 @@ export const adminRouter = createTRPCRouter({
               ? {
                   some: {
                     competence: {
-                      name: {
-                        in: input.filter,
+                      id: { in: input.filter },
+                      AND: {
+                        competence_name: {
+                          some: {
+                            lang: input.lang as language,
+                          },
+                        },
                       },
                     },
                   },
@@ -98,7 +108,11 @@ export const adminRouter = createTRPCRouter({
         pnr: true,
         competence_profile: {
           include: {
-            competence: true,
+            competence: {
+              include: {
+                competence_name: true,
+              },
+            },
           },
         },
         availability: true,

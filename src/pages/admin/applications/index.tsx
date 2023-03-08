@@ -26,20 +26,19 @@ export default function Applications() {
   const RES_PER_PAGE = 10;
 
   /* React State */
-  const [filter, setFilter] = React.useState<string[]>([]);
+  const [filter, setFilter] = React.useState<number[]>([]);
   const [page, setPage] = React.useState(0);
 
   /* Translations */
   const { locale } = useRouter();
   const text = translations[locale || "en_US"]?.applicationsPage;
-  const compText = translations[locale || "en_US"]?.competences;
 
   /* Session */
   const { data: session } = useSession();
   const isRecruiter = session?.user?.image === "recruiter";
 
   /* Queries */
-  const { data: competences, error: competencesErr } = api.admin.getCompetences.useQuery(undefined, {
+  const { data: competences, error: competencesErr } = api.applicant.getCompetences.useQuery({lang: locale || "en_US"}, {
     enabled: isRecruiter,
   });
   const { data: resultCount, error: resultCountErr } = api.admin.getFilterdApplicationPreviewCount.useQuery(
@@ -47,7 +46,7 @@ export default function Applications() {
     { enabled: isRecruiter },
   );
   const { data: applications, error: applicationsErr } = api.admin.getFilterdApplicationPrev.useQuery(
-    { filter: filter, skip: page * RES_PER_PAGE, take: RES_PER_PAGE },
+    { filter: filter, lang: locale || "en_US", skip: page * RES_PER_PAGE, take: RES_PER_PAGE },
     { enabled: isRecruiter },
   );
 
@@ -56,10 +55,10 @@ export default function Applications() {
     setPage((page) => Math.min(Math.floor((resultCount || 0) / RES_PER_PAGE), page + 1));
   const handlePageDecrement = () => setPage((page) => Math.max(0, page - 1));
   const handleSetPage = (page: number) => setPage(page);
-  const handleFilterToggle = (competence: string) => {
-    filter.includes(competence)
-      ? setFilter(filter.filter((item) => item !== competence))
-      : setFilter([...filter, competence]);
+  const handleFilterToggle = (competence_id: number) => {
+    filter.includes(competence_id)
+      ? setFilter(filter.filter((item) => item !== competence_id))
+      : setFilter([...filter, competence_id]);
   };
 
   /* Views */
@@ -67,7 +66,7 @@ export default function Applications() {
 
   if (session?.user?.image !== "recruiter") return <NoAccessPage />;
 
-  if (!(text && compText)) return <LoadingPage />;
+  if (!text) return <LoadingPage />;
 
   if (competencesErr?.data?.code) return <ErrorPage errorCode={competencesErr.data.code} />;
   if (resultCountErr?.data?.code) return <ErrorPage errorCode={resultCountErr.data.code} />;
@@ -91,11 +90,11 @@ export default function Applications() {
                   type="checkbox"
                   value="on"
                   className="sr-only peer"
-                  onChange={() => handleFilterToggle(competence.name)}
+                  onChange={() => handleFilterToggle(competence.id)}
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
                 <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                  {compText[competence.name]}
+                  {competence.competence_name[0]?.name || "?"}
                 </span>
               </label>
             ))

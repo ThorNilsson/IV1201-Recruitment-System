@@ -15,14 +15,19 @@ export const applicantRouter = createTRPCRouter({
    *  @returns {Promise<Competence[]>} - Array of competences
    *  @description - Get all competences with id and name
    */
-  getCompetences: protectedProcedure.input(z.object({ lang: z.string() })).query(async ({ ctx }) => {
+  getCompetences: protectedProcedure.input(z.object({ lang: z.string() })).query(async ({ ctx, input }) => {
     return ctx.prisma.competence.findMany({
-      where: {
-        lang: lang as language,
-      },
       select: {
         id: true,
-        name: true,
+        competence_name: {
+          select: {
+            lang: true,
+            name: true,
+          },
+          where: {
+            lang: input.lang as language,
+          },
+        }
       },
     });
   }),
@@ -46,7 +51,11 @@ export const applicantRouter = createTRPCRouter({
               availability: true,
               competence_profile: {
                 include: {
-                  competence: true,
+                  competence: {
+                    include: {
+                      competence_name: true,
+                    }
+                  },
                 },
               },
             },

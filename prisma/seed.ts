@@ -17,35 +17,38 @@ async function main() {
       },
     ],
   });
-  await prisma.competence.createMany({
+  await prisma.competence.create({data: {}});
+  await prisma.competence.create({data: {}});
+  await prisma.competence.create({data: {}});
+  await prisma.competence_name.createMany({
     data: [
       {
-        // id: 1,
-        lang: language.en_US,
+        competence_id: 1,
+        // lang: language.en_US,
         name: "ticket sales",
       },
       {
-        // id: 2,
-        lang: language.en_US,
+        competence_id: 2,
+        // lang: language.en_US,
         name: "lotteries",
       },
       {
-        // id: 3,
-        lang: language.en_US,
+        competence_id: 3,
+        // lang: language.en_US,
         name: "roller coaster operation",
       },
       {
-        id: 1,
+        competence_id: 1,
         lang: language.sv_SE,
         name: "Biljettförsäljning",
       },
       {
-        id: 2,
+        competence_id: 2,
         lang: language.sv_SE,
         name: "Lotteri",
       },
       {
-        id: 3,
+        competence_id: 3,
         lang: language.sv_SE,
         name: "Berg- och dalbaneoperatör",
       },
