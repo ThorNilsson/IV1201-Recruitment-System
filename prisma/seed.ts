@@ -172,6 +172,47 @@ async function main() {
     },
   });
 
+  await prisma.application.create({
+    data: {
+      name: "Kalle",
+      surname: "Anka",
+      pnr: "123456-7890",
+      email: "kalle.ank@burg.se",
+      status: "UNHANDLED",
+      competence_profile: {
+        create: [
+          {
+            years_of_experience: 2,
+            competence_id: 2,
+          },
+          {
+            years_of_experience: 4,
+            competence_id: 3,
+          },
+        ],
+      },
+      availability: {
+        create: [
+          {
+            from_date: new Date("2023-06-01"),
+            to_date: new Date("2023-08-01"),
+          },
+          {
+            from_date: new Date("2023-05-02"),
+            to_date: new Date("2023-05-07"),
+          },
+        ],
+      },
+      user: {
+        create: {
+          username: "Kalle",
+          password: bcrypt.hashSync("kalle", 10),
+          role_id: 2, // applicant
+        },
+      },
+    },
+  });
+
   // old applications with no user
   await prisma.application.createMany({
     data: Array(20)
