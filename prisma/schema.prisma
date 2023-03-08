@@ -20,6 +20,7 @@ model application {
   user               user?
   availability       availability[]
   competence_profile competence_profile[]
+  migration          migration?
 }
 
 enum application_status {
@@ -61,6 +62,12 @@ model competence_profile {
   application         application @relation(fields: [application_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   competence_id       Int
   competence          competence  @relation(fields: [competence_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model migration {
+  application_id Int         @id
+  application    application @relation(fields: [application_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  url            String
 }
 
 model role {

@@ -82,6 +82,7 @@ async function main() {
   });
 
   //Add applications with  user
+  /*
   await prisma.application.createMany({
     data: Array(50)
       .fill(0)
@@ -130,7 +131,7 @@ async function main() {
         ...getDates(),
         application_id: Math.floor(Math.random() * 49 + 1),
       })),
-  });
+  });*/
 
   await prisma.application.create({
     data: {

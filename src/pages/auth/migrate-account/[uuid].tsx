@@ -63,7 +63,7 @@ export default function MigrateAccount() {
       {
         onSuccess: () => {
           signIn("credentials", {
-            callbackUrl: "/",
+            callbackUrl: "/my-application",
             username: newUser.username,
             password: newUser.password,
           });

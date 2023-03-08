@@ -45,13 +45,62 @@ describe("The app", () => {
     cy.contains("Sign in failed.").should("exist");
   });
   it("successfully registres as applicant", () => {
-    // TODO
+    const name = "Alice";
+    const surname = "Doe";
+    const email = "Alice@doe.tech";
+    const pnr = "1234567890";
+    const username = "aliceD";
+    const password = "alicelovesdogs";
+
+    cy.visit("/register");
+
+    cy.get("input[name=name]").type(name);
+    cy.get("input[name=surname]").type(surname);
+    cy.get("input[name=email]").type(email);
+    cy.get("input[name=pnr]").type(pnr);
+    cy.get("input[name=username]").type(username);
+    cy.get("input[name=password]").type(`${password}{enter}`);
+
+    cy.url().should("include", "/my-application");
+
+    cy.getCookie("next-auth.session-token").should("exist");
   });
   it("successfully migrates applicant old account", () => {
-    // TODO
+    const email = "plinnk15.plonkee@thunder.vh";
+    const username = "Plinkan15";
+    const password = "Plinkan15";
+
+    cy.visit("/auth/migrate-account");
+    cy.get("input[name=email]").type(`${email}{enter}`);
+
+    cy.url().should("not.match", /.*migrate-account$/); // url shoud now incluide the random id
+
+    cy.get("input[name=username]").type(username);
+    cy.get("input[name=password]").type(`${password}{enter}`);
+
+    cy.url().should("include", "/my-application");
   });
   it("alerts user when fields in register are invalid", () => {
-    // TODO
+    const name = "Alice";
+    const surname = "Doe";
+    const email = "Alice@doe.tech";
+    const pnr = "1234567890";
+    const username = "aliceD";
+    const password = "alicelovesdogs";
+
+    cy.visit("/register");
+
+    cy.get("input[name=name]").type(name);
+    cy.get("input[name=surname]").type(surname);
+    cy.get("input[name=email]").type(email);
+    cy.get("input[name=pnr]").type(pnr);
+    cy.get("input[name=username]").type(username);
+    cy.get("input[name=password]").type(`${password}{enter}`);
+
+    cy.url().should("include", "/my-application");
+
+    cy.getCookie("next-auth.session-token").should("not-exist");
+    cy.contains("The request failed due to preconditions").should("exist");
   });
   it("shows error when an already used email is used on register", () => {
     // TODO

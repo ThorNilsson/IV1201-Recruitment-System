@@ -50,7 +50,7 @@ function Register() {
       onSuccess: (res) => {
         console.log(res);
         signIn("credentials", {
-          callbackUrl: "/",
+          callbackUrl: "/my-application",
           username: newUser.username,
           password: newUser.password,
         });
