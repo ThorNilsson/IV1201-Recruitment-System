@@ -78,18 +78,6 @@ export const adminRouter = createTRPCRouter({
       });
     }),
   /**
-   *  @returns {Promise<Competence[]>} - Array of competences
-   *  @description - Get all competences with id and name
-   */
-  getCompetences: adminProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.competence.findMany({
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-  }),
-  /**
    * @param id - The id of the application to get
    * @returns {Promise<Application>} - The application with the given id
    * @description - Get an application with the given id, including competence profiles and availabilies

@@ -19,8 +19,8 @@ function Login() {
 
   /* Translations */
   const { locale } = useRouter();
-  const text = translations[locale || "en"]?.loginPage;
-  const input = translations[locale || "en"]?.inputFields;
+  const text = translations[locale || "en_US"]?.loginPage;
+  const input = translations[locale || "en_US"]?.inputFields;
 
   /* Session */
   const { data: session } = useSession();

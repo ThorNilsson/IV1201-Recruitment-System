@@ -13,7 +13,7 @@ import PageBackground from "../Components/PageBackground";
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
   /* Translations */
   const { locale } = useRouter();
-  const text = translations[locale || "en"]?.meta;
+  const text = translations[locale || "en_US"]?.meta;
 
   /* Views */
   return (

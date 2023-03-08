@@ -31,8 +31,8 @@ export default function MigrateAccount() {
   /* Translations */
   const router = useRouter();
   const { locale } = router;
-  const text = translations[locale || "en"]?.migrationPage;
-  const input = translations[locale || "en"]?.inputFields;
+  const text = translations[locale || "en_US"]?.migrationPage;
+  const input = translations[locale || "en_US"]?.inputFields;
 
   /* Session */
   const { data: session } = useSession();

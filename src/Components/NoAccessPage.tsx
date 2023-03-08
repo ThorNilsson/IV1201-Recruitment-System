@@ -16,7 +16,7 @@ import { translations } from "../../languages/translations";
 export default function NoAccessPage() {
   /* Translations */
   const { locale } = useRouter();
-  const text = translations[locale || "en"]?.app;
+  const text = translations[locale || "en_US"]?.app;
 
   return (
     <div className="flex min-h-screen flex-col space-y-5 items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">

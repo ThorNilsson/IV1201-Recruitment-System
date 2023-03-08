@@ -18,7 +18,7 @@ import Loading from "./Loading";
 function Footer() {
   /* Translations */
   const { locale } = useRouter();
-  const text = translations[locale || "en"]?.footer;
+  const text = translations[locale || "en_US"]?.footer;
 
   /* Views */
   if (text == null) return <Loading />;

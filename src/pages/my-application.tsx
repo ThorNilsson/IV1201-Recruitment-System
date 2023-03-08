@@ -21,20 +21,19 @@ export default function MyApplication() {
 
   /* Translations */
   const { locale } = useRouter();
-  const text = translations[locale || "en"]?.myApplicationPage;
-  const textComp = translations[locale || "en"]?.competences;
+  const text = translations[locale || "en_US"]?.myApplicationPage;
 
   /* Session */
   const { data: session } = useSession();
 
   /* Queries */
   const { data: applicaiton } = api.applicant.getApplication.useQuery();
-  const { data: competencesList } = api.applicant.getCompetences.useQuery();
+  const { data: competencesList } = api.applicant.getCompetences.useQuery({lang: locale || "en_US"});
 
   /* Mutations */
 
   /* Views */
-  if (!(text && textComp) || session === undefined || !applicaiton) return <LoadingPage />;
+  if (!text || session === undefined || !applicaiton) return <LoadingPage />;
 
   if (session?.user?.image !== "applicant") return <NoAccess />;
 
@@ -84,7 +83,7 @@ export default function MyApplication() {
                   >
                     {competencesList?.map((cl, i) => (
                       <option key={`${cl.name}${i}`} value={cl.name}>
-                        {textComp[cl.name]}
+                        {cl.name}
                       </option>
                     ))}
                   </select>
@@ -189,7 +188,7 @@ export default function MyApplication() {
               {applicaiton.competence_profile.map((c) => (
                 <p key={c.competence_id}>
                   <>
-                    {textComp[c.competence.name]}: {c.years_of_experience} {text.years}
+                    {c.competence.name}: {c.years_of_experience} {text.years}
                   </>
                 </p>
               ))}

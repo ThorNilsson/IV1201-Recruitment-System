@@ -42,8 +42,16 @@ model availability {
 
 model competence {
   id                 Int                  @id @default(autoincrement())
+  lang               language             @default(en_US)
   name               String               @db.VarChar(255)
   competence_profile competence_profile[]
+
+  @@index([id, lang])
+}
+
+enum language {
+  en_US
+  sv_SE
 }
 
 model competence_profile {

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, language } from "@prisma/client";
 import bcrypt from "bcrypt";
 import moment from "moment";
 
@@ -21,15 +21,33 @@ async function main() {
     data: [
       {
         // id: 1,
+        lang: language.en_US,
         name: "ticket sales",
       },
       {
         // id: 2,
+        lang: language.en_US,
         name: "lotteries",
       },
       {
         // id: 3,
+        lang: language.en_US,
         name: "roller coaster operation",
+      },
+      {
+        id: 1,
+        lang: language.sv_SE,
+        name: "Biljettförsäljning",
+      },
+      {
+        id: 2,
+        lang: language.sv_SE,
+        name: "Lotteri",
+      },
+      {
+        id: 3,
+        lang: language.sv_SE,
+        name: "Berg- och dalbaneoperatör",
       },
     ],
   });

@@ -1,7 +1,7 @@
-import { localeType } from "./locale-en";
+import { localeType } from "./locale-en_US";
 
 const locale: localeType = {
-  locale: "en",
+  locale: "en_US",
   name: "Swedish",
   nativeName: "Svenska",
   meta: {
@@ -148,12 +148,6 @@ const locale: localeType = {
     PAYLOAD_TOO_LARGE: "Den begärda resursen är för stor",
     TOO_MANY_REQUESTS: "Du har gjort för många begäran",
     CLIENT_CLOSED_REQUEST: "Den här begäran har stängts av klienten",
-  },
-
-  competences: {
-    "ticket sales": "Biljettförsäljning",
-    lotteries: "Lotteri",
-    "roller coaster operation": "Berg- och dalbaneoperatör",
   },
 };
 

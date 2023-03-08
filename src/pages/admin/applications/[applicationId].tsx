@@ -28,8 +28,8 @@ function Application() {
 
   /* Translations */
   const { locale } = useRouter();
-  const applText = translations[locale || "en"]?.applicationPage;
-  const compText = translations[locale || "en"]?.competences;
+  const applText = translations[locale || "en_US"]?.applicationPage;
+  const compText = translations[locale || "en_US"]?.competences;
 
   /* Session */
   const { data: session } = useSession();

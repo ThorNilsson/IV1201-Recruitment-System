@@ -19,8 +19,8 @@ import LoadingPage from "./LoadingPage";
 export default function Header() {
   /* Translations */
   const { locale, locales } = useRouter();
-  const text = translations[locale || "en"]?.header;
-  const textSignout = translations[locale || "en"]?.alreadySignedInPage;
+  const text = translations[locale || "en_US"]?.header;
+  const textSignout = translations[locale || "en_US"]?.alreadySignedInPage;
 
   /* Querires */
   const { data: session } = useSession();

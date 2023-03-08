@@ -26,8 +26,8 @@ function Register() {
 
   /* Translations */
   const { locale } = useRouter();
-  const text = translations[locale || "en"]?.registerPage;
-  const input = translations[locale || "en"]?.inputFields;
+  const text = translations[locale || "en_US"]?.registerPage;
+  const input = translations[locale || "en_US"]?.inputFields;
 
   /* Session */
   const { data: session } = useSession();

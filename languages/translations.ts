@@ -1,5 +1,3 @@
-//import { localeType } from "../src/types/localeTypes";
-
 /**
  * To add a new translation:
  * 1. Make a new translation file: locale-[languagecode].ts
@@ -8,16 +6,12 @@
  *
  * The first translation in the array will be the default language.
  */
-//import { type } from "os";
-//import { translationsType } from "../src/types/localeTypes";
 
-//type translationType =
-
-import en from "./locale-en";
-import se from "./locale-se";
+import en_US from "./locale-en_US";
+import sv_SE from "./locale-sv_SE";
 
 export type translationsType = {
-  [key: string]: typeof en;
+  [key: string]: typeof en_US;
 };
 
-export const translations: translationsType = { en, se }; // Add new translations to array here
+export const translations: translationsType = { en_US, sv_SE }; // Add new translations to array here

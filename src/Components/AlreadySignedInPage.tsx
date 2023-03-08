@@ -19,7 +19,7 @@ import LoadingPage from "./LoadingPage";
 export default function AlreadySignedInPage() {
   /* Translations */
   const { locale } = useRouter();
-  const text = translations[locale || "en"]?.alreadySignedInPage;
+  const text = translations[locale || "en_US"]?.alreadySignedInPage;
 
   /* Querys */
   const { data: session } = useSession();

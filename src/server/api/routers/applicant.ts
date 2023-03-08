@@ -6,7 +6,8 @@
  */
 
 import { z } from "zod";
-import { createTRPCRouter, applicantProcedure } from "../trpc";
+import { createTRPCRouter, applicantProcedure, protectedProcedure } from "../trpc";
+import { language } from "@prisma/client";
 
 export const applicantRouter = createTRPCRouter({
   /* Queries */
@@ -14,8 +15,11 @@ export const applicantRouter = createTRPCRouter({
    *  @returns {Promise<Competence[]>} - Array of competences
    *  @description - Get all competences with id and name
    */
-  getCompetences: applicantProcedure.query(async ({ ctx }) => {
+  getCompetences: protectedProcedure.input(z.object({ lang: z.string() })).query(async ({ ctx }) => {
     return ctx.prisma.competence.findMany({
+      where: {
+        lang: lang as language,
+      },
       select: {
         id: true,
         name: true,

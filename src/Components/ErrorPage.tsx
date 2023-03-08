@@ -21,7 +21,7 @@ export default function ErrorPage({ errorCode }: { errorCode: TRPCError["code"] 
 
   /* Translations */
   const { locale } = router;
-  const text = translations[locale || "en"]?.errors;
+  const text = translations[locale || "en_US"]?.errors;
 
   /* Handelers */
   const handleReload = () => {

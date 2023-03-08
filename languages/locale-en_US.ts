@@ -1,5 +1,5 @@
 const locale = {
-  locale: "en",
+  locale: "en_US",
   name: "English",
   nativeName: "English",
   meta: {
@@ -152,12 +152,6 @@ const locale = {
     TOO_MANY_REQUESTS: "Too many requests",
     CLIENT_CLOSED_REQUEST: "Client closed request",
   },
-
-  competences: {
-    "ticket sales": "Ticket sales",
-    lotteries: "Lotteries",
-    "roller coaster operation": "Roller Coaster operation",
-  } as Record<string, string>,
 };
 
 export type localeType = typeof locale;

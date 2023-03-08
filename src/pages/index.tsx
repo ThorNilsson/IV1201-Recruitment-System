@@ -9,7 +9,7 @@ import { Title } from "../Components/Typography";
 function Home() {
   /* Translations */
   const router = useRouter();
-  const text = translations[router.locale || "en"]?.homePage;
+  const text = translations[router.locale || "en_US"]?.homePage;
 
   /* Queries */
   const { data: session } = useSession();

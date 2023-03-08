@@ -31,8 +31,8 @@ export default function Applications() {
 
   /* Translations */
   const { locale } = useRouter();
-  const text = translations[locale || "en"]?.applicationsPage;
-  const compText = translations[locale || "en"]?.competences;
+  const text = translations[locale || "en_US"]?.applicationsPage;
+  const compText = translations[locale || "en_US"]?.competences;
 
   /* Session */
   const { data: session } = useSession();
