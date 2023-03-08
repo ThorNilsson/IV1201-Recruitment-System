@@ -14,15 +14,20 @@ model application {
   surname            String?              @db.VarChar(255)
   pnr                String?              @db.VarChar(255)
   email              String?              @unique @db.VarChar(255)
-  status             application_status   @default(UNHANDLED)
+  status             application_status   @default(INCOMPLETE)
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @default(now()) @updatedAt
   user               user?
   availability       availability[]
   competence_profile competence_profile[]
+  migration          migration?
 }
 
 enum application_status {
+  // User info is present, but has not filled in availability, comp.profile, and submitted the application yet.
+  // User might not even be registered.
+  INCOMPLETE
+  // User has submitted the application and is waiting for admin to handle
   UNHANDLED
   ACCEPTED
   REJECTED
@@ -38,8 +43,22 @@ model availability {
 
 model competence {
   id                 Int                  @id @default(autoincrement())
-  name               String               @db.VarChar(255)
+  competence_name    competence_name[]
   competence_profile competence_profile[]
+}
+
+model competence_name {
+  competence_id Int
+  competence    competence @relation(fields: [competence_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lang          language   @default(en_US)
+  name          String     @db.VarChar(255)
+
+  @@id([competence_id, lang])
+}
+
+enum language {
+  en_US
+  sv_SE
 }
 
 model competence_profile {
@@ -49,6 +68,12 @@ model competence_profile {
   application         application @relation(fields: [application_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   competence_id       Int
   competence          competence  @relation(fields: [competence_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model migration {
+  application_id Int         @id
+  application    application @relation(fields: [application_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  url            String
 }
 
 model role {

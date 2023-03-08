@@ -1,16 +1,20 @@
+import React from "react";
+import router, { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import router, { useRouter } from "next/router";
-import React from "react";
 import { translations } from "../../languages/translations";
 import { api } from "../utils/api";
-import Loading from "./Loading";
+import LoadingPage from "./LoadingPage";
 
-function Header() {
+/**
+ * @returns {React.ReactElement} - React component.
+ * @description Header component for logo, localisation and session status.
+ */
+export default function Header() {
   /* Translations */
   const { locale, locales } = useRouter();
-  const text = translations[locale || "en"]?.header;
-  const textSignout = translations[locale || "en"]?.alreadySignedInPage;
+  const text = translations[locale || "en_US"]?.header;
+  const textSignout = translations[locale || "en_US"]?.alreadySignedInPage;
 
   /* Querires */
   const { data: session } = useSession();
@@ -21,10 +25,10 @@ function Header() {
     router.push(router.pathname, router.asPath, { locale });
   };
 
-  const handleSignout = () => signOut();
+  const handleSignout = () => signOut({ callbackUrl: "/" });
 
   /* Views */
-  if (text == null) return <Loading />;
+  if (text == null) return <LoadingPage />;
 
   return (
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 dark:bg-gray-900">
@@ -42,7 +46,7 @@ function Header() {
         </div>
 
         {/* Links */}
-        <div className="hidden w-full md:block md:w-auto" id="navbar-default">
+        <div className="w-full block md:w-auto">
           <ul className="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             {/* Admin and user role logic */}
             {user?.role?.name === "recruiter" ? (
@@ -50,7 +54,7 @@ function Header() {
                 href='/admin/applications'
                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
-                {textSignout?.adminPage}
+                {textSignout?.adminPageBtn}
               </Link>
             ) : null}
             {user?.role?.name === "applicant" ? (
@@ -58,7 +62,7 @@ function Header() {
                 href='/my-application'
                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
-                {textSignout?.myApplicationPage}
+                {textSignout?.myApplicationPageBtn}
               </Link>
             ) : null}
 
@@ -68,7 +72,7 @@ function Header() {
                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                 onClick={handleSignout}
               >
-                {textSignout?.signOut}
+                {textSignout?.signOutBtn}
               </button>
             ) : (
               <>
@@ -111,5 +115,3 @@ function Header() {
     </nav>
   );
 }
-
-export default Header;

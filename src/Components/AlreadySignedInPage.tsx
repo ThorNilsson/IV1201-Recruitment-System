@@ -1,15 +1,19 @@
+import React from "react";
+import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import React from "react";
 import { translations } from "../../languages/translations";
-import Loading from "./Loading";
 import { api } from "../utils/api";
+import LoadingPage from "./LoadingPage";
 
-function AlreadySignedIn() {
+/**
+ * @returns {React.ReactElement} - React component.
+ * @description Page for showing that the user is already signed in.
+ */
+export default function AlreadySignedInPage() {
   /* Translations */
   const { locale } = useRouter();
-  const text = translations[locale || "en"]?.alreadySignedInPage;
+  const text = translations[locale || "en_US"]?.alreadySignedInPage;
 
   /* Querys */
   const { data: session } = useSession();
@@ -19,38 +23,36 @@ function AlreadySignedIn() {
   const handleSignout = () => signOut();
 
   /* Views */
-  if (text == null) return <Loading />;
+  if (text == null) return <LoadingPage />;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-gray-900/90 to-[#15162c]">
       <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-        {user?.username}! {text.alreadySignedIn}
+        {user?.username}! {text.title}
       </h1>
       <div className="flex space-x-5 m-10">
         <button
           onClick={handleSignout}
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
-          {text.signOut}
+          {text.signOutBtn}
         </button>
         {user?.role?.name === "recruiter" ? (
           <Link
             href="/admin/applications"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
-            {text.adminPage}
+            {text.adminPageBtn}
           </Link>
         ) : (
           <Link
             href="/my-application"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
-            {text.myApplicationPage}
+            {text.myApplicationPageBtn}
           </Link>
         )}
       </div>
     </div>
   );
 }
-
-export default AlreadySignedIn;

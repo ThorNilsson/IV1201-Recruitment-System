@@ -16,9 +16,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  lint:
+    name: Code check and lint
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check code style and format
+        run: npx rome ci .
+
+  build:
+    name: Build production
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       # Dummy values to allow `npm run build` to run
       DATABASE_URL: "postgres://d:u@m.m/y"
@@ -26,23 +38,30 @@ jobs:
       NEXTAUTH_URL: "http://plonk"
 
     steps:
-      # checkout
       - uses: actions/checkout@v3
 
-      # Node.js
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.6.0
         with:
-          node-version: 18
-          cache: "npm"
+          node-version: 16
+          cache: npm
 
       - name: Install Node modules
         run: npm clean-install
 
-      - name: Check code style
-        run: npx rome ci .
+      - name: Build app
+        run: npm run build
 
-      - name: Create database branch to test migrations
+  create_db_branch:
+    name: Create database branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      branch-endpoint: ${{ steps.get_branch_enpoint.outputs.prop }}
+      branch-id: ${{ steps.get_branch_id.outputs.prop }}
+
+    steps:
+      - name: Create database branch
         id: create-branch
         run: |
           OUTPUT=`curl -X 'POST' \
@@ -51,40 +70,91 @@ jobs:
           -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}' \
           -H 'Content-Type: application/json' \
           -d '{
-          "endpoints": [
-            {
-              "type": "read_write"
-            }
-          ],
-          "branch": {
-            "parent_id": "br-tiny-resonance-872350"
-          }
+          "endpoints": [ { "type": "read_write" } ],
+          "branch": { "parent_id": "br-tiny-resonance-872350" }
           }'`
           echo $OUTPUT
           echo $OUTPUT > output.json
-      - uses: notiz-dev/github-action-json-property@release
+      - name: Get branch id
+        uses: notiz-dev/github-action-json-property@release
         id: get_branch_id
         with:
           path: "output.json"
           prop_path: "branch.id"
-      - uses: notiz-dev/github-action-json-property@release
+      - name: Get branch enpoint
+        uses: notiz-dev/github-action-json-property@release
         id: get_branch_enpoint
         with:
           path: "output.json"
           prop_path: "endpoints.0.host"
 
+  migrate_test:
+    name: Migrate DB and run tests
+    needs: create_db_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ needs.create_db_branch.outputs.branch-endpoint }}/lisseborg?connect_timeout=10"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: Install Node modules
+        run: npm clean-install
+
       - name: Apply Prisma migration
-        env:
-          DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ steps.get_branch_enpoint.outputs.prop }}/lisseborg?connect_timeout=10"
         run: npx prisma migrate deploy
 
-      - if: ${{ success() || failure() }} # Make sure this always runs
-        name: Delete database branch
+      - name: Run tests
+        run: npm test --if-present
+
+  e2e_tests:
+    name: Run Cypress tests
+    needs: [create_db_branch, migrate_test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        browser: [chrome, edge, firefox]
+      max-parallel: 1
+    env:
+      DATABASE_URL: "postgres://${{ secrets.NEON_USER }}:${{ secrets.NEON_PASS }}@${{ needs.create_db_branch.outputs.branch-endpoint }}/lisseborg?connect_timeout=10"
+      NEXTAUTH_SECRET: "plink"
+      NEXTAUTH_URL: "http://localhost:3000"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: Run Cypress tests (${{ matrix.browser }})
+        uses: cypress-io/github-action@v5
+        with:
+          browser: ${{ matrix.browser }}
+          start: npm run dev
+          wait-on: "http://localhost:3000"
+
+  delete_db_branch:
+    name: Delete database branch
+    needs: [create_db_branch, migrate_test, e2e_tests]
+    if: ${{ success() || failure() }} # Make sure this always runs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Delete database branch
         run: |
           curl -X 'DELETE' \
-          'https://console.neon.tech/api/v2/projects/gentle-boat-796453/branches/${{ steps.get_branch_id.outputs.prop }}' \
+          'https://console.neon.tech/api/v2/projects/gentle-boat-796453/branches/${{ needs.create_db_branch.outputs.branch-id }}' \
           -H 'accept: application/json' \
           -H 'Authorization: Bearer ${{ secrets.NEON_API_KEY }}'
-
-      - name: Build app
-        run: npm run build

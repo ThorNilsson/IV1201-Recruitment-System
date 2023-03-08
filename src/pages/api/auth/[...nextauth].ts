@@ -1,6 +1,6 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-//import bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 import { prisma } from "../../../server/db";
 
 export const authOptions: NextAuthOptions = {
@@ -22,21 +22,19 @@ export const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findFirst({
           where: { username: credentials.username },
+          include: { role: true },
         });
 
         if (!user) return null;
 
-        //const validPassword = await bcrypt.compare(credentials.password, user.password);
-
-        //if (!validPassword) return null;
-
-        if (credentials.password !== user.password) return null;
+        const validPassword = await bcrypt.compare(credentials.password, user.password);
+        if (!validPassword) return null;
 
         return {
           id: user.id.toString(),
           email: user.id.toString(),
           name: user.username,
-          image: user.role_id?.toString(),
+          image: user.role.name,
         };
       },
     }),

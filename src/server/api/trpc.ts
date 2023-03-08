@@ -97,10 +97,9 @@ export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
 /**
- * Reusable middleware that enforces users are logged in before running the
- * procedure
+ * Reusable middleware that enforces users are logged in and have client status before running the procedure
  */
-const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+const enforceUserIsAuthedMiddleware = t.middleware(({ ctx, next }) => {
   if (!ctx.session?.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
@@ -113,12 +112,54 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 });
 
 /**
- * Protected (authed) procedure
- *
- * If you want a query or mutation to ONLY be accessible to logged in users, use
- * this. It verifies the session is valid and guarantees ctx.session.user is not
- * null
- *
- * @see https://trpc.io/docs/procedures
+ * Reusable middleware that enforces users are logged in and have client status before running the procedure
  */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+const enforceUserIsAuthedApplicantMiddleware = t.middleware(({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  if (ctx.session?.user?.image !== "applicant") {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+/**
+ * Reusable middleware that enforces users are logged and have admin status in before running the
+ * procedure
+ */
+const enforceUserIsAuthedAdminMiddleware = t.middleware(({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  if (ctx.session?.user?.image !== "recruiter") {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+/**
+ * Reusable middleware that logs the time it takes to run the procedure
+ * ? Maybe use this for logging or similar if it takes to long time to run???
+ */
+const timingMiddleware = t.middleware(async ({ ctx, next }) => {
+  const label = `Timing Middleware ${ctx.session?.user?.image} user ${ctx.session?.user?.name}`;
+  console.time(label);
+  const res = await next({ ctx });
+  console.timeEnd(label);
+  return res;
+});
+
+export const protectedProcedure = t.procedure.use(timingMiddleware).use(enforceUserIsAuthedMiddleware);
+export const applicantProcedure = t.procedure.use(timingMiddleware).use(enforceUserIsAuthedApplicantMiddleware);
+export const adminProcedure = t.procedure.use(timingMiddleware).use(enforceUserIsAuthedAdminMiddleware);
