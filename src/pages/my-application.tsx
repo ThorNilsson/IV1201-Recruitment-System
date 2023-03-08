@@ -82,7 +82,10 @@ export default function MyApplication() {
                     }}
                   >
                     {competencesList?.map((cl, i) => (
-                      <option key={`${cl.competence_name[0]?.name || "?"}${i}`} value={cl.competence_name[0]?.name || "?"}>
+                      <option
+                        key={`${cl.competence_name[0]?.name || "?"}${i}`}
+                        value={cl.competence_name[0]?.name || "?"}
+                      >
                         {cl.competence_name[0]?.name || "?"}
                       </option>
                     ))}

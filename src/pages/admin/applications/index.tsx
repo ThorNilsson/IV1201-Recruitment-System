@@ -31,9 +31,12 @@ export default function Applications() {
   const isRecruiter = session?.user?.image === "recruiter";
 
   /* Queries */
-  const { data: competences, error: competencesErr } = api.applicant.getCompetences.useQuery({lang: locale || "en_US"}, {
-    enabled: isRecruiter,
-  });
+  const { data: competences, error: competencesErr } = api.applicant.getCompetences.useQuery(
+    { lang: locale || "en_US" },
+    {
+      enabled: isRecruiter,
+    },
+  );
   const { data: resultCount, error: resultCountErr } = api.admin.getFilterdApplicationPreviewCount.useQuery(
     { filter: filter },
     { enabled: isRecruiter },

@@ -20,7 +20,7 @@ export const applicantRouter = createTRPCRouter({
           where: {
             lang: input.lang as language,
           },
-        }
+        },
       },
     });
   }),
@@ -47,7 +47,7 @@ export const applicantRouter = createTRPCRouter({
                   competence: {
                     include: {
                       competence_name: true,
-                    }
+                    },
                   },
                 },
               },

@@ -17,9 +17,9 @@ async function main() {
       },
     ],
   });
-  await prisma.competence.create({data: {}});
-  await prisma.competence.create({data: {}});
-  await prisma.competence.create({data: {}});
+  await prisma.competence.create({ data: {} });
+  await prisma.competence.create({ data: {} });
+  await prisma.competence.create({ data: {} });
   await prisma.competence_name.createMany({
     data: [
       {

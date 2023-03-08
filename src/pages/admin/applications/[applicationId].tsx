@@ -66,9 +66,9 @@ function Application() {
       <div className="flex flex-col gap-4 rounded-xl bg-white/10 p-4">
         {application.competence_profile.map((competence_profile) => (
           <Text key={competence_profile.id}>
-            {`${competence_profile.competence.competence_name[0]?.name || "?"} ${competence_profile.years_of_experience} ${
-              applText.year
-            }`}
+            {`${competence_profile.competence.competence_name[0]?.name || "?"} ${
+              competence_profile.years_of_experience
+            } ${applText.year}`}
           </Text>
         ))}
       </div>
@@ -78,9 +78,7 @@ function Application() {
       <div className="flex flex-col gap-4 rounded-xl bg-white/10 p-4">
         {application.availability.map((availability) => (
           <Text key={availability.id}>
-            {`${new Date(availability.from_date).toDateString()} -> ${new Date(
-              availability.to_date,
-            ).toDateString()}`}
+            {`${new Date(availability.from_date).toDateString()} -> ${new Date(availability.to_date).toDateString()}`}
           </Text>
         ))}
       </div>
