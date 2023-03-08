@@ -156,12 +156,7 @@ describe("The app", () => {
     cy.url().should("include", "/admin/applications");
     cy.visit("/admin/applications/2");
 
-    cy.get("main button")
-      .first()
-      .should('have.text', 'Mark Incomplete')
-      .next()
-      .should('have.text', 'Accept')
-      .click();
+    cy.get("main button").first().should("have.text", "Mark Incomplete").next().should("have.text", "Accept").click();
     cy.contains("ACCEPTED").should("exist");
     cy.visit("/admin/applications");
     cy.contains("Kalle Anka").should("not.exist");
