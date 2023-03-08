@@ -1,10 +1,3 @@
-/**
- * @file - migrate.ts
- * @description - Contains all the api routes for the migrate account page
- * @author - Thor Nilsson
- * @exports migrationRouter - TRPC router
- */
-
 import bcrypt from "bcrypt";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { migrationValidationObject } from "../../../validation/validation";
@@ -12,7 +5,7 @@ import { HASH_ROUNDS } from "./auth";
 import { TRPCError } from "@trpc/server";
 import { logger } from "../../log";
 import { z } from "zod";
-import { createMigration, deleteMigration, getMigration } from "../../controller/migrationController";
+import { randomUUID } from "crypto";
 
 export const migrationRouter = createTRPCRouter({
   /**
@@ -39,7 +32,17 @@ export const migrationRouter = createTRPCRouter({
       throw new TRPCError({ code: "NOT_FOUND", message: "Old Application not found" });
     }
 
-    const migration = createMigration(input.email, application.id);
+    const migration = await ctx.prisma.migration.create({
+      data: {
+        url: randomUUID(),
+        application: {
+          connect: {
+            id: application.id,
+          },
+        },
+      },
+    });
+
     logger.info(`A URL was created for  old application ${application.id}`);
     return migration.url;
   }),
@@ -51,29 +54,18 @@ export const migrationRouter = createTRPCRouter({
    * @description - Gets the application by the url
    */
   getAplicationByURL: publicProcedure.input(z.object({ URL: z.string() })).query(async ({ ctx, input }) => {
-    const migration = getMigration(input.URL);
-
-    if (!migration) {
-      throw new TRPCError({ code: "NOT_FOUND", message: "Migration not found" });
-    }
-
-    if (migration.createdAt.getTime() + 1000 * 60 * 1 < Date.now()) {
-      deleteMigration(input.URL);
-      throw new TRPCError({ code: "TIMEOUT", message: "Migration expired" });
-    }
-
-    return ctx.prisma.application.findUniqueOrThrow({
-      where: {
-        id: migration.applicationId,
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        surname: true,
-        pnr: true,
-      },
-    });
+    return ctx.prisma.application
+      .findFirstOrThrow({
+        where: {
+          migration: {
+            url: input.URL,
+          },
+        },
+      })
+      .catch((err) => {
+        logger.error(`Someone tried to update old application but no migration was found with url ${input.URL}`);
+        throw new TRPCError({ code: "NOT_FOUND", message: "Migration not found" });
+      });
   }),
 
   /**
@@ -85,26 +77,25 @@ export const migrationRouter = createTRPCRouter({
    * @description - Updates the status of an application
    */
   createUserForOldApplication: publicProcedure.input(migrationValidationObject).mutation(async ({ ctx, input }) => {
-    const migration = getMigration(input.URL);
+    const migration = await ctx.prisma.migration.findFirst({
+      where: {
+        url: input.URL,
+      },
+      select: {
+        application_id: true,
+      },
+    });
 
     if (!migration) {
       logger.error(`Someone tried to update old application but no migration was found with url ${input.URL}`);
       throw new TRPCError({ code: "NOT_FOUND", message: "Migration not found" });
     }
 
-    if (migration.createdAt.getTime() + 1000 * 60 * 1 < Date.now()) {
-      logger.error(
-        `${migration.email} tried to update old application ${migration.applicationId} with a expired url ${input.URL}`,
-      );
-      deleteMigration(input.URL);
-      throw new TRPCError({ code: "TIMEOUT", message: "Migration expired" });
-    }
-
     const hashedPassword = await bcrypt.hash(input.password, HASH_ROUNDS);
 
     const newUser = await ctx.prisma.user.upsert({
       where: {
-        application_id: migration.applicationId,
+        application_id: migration.application_id,
       },
       update: {}, // Update nothing
       create: {
@@ -114,19 +105,17 @@ export const migrationRouter = createTRPCRouter({
           connect: { id: 2 }, // Applicants
         },
         application: {
-          connect: { id: migration.applicationId },
+          connect: { id: migration.application_id },
         },
       },
     });
 
     if (newUser === null) {
-      logger.error(`Failed to create user for old application ${migration.applicationId}`);
+      logger.error(`Failed to create user for old application ${migration.application_id}`);
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to create user" });
     }
 
-    deleteMigration(input.URL);
-
-    logger.info(`New user was created for old application ${migration.applicationId}`);
+    logger.info(`New user was created for old application ${migration.application_id}`);
 
     return newUser;
   }),
