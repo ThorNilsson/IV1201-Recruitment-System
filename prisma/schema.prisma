@@ -43,11 +43,17 @@ model availability {
 
 model competence {
   id                 Int                  @id @default(autoincrement())
-  lang               language             @default(en_US)
-  name               String               @db.VarChar(255)
+  competence_name    competence_name[]
   competence_profile competence_profile[]
+}
 
-  @@index([id, lang])
+model competence_name {
+  competence_id Int
+  competence    competence @relation(fields: [competence_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lang          language   @default(en_US)
+  name          String     @db.VarChar(255)
+
+  @@id([competence_id, lang])
 }
 
 enum language {

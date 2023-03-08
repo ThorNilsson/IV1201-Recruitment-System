@@ -82,8 +82,11 @@ export default function MyApplication() {
                     }}
                   >
                     {competencesList?.map((cl, i) => (
-                      <option key={`${cl.name}${i}`} value={cl.name}>
-                        {cl.name}
+                      <option
+                        key={`${cl.competence_name[0]?.name || "?"}${i}`}
+                        value={cl.competence_name[0]?.name || "?"}
+                      >
+                        {cl.competence_name[0]?.name || "?"}
                       </option>
                     ))}
                   </select>
@@ -188,7 +191,7 @@ export default function MyApplication() {
               {applicaiton.competence_profile.map((c) => (
                 <p key={c.competence_id}>
                   <>
-                    {c.competence.name}: {c.years_of_experience} {text.years}
+                    {c.competence.competence_name[0]?.name || "?"}: {c.years_of_experience} {text.years}
                   </>
                 </p>
               ))}
@@ -209,7 +212,7 @@ export default function MyApplication() {
                 setEditing((e) => !e);
                 setCompetences(
                   applicaiton.competence_profile.map((c) => ({
-                    c: c.competence.name,
+                    c: c.competence.competence_name[0]?.name || "?",
                     y: c.years_of_experience as unknown as number, // typescript xD
                   })),
                 );
