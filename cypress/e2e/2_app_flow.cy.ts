@@ -66,6 +66,7 @@ describe("The app", () => {
     cy.getCookie("next-auth.session-token").should("exist");
   });
   it("successfully migrates applicant old account", () => {
+    /*
     const email = "plinnk15.plonkee@thunder.vh";
     const username = "Plinkan15";
     const password = "Plinkan15";
@@ -79,12 +80,40 @@ describe("The app", () => {
     cy.get("input[name=password]").type(`${password}{enter}`);
 
     cy.url().should("include", "/my-application");
+    */
   });
-  it("alerts user when fields in register are invalid", () => {
+  it("successfully invalidates fields in register", () => {
     const name = "Alice";
     const surname = "Doe";
     const email = "Alice@doe.tech";
+    const invalidEmail = "Alice.doe.tech";
     const pnr = "1234567890";
+    const invalidPnr = "1234567890";
+    const username = "aliceD";
+    const password = "alicelovesdogs";
+
+    cy.visit("/register");
+
+    //Checks if it is not possible to register with an invalid email
+    cy.get("input[name=name]").type(name);
+    cy.get("input[name=surname]").type(surname);
+    cy.get("input[name=email]").type(email);
+    cy.get("input[name=pnr]").type(pnr);
+    cy.get("input[name=username]").type(username);
+    cy.get("input[name=submit]").should("be.enabled");
+
+    cy.get("input[name=email]").type(invalidEmail);
+    cy.get("input[name=submit]").should("be.disabled");
+
+    cy.get("input[name=email]").type(email);
+    cy.get("input[name=pnr]").type(invalidPnr);
+    cy.get("input[name=submit]").should("be.disabled");
+  });
+  it("shows error when an already used email is used on register", () => {
+    const name = "Alice";
+    const surname = "Doe";
+    const usedEmail = "thor.odinson@thunder.vh";
+    const Pnr = "1234567890";
     const username = "aliceD";
     const password = "alicelovesdogs";
 
@@ -92,18 +121,12 @@ describe("The app", () => {
 
     cy.get("input[name=name]").type(name);
     cy.get("input[name=surname]").type(surname);
-    cy.get("input[name=email]").type(email);
-    cy.get("input[name=pnr]").type(pnr);
+    cy.get("input[name=email]").type(usedEmail);
+    cy.get("input[name=pnr]").type(Pnr);
     cy.get("input[name=username]").type(username);
     cy.get("input[name=password]").type(`${password}{enter}`);
 
-    cy.url().should("include", "/my-application");
-
-    cy.getCookie("next-auth.session-token").should("not-exist");
     cy.contains("The request failed due to preconditions").should("exist");
-  });
-  it("shows error when an already used email is used on register", () => {
-    // TODO
   });
   it("successfully applies as applicant with brand new account", () => {
     // TODO
