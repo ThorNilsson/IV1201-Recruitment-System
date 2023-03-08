@@ -1,7 +1,5 @@
 // @ts-check
 
-//import { translations } from "./languages/translations.js";
-
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
  * This is especially useful for Docker builds.
@@ -17,10 +15,5 @@ const config = {
     locales: ["en_US", "sv_SE"],
     defaultLocale: "en_US",
   },
-
-  /*i18n: {
-    locales: Object.keys(translations),
-    defaultLocale: Object.keys(translations)[0] || 'en',
-  },*/
 };
 export default config;
