@@ -1,10 +1,3 @@
-/**
- * @file migrate-account.tsx
- * @description Page for migrating an old applicant account to the new system.
- * @author Thor Nilsson
- * @returns {JSX.Element} - React component.
- */
-
 import React, { FormEvent } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -16,8 +9,8 @@ import { loginValidationObject, migrationValidationObject } from "../../../valid
 import ErrorPage from "../../../Components/ErrorPage";
 import { SubmitButton } from "../../../Components/Buttons";
 import { Description, Title } from "../../../Components/Typography";
-import Z, { string } from "zod";
 import LoadingPage from "../../../Components/LoadingPage";
+
 /**
  * @returns {JSX.Element} - React component.
  * @description Page for migrating an old applicant account to the new system.

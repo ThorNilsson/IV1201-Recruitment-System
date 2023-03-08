@@ -1,10 +1,3 @@
-/**
- * @file Footer.tsx
- * @description Footer component for displaying copyright and links.
- * @author Thor Nilsson
- * @returns {React.ReactElement} - React component.
- */
-
 import React from "react";
 import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";

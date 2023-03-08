@@ -8,6 +8,11 @@ export const HASH_ROUNDS = 10;
 
 export const authRouter = createTRPCRouter({
   /* Queries */
+
+  /**
+   * @returns {Promise<User | null>} - User object or null if not logged in
+   * @description - Get the current user
+   */
   getUser: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.session?.user?.email) return null;
 
@@ -21,6 +26,17 @@ export const authRouter = createTRPCRouter({
   }),
 
   /* Mutations */
+  /**
+   * @param username - The username of the user
+   * @param password - The password of the user
+   * @param role - The role of the user
+   * @param email - The email of the user
+   * @param pnr - The personal number of the user
+   * @param surname - The surname of the user
+   * @param name - The name of the user
+   * @returns {Promise<User>} - The user object
+   * @description - Signup a applicant
+   */
   signup: publicProcedure.input(signupValidationObject).mutation(async ({ input, ctx }) => {
     const hashedPassword = await bcrypt.hash(input.password, HASH_ROUNDS);
 
