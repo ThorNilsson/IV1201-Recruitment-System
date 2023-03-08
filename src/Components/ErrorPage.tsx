@@ -1,10 +1,3 @@
-/**
- * @file ErrorPage.tsx
- * @description Page for showing a loading animation.
- * @author Thor Nilsson
- * @exports ErrorPage - React component.
- */
-
 import React from "react";
 import { useRouter } from "next/router";
 import { translations } from "../../languages/translations";

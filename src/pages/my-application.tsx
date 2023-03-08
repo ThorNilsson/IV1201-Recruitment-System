@@ -28,7 +28,7 @@ export default function MyApplication() {
 
   /* Queries */
   const { data: applicaiton } = api.applicant.getApplication.useQuery();
-  const { data: competencesList } = api.applicant.getCompetences.useQuery({lang: locale || "en_US"});
+  const { data: competencesList } = api.applicant.getCompetences.useQuery({ lang: locale || "en_US" });
 
   /* Mutations */
 

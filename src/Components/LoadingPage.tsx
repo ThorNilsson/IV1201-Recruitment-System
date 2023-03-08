@@ -1,10 +1,3 @@
-/**
- * @file LoadingPage.tsx
- * @description Component for showing a loading animation.
- * @author Thor Nilsson
- * @exports LoadingPage - React component.
- */
-
 import React from "react";
 import Loading from "./Loading";
 

@@ -1,9 +1,3 @@
-/**
- * @file AlreadySignedInPage.tsx
- * @description Page for showing that the user is already signed in.
- * @author Thor Nilsson
- * @exports AlreadySignedInPage - React component for showing that the user is already signed in.
- */
 import React from "react";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";

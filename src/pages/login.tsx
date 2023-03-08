@@ -9,6 +9,10 @@ import { loginValidationObject } from "../validation/validation";
 import { LinkButton, SubmitButton } from "../Components/Buttons";
 import { Description, Title } from "../Components/Typography";
 
+/**
+ * @returns {JSX.Element} - React component.
+ * @description Login page for signing in.
+ */
 function Login() {
   /* React State */
   const [newUser, setNewUser] = React.useState({ username: "", password: "" });

@@ -1,9 +1,3 @@
-/**
- * @file InputField.tsx
- * @description Input component for displaying copyright and links.
- * @author Thor Nilsson
- * @returns {JSX.Element} - React component.
- */
 import React, { FormEventHandler } from "react";
 
 /**

@@ -6,6 +6,10 @@ import { translations } from "../../languages/translations";
 import LoadingPage from "../Components/LoadingPage";
 import { Title } from "../Components/Typography";
 
+/**
+ * @returns {JSX.Element} - React component.
+ * @description Home page for the application with links to the login page and the admin page.
+ */
 function Home() {
   /* Translations */
   const router = useRouter();

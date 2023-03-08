@@ -1,10 +1,3 @@
-/**
- * @file - NoAccess.tsx
- * @description - Component for showing that the user has no access to the page.
- * @author - Thor Nilsson
- * @exports NoAccess - React component.
- */
-
 import { useRouter } from "next/router";
 import React from "react";
 import { translations } from "../../languages/translations";

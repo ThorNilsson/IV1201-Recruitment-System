@@ -1,10 +1,3 @@
-/**
- * @file - admin.ts
- * @description - Contains all the api routes for the admin page
- * @author - Thor Nilsson
- * @exports adminRouter - TRPC router
- */
-
 import { z } from "zod";
 import { createTRPCRouter, adminProcedure } from "../trpc";
 import { application_status, language } from "@prisma/client";

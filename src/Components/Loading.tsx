@@ -1,10 +1,3 @@
-/**
- * @file Loading.tsx
- * @description Component for showing a loading animation.
- * @author Thor Nilsson
- * @exports Loading - React component.
- */
-
 import React from "react";
 
 /**

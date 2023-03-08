@@ -10,6 +10,9 @@ import { translations } from "../../languages/translations";
 import Footer from "../Components/Footer";
 import PageBackground from "../Components/PageBackground";
 
+/**
+ * @description The root component of the application.
+ */
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
   /* Translations */
   const { locale } = useRouter();

@@ -1,9 +1,3 @@
-/**
- * @file Header.tsx
- * @description Header component.
- * @author Thor Nilsson
- * @exports Header - React component for logo, localisation and session status.
- */
 import React from "react";
 import router, { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
