@@ -9,14 +9,11 @@ export const serverSchema = z.object({
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
   NEXTAUTH_SECRET: process.env.NODE_ENV === "production" ? z.string().min(1) : z.string().min(1).optional(),
-  NEXTAUTH_URL: z.preprocess(
-    (str) => {
-      const url = process.env.NETLIFY ? process.env.DEPLOY_PRIME_URL : str;
-      console.log("NEXTAUTH_URL:", url);
-      return url;
-    },
-    z.string().url(),
-  ),
+  NEXTAUTH_URL: z.preprocess((str) => {
+    const url = process.env.NETLIFY ? process.env.DEPLOY_PRIME_URL : str;
+    console.log("NEXTAUTH_URL:", url);
+    return url;
+  }, z.string().url()),
 });
 
 /**
