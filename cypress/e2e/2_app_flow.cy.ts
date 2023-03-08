@@ -62,14 +62,11 @@ describe("The app", () => {
     cy.get("input[name=username]").type(username);
     cy.get("input[name=password]").type(`${password}{enter}`);
 
-    cy.wait(500);
-
     cy.url().should("include", "/my-application");
 
     cy.getCookie("next-auth.session-token").should("exist");
   });
   it("successfully migrates applicant old account", () => {
-    /*
     const email = "plinnk15.plonkee@thunder.vh";
     const username = "Plinkan15";
     const password = "Plinkan15";
@@ -77,15 +74,12 @@ describe("The app", () => {
     cy.visit("/auth/migrate-account");
     cy.get("input[name=email]").type(`${email}{enter}`);
 
-    cy.wait(500);
-
-    cy.url().should("not.match", "/.*migrate-account$/"); // url shoud now incluide the random id
+    cy.url().should("not.match", /.*migrate-account$/); // url shoud now incluide the random id
 
     cy.get("input[name=username]").type(username);
     cy.get("input[name=password]").type(`${password}{enter}`);
 
     cy.url().should("include", "/my-application");
-    */
   });
   it("successfully invalidates fields in register", () => {
     const name = "Alice";
@@ -150,20 +144,31 @@ describe("The app", () => {
     // {enter} causes the form to submit
     cy.get("input[name=password]").type(`${pass}{enter}`);
 
-    cy.wait(800);
-
     cy.contains("Kalle Anka").should("exist");
   });
   it("marks an application as accepted/rejected and it disappears from applications list", () => {
-    /*const user = "a";
-      const pass = "a";
-      
-    */
-    // TODO
+    const user = "a";
+    const pass = "a";
+    cy.visit("/login");
+    cy.get("input[name=username]").type(user);
+    // {enter} causes the form to submit
+    cy.get("input[name=password]").type(`${pass}{enter}`);
+    cy.url().should("include", "/admin/applications");
+    cy.visit("/admin/applications/2");
+
+    cy.get("main button")
+      .first()
+      .should('have.text', 'Mark Incomplete')
+      .next()
+      .should('have.text', 'Accept')
+      .click();
+    cy.contains("ACCEPTED").should("exist");
+    cy.visit("/admin/applications");
+    cy.contains("Kalle Anka").should("not.exist");
   });
   it("can do a full use case flow", () => {
     // register, apply, login as admin, accept application (+ maybe more)
-    // TODO
+    // TODO (never)
   });
 });
 
