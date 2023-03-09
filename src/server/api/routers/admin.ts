@@ -85,7 +85,7 @@ export const adminRouter = createTRPCRouter({
    * @returns {Promise<Application>} - The application with the given id
    * @description - Get an application with the given id, including competence profiles and availabilies
    */
-  getApplication: adminProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
+  getApplication: adminProcedure.input(z.object({ id: z.number(), lang: z.string() })).query(async ({ ctx, input }) => {
     return ctx.prisma.application.findUnique({
       where: {
         id: input.id,
@@ -103,7 +103,15 @@ export const adminRouter = createTRPCRouter({
           include: {
             competence: {
               include: {
-                competence_name: true,
+                competence_name: {
+                  select: {
+                    lang: true,
+                    name: true,
+                  },
+                  where: {
+                    lang: input.lang as language,
+                  },
+                },
               },
             },
           },

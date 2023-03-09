@@ -28,7 +28,7 @@ function Application() {
 
   /* Queries */
   const { data: application, refetch } = api.admin.getApplication.useQuery(
-    { id: parseInt(applicationId as string) },
+    { id: parseInt(applicationId as string), lang: locale || "en_US" },
     { enabled: !!applicationId && session?.user?.image === "recruiter" },
   );
 
